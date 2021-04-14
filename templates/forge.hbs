@@ -1,0 +1,39 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  {{#if error}}
+  <div class="error">{{error}}</div>
+  {{/if}}
+  {{#unless error}}
+  
+  <nav class="sheet-tabs tabs">
+    {{#each modules as |m|}}
+      <a class="item {{#if m.active}}active{{/if}}" data-tab="{{m.id}}"><i class="{{m.icon}}"></i> {{m.name}}</a>
+    {{/each}}
+  </nav>
+
+  <div class="main">
+    <p>
+      <div class="description">{{{activeModule.description}}}</div>
+      <div class="form-group search"><input id="search" type="text" placeholder="{{localize "mtte.search"}}"></input><button class="search"><i class="fas fa-search"></i></button></div>
+      <div class="list">
+        {{#each assets as |a|}}{{{a}}}{{/each}}
+      </div>
+    </p>
+    {{{footer}}}
+    <footer>
+      <div class="actions">
+        {{#each activeModule.actions as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i> {{a.name}}</button>{{/each}}
+      </div>
+    </footer>
+    <p>
+      <div class="messagebox"><i class="fas fa-check-circle"></i><span class="message"></span></div>
+    </p>
+  </div>
+  
+  {{/unless}}
+  <img class="logo" src="modules/moulinette-core/img/moulinette.png" width="60"/>
+  <p>
+    Become a <a href="https://www.patreon.com/moulinette" target="_blank">Patreon</a> to support Moulinette.<br/>
+    Join me on <a href="https://discord.gg/xg3dcMQfP2" target="_blank">Moulinette Discord</a> to follow development. <br/>
+    <a href="https://github.com/SvenWerlen/moulinette">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
+  </p>
+</form>

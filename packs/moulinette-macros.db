@@ -1,0 +1,2 @@
+{"_id":"oXz3LPK4hhUbbzoP","name":"Open Moulinette","type":"script","flags":{},"scope":"global","command":"game.moulinette.applications.Moulinette.showMoulinette()","img":"modules/moulinette-core/img/moulinette.png","actorIds":[]}
+{"_id":"ruILOtRDXjzb1t3J","name":"Toggle Moulinette Controls","type":"script","flags":{},"scope":"global","command":"game.moulinette.applications.Moulinette.toggleOptions(null, $('#controls'))","img":"modules/moulinette-core/img/moulinette-toggle.png","actorIds":[]}

@@ -1,0 +1,19 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  <p>{{localize "mtte.homeWelcome"}}</p>
+  {{#if error}}
+  <div class="error">{{error}}</div>
+  {{/if}}
+  {{#unless error}}
+    {{#each modules as |m i|}}
+      <div class="module">
+        <h2>{{m.name}}</h3>
+        <p><center><img class="button {{m.id}}" src="{{m.icon}}" /></center></p>
+        <p><center>{{m.descr}}</center></p>
+      </div>
+    {{/each}}
+  {{/unless}}
+  <p><em>
+    <a href="https://github.com/SvenWerlen/moulinette-core">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
+  </em></p>
+  
+</form>
