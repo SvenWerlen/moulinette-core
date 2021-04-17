@@ -4,6 +4,7 @@
 
 .mtte .error {
   color: darkred;
+  padding: 10px;
 }
 
 .mtte .module {

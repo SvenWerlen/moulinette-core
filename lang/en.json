@@ -1,5 +1,4 @@
 {
-  "mtte.noModuleInstalled": "You only installed Moulinette Core. Install at least one module!",
   
   "mtte.moulinette": "Moulinette",
   "mtte.moulinetteHome": "Moulinette Home",
@@ -141,7 +140,7 @@
   "mtte.favoriteChecked": "Selected to favorite",
   "mtte.favoriteCheckedToolTip": "Creates a favorite which will play one of the selected sounds randomly.",
   "mtte.favoriteMultiple": "Multiple sounds",
-  "mtte.specialSearch": "This pack requires you to provide search terms",
+  "mtte.specialSearch": "This pack contains no asset or requires you to provide search terms",
   "mtte.specialSearchFailed": "Something went wrong during the request/search",
 
   "mtte.favorite": "Create favorite",
@@ -165,6 +164,7 @@
 
   "mtte.unknown": "Unknown",
 
+  "ERROR.mtteNoModule": "It seems that only the core has been installed. Make sure that at least 1 Moulinette module has been installed.",
   "ERROR.mtteGMOnly": "This interface is only for GMs.",
   "ERROR.mtteServerCommunication": "Communication with Moulinette server failed",
   "ERROR.mtteNotYetAvailable": "Not yet available",

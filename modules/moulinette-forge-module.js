@@ -4,9 +4,17 @@
 export class MoulinetteForgeModule {
   
   /**
-   * Overwrite this function to implement your asset searchTerms
+   * Overwrite this function to implement your asset packs/categories
    */
-  async getAssetList(searchTerms) {
+  async getPackList() {
+    console.debug("Moulinette Forge Module | Default getPackList() returns empty list")
+    return []
+  }
+  
+  /**
+   * Overwrite this function to implement your asset search (filter with searchTerms)
+   */
+  async getAssetList(searchTerms, pack) {
     console.debug("Moulinette Forge Module | Default getAssetList() returns empty list")
     return []
   }
@@ -26,6 +34,13 @@ export class MoulinetteForgeModule {
   }
   
   /**
+   * Overwrite this function to implement onDragStart action
+   */
+  onDragStart(event) {
+    console.debug("Moulinette Forge Module | Default onDragStart() does nothing")
+  }
+  
+  /**
    * Overwrite this function to additional HTML at the bottom of the list
    */
   async getFooter() {
@@ -39,4 +54,20 @@ export class MoulinetteForgeModule {
   async onShortcut(type) {
     console.debug("Moulinette Forge Module | Default onAction() does nothing")
   }
+
+  /**
+   * Overwrite this function to implement your module controls
+   */
+  getControls() {
+    console.debug("Moulinette Forge Module | Default getControls() returns nothing")
+    return ""
+  }
+  
+  /**
+   * Overwrite this function to implement your module controls
+   */
+  async activateControlsListeners(html) {
+    console.debug("Moulinette Forge Module | Default activateControlsListeners() does nothing")
+  }
+  
 }

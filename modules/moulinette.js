@@ -86,7 +86,8 @@ export class Moulinette {
     let content = `<ul><li class="title" data-type="home">${game.i18n.localize("mtte.quickOpen")}</li>`
     // add modules
     let shortcuts = []
-    for(const f of game.moulinette.forge) {
+    const modules = game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1)
+    for(const f of modules) {
       content += `<li data-type="${f.id}" class="quick" title="${f.name}"><i class="${f.icon}"></i></li>`
       if(f.shortcuts && f.shortcuts.length > 0) {
         shortcuts.push(...f.shortcuts)
@@ -100,11 +101,22 @@ export class Moulinette {
     }
     content += "</ul>"
     
+    // forge modules have the opportunity to add some controls (like the sound board)
+    for(const f of game.moulinette.forge) {
+      content += f.instance.getControls()
+    }
+    
     html.find('.moulinette-options ul').remove()
     html.find('.moulinette-options').append(content)
     html.find('.moulinette-options li.title').click(ev => this._openMoulinette(ev, html))
     html.find('.moulinette-options li.quick').click(ev => this._openMoulinette(ev, html))
     html.find('.moulinette-options li.shortcut').click(ev => this._onShortcut(ev, html))
+    
+    // forge modules have the opportunity to add some controls (like the sound board)
+    for(const f of game.moulinette.forge) {
+      await f.instance.activateControlsListeners(html)
+    }
+    
   }
   
   /**

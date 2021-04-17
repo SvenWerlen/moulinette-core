@@ -1,7 +1,7 @@
 {
   "name": "moulinette-core",
-  "title": "Moulinette Core module",
-  "description": "Moulinette provides multiple tools and assets for DMs (dungeon masters) to help them prepare their games.",
+  "title": "Moulinette Core",
+  "description": "Moulinette provides multiple tools and assets for DMs (dungeon masters) to help them prepare their games. ",
   "version": "0.19.0",
   "author": "Sven Werlen",
   "esmodules": ["moulinette-core.js"],

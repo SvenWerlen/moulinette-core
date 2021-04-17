@@ -23,7 +23,11 @@ export class MoulinetteFileUtil {
   static async createFolderIfMissing(parent, childPath) {
     const parentFolder = await FilePicker.browse(MoulinetteFileUtil.getSource(), parent);
     if (!parentFolder.dirs.includes(childPath)) {
+      try {
         await FilePicker.createDirectory(MoulinetteFileUtil.getSource(), childPath);
+      } catch(exc) {
+        console.warn(`MoulinetteFileUtil was not able to create ${childPath}`, exc)
+      }
     }
   }
   
@@ -161,4 +165,41 @@ export class MoulinetteFileUtil {
     }
     return list
   }
+  
+  /**
+   * Reads a given URL (json) and builds an asset index
+   */
+  static async buildAssetIndex(urlList, special = null) {
+    let assets = []
+    let assetsPacks = []
+    
+    // build tiles' index 
+    let idx = 0;
+    for(const URL of urlList) {
+      const response = await fetch(URL, {cache: "no-store"}).catch(function(e) {
+        console.log(`MoulinetteFileUtil | Cannot download tiles/asset list`, e)
+        return;
+      });
+      if(response.status != 200) continue;
+      const data = await response.json();
+      for(const pub of data) {
+        for(const pack of pub.packs) {
+          assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: URL.startsWith('http') })
+          for(const asset of pack.assets) {
+            assets.push({ pack: idx, filename: asset})
+          }
+          idx++;
+        }
+      }
+    }
+    if(special) {
+      for(const el of special) {
+        el.idx = idx
+        assetsPacks.push(el)
+        idx++;
+      }
+    }
+    return { assets: assets, packs: assetsPacks }
+  }
+  
 }

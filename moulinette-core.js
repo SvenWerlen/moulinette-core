@@ -13,20 +13,13 @@ Hooks.once("init", async function () {
   game.settings.register("moulinette", "userId", { scope: "world", config: false, type: String, default: randomID(26) });
   game.settings.register("moulinette", "currentTab", { scope: "world", config: false, type: String, default: "scenes" })
   
-  game.settings.register("fvtt-moulinette", "customPath", {
+  game.settings.register("moulinette-core", "customPath", {
     name: game.i18n.localize("config.mtteCustomPath"), 
     hint: game.i18n.localize("config.mtteCustomPathHint"), 
     scope: "world",
     config: true,
     default: "",
     type: String
-  });
-  
-  /**
-   * This helper converts URL into nice (pretty) text
-   */
-  Handlebars.registerHelper('pretty', function(text) {
-    return game.moulinette.Moulinette.prettyText(text)
   });
   
   game.moulinette = {
@@ -39,6 +32,11 @@ Hooks.once("init", async function () {
     },
     forge: []
   }
+
+  Handlebars.registerHelper('pretty', function(text) {
+    return Moulinette.prettyText(text)
+  });
+  
 });
 
 /**

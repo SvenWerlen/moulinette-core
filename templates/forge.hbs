@@ -13,7 +13,16 @@
   <div class="main">
     <p>
       <div class="description">{{{activeModule.description}}}</div>
-      <div class="form-group search"><input id="search" type="text" placeholder="{{localize "mtte.search"}}"></input><button class="search"><i class="fas fa-search"></i></button></div>
+      <div class="form-group search">
+        <input id="search" type="text" placeholder="{{localize "mtte.search"}}"></input>
+        <button class="search"><i class="fas fa-search"></i></button>
+        {{#if packs}}
+        <select class="packlist">
+          <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
+          {{#each packs as |p|}}<option value="{{p.idx}}">{{p.publisher}} | {{p.name}} {{#unless p.special}}({{p.count}}){{/unless}}</option>{{/each}}
+        </select>
+        {{/if}}
+      </div>
       <div class="list">
         {{#each assets as |a|}}{{{a}}}{{/each}}
       </div>
@@ -22,6 +31,9 @@
     <footer>
       <div class="actions">
         {{#each activeModule.actions as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i> {{a.name}}</button>{{/each}}
+      </div>
+      <div class="actions">
+        {{#each activeModule.actionsExt as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i> {{a.name}}</button>{{/each}}
       </div>
     </footer>
     <p>

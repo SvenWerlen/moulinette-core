@@ -11,11 +11,6 @@ export class MoulinetteForge extends FormApplication {
     super()
     const curTab = tab ? tab : game.settings.get("moulinette", "currentTab")
     this.tab = MoulinetteForge.TABS.includes(curTab) ? curTab : null
-    
-    // specific to Tiles
-    this.assets = []
-    this.assetsPacks = []
-    this.assetsCount = 0
   }
   
   static get defaultOptions() {
@@ -57,12 +52,24 @@ export class MoulinetteForge extends FormApplication {
       this.activeModule.active = true
     }
     
+    // fetch available packs
+    let packs = await this.activeModule.instance.getPackList()
+    packs = packs.sort((a, b) => (a.publisher == b.publisher) ? (a.name > b.name ? 1 : -1) : (a.publisher > b.publisher ? 1 : -1)) // sort by 1) publisher and 2) name
+    let assetsCount = 0
+    let special = false
+    packs.forEach(p => { 
+      if(p.special) special = true
+      else assetsCount += p.count
+    })
+    
     // fetch initial asset list
     const assets = await this.activeModule.instance.getAssetList()
       
     return { 
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
-      activeModule: this.activeModule, 
+      activeModule: this.activeModule,
+      packs: packs,
+      assetsCount: `${assetsCount}${special ? "+" : ""}`,
       assets: assets,
       footer: await this.activeModule.instance.getFooter()
     }
@@ -82,6 +89,10 @@ export class MoulinetteForge extends FormApplication {
     
     // buttons
     html.find("button").click(this._onClickButton.bind(this))
+   
+    // asset search (filter on pack)
+    const parent = this
+    html.find("select.packlist").on('change', this._onPackSelected.bind(this));
     
     // delegate activation to module
     if(this.activeModule) {
@@ -101,11 +112,21 @@ export class MoulinetteForge extends FormApplication {
     if(MoulinetteForge.TABS.includes(tab)) {
       this.tab = tab
       game.settings.set("moulinette", "currentTab", tab)
-      this._clearPackLists()
       this.render();
     }
   }
   
+  /**
+   * User selected a pack
+   */
+  async _onPackSelected(event) {
+    this.html.find("#search").val("")
+    await this._searchAssets()
+  }
+  
+  /**
+   * User clicked on button (or ENTER on search)
+   */
   async _onClickButton(event) {
     event.preventDefault();
 
@@ -115,25 +136,55 @@ export class MoulinetteForge extends FormApplication {
       const source = event.currentTarget;
       // search
       if(source.classList.contains("search")) {
-        const searchTerms = this.html.find("#search").val()
-        const assets = await this.activeModule.instance.getAssetList(searchTerms)
-        this.html.find('.list').html(assets.join(""))
-        // delegate activation to module
-        if(this.activeModule) {
-          this.activeModule.instance.activateListeners(this.html)
-        }
+        await this._searchAssets()
       } 
       // any other action
       else {
-        await this.activeModule.instance.onAction(source.classList)
+        const refresh = await this.activeModule.instance.onAction(source.classList)
+        if(refresh) {
+          this.render()
+        }
       }
     }
   }
   
-  _clearPackLists() {
-    this.filter = ""
-    this.assetsCount = 0
-    this.assets.length = 0
-    this.assetsPacks.length = 0
+  /**
+   * Refresh the list based on the new search
+   */
+  async _searchAssets() {
+    const searchTerms = this.html.find("#search").val()
+    const selectedPack = this.html.find(".packlist").children("option:selected").val()
+    const assets = await this.activeModule.instance.getAssetList(searchTerms, selectedPack)
+    
+    if(assets.length == 0 && searchTerms.length == 0) {
+      this.html.find('.list').html(`<div class="error">${game.i18n.localize("mtte.specialSearch")}</div>`)
+    }
+    else if(assets.length == 0) {
+      this.html.find('.list').html(`<div class="error">${game.i18n.localize("mtte.noResult")}</div>`)
+    }
+    else {
+      this.html.find('.list').html(assets.join(""))
+    }
+      
+    // delegate activation to module
+    if(this.activeModule) {
+      this.activeModule.instance.activateListeners(this.html)
+    }
+    
+    // re-apply drag-drop
+    const el = this.html[0]
+    this._dragDrop.forEach(d => d.bind(el));
+  }
+  
+  /**
+   * Dragging event
+   */
+  _onDragStart(event) {
+    super._onDragStart(event)
+    
+    // delegate activation to module
+    if(this.activeModule) {
+      this.activeModule.instance.onDragStart(event)
+    }
   }
 }
