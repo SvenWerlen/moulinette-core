@@ -27,11 +27,6 @@
   opacity: 50%;
 }
 
-.mtte .preview {
-  margin-left: 4px;
-  cursor: pointer;
-}
-
 .mtte .list {
   height: 600px;
   overflow-y: scroll;
@@ -60,36 +55,6 @@
   color: #eee;
 }
 
-.mtte .transl { 
-  width: 550px;
-}
-
-.mtte .audio {
-  width: 250px;
-}
-
-.mtte .audioSource {
-  width: 350px;
-}
-
-.mtte .sound-volume {
-  width: 100px;
-  margin-right: 10px;
-}
-
-.mtte .sound-control {
-  margin-right: 10px;
-}
-
-.mtte .color {
-  margin-left: 7px;
-  width: 70px;
-}
-
-.mtte .sound-control.inactive {
-  color: #777;
-}
-
 .mtte .info {
   text-align: center;
 }
@@ -98,32 +63,8 @@
   display: inline;
 }
 
-.mtte .actions, .mtte .slots {
+.mtte .actions {
   display: flex;
-}
-
-.mtte .messagebox {
-  display: inline;
-  margin-left: 10px;
-  visibility: hidden;
-}
-
-.mtte .messagebox i {
-  margin-right: 5px;
-}
-
-.mtte .messagebox.error {
-  color: darkred;
-}
-
-.mtte .messagebox.success {
-  color: darkgreen;
-}
-
-.mtte .agree {
-  line-height: 16px;
-  font-size: smaller;
-  text-align: justify;
 }
 
 .mtte .tabs {
@@ -141,18 +82,7 @@
   width: 350px;
 }
 
-.mttedialog.listPacks th {
-  text-align: left;
-}
-
-.mttedialog.listPacks td, .mttedialog.listPacks th {
-  padding-right: 20px;
-}
-
-.mttedialog.listPacks td.num, .mttedialog.listPacks th.num {
-  text-align: right;
-}
-
+/** Controls (top left) **/
 
 .moulinette-options {
     box-sizing: content-box;
@@ -206,27 +136,3 @@
     font-size: 24px;
     vertical-align: middle;
 }
-
-.mtte button.selected {
-  font-weight: bold;
-  font-size: large;
-  border: 2px solid red;
-  border-bottom: 2px solid #ff6400;
-  box-shadow: 0 0 10px #ff6400;
-}
-
-.mtte button.slot {
-  overflow: hidden;
-  max-height: 34px;
-}
-
-.mtte button img, .mtte button i {
-  vertical-align: middle;
-}
-
-.mtte .specialSearch {
-  display: none;
-  font-style: italic;
-  color: darkred;
-}
-
