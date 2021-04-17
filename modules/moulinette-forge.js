@@ -30,12 +30,12 @@ export class MoulinetteForge extends FormApplication {
   
   async getData() {
     if(!game.user.isGM) {
-      return { error: game.i18n.localize("ERROR.mtteGMOnly") }
+      return { error: game.i18n.localize("mtte.errorGMOnly") }
     }
     
     // no module available
     if(game.moulinette.forge.length == 0) {
-      return { error: game.i18n.localize("ERROR.mtteNoModule") }
+      return { error: game.i18n.localize("mtte.errorNoModule") }
     }
     
     // highlight selected tab

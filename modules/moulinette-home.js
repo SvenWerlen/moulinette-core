@@ -18,7 +18,7 @@ export class MoulinetteHome extends FormApplication {
   
   getData() {
     if (!game.user.isGM) {
-      return { error: game.i18n.localize("ERROR.mtteGMOnly") }
+      return { error: game.i18n.localize("mtte.errorGMOnly") }
     }
     return { modules: game.moulinette.modules }
   }
