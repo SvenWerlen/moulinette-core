@@ -27,7 +27,7 @@ You're a GM (game master) preparing a new scenario? Moulinette Forge lets you br
 * Check the scenes you want to import
 * Forge!
 
-![Catalog](docs/img/moulinette-forge2.jpg)
+![Catalog](https://github.com/SvenWerlen/moulinette-scenes/raw/main/docs/img/download-scene.jpg)
 
 You are a map designer and have prepared some scenes you'd like to share? Moulinette facilitates the process of sharing scenes with others.
 * Right click on your scenes
@@ -36,7 +36,7 @@ You are a map designer and have prepared some scenes you'd like to share? Moulin
 * Submit! 
 * It will show up in the forge after the review process is completed!
 
-![Catalog](docs/img/moulinette-forge3.jpg)
+![Catalog](https://github.com/SvenWerlen/moulinette-scenes/raw/main/docs/img/share-scene.jpg)
 <br>_(Scenes on the screenshot are from various creators who have given their permission.)_
 
 ## <a name="forge-game"/>Moulinette Forge - Game icons
@@ -47,7 +47,7 @@ You need icons for your game (actions, items, etc.).
 * Choose your favorite colors (foreground/background)
 * Forge!
 
-![Game icons](docs/img/moulinette-forge-game.jpg)
+![Game icons](https://raw.githubusercontent.com/SvenWerlen/moulinette-gameicons/main/docs/img/download-gameicons.jpg)
 <br>_(Icons on the screenshot are from [Game-icons.net](https://game-icons.net/) and are provided under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license.)_
 
 ## <a name="forge-search"/>Moulinette Forge - Image search
@@ -58,7 +58,7 @@ You need images to enrich your game/campaign
 * Download or generate a journal article
 * Forge!
 
-![Image search on Bing](docs/img/moulinette-forge-bing.jpg)
+![Image search on Bing](https://raw.githubusercontent.com/SvenWerlen/moulinette-imagesearch/main/docs/img/search-bing.jpg)
 <br>_(Images on the screenshot are from [Microsoft Bing](https://www.bing.com) search engine. Images are publicly available but their license varies.)_
 
 ## <a name="forge-tiles"/>Moulinette Forge - Tiles
@@ -69,7 +69,7 @@ You want to add tiles on your maps?
 * Drag and drop tiles 
 * Voilà!
 
-![Tiles](docs/img/moulinette-forge-tile.jpg)
+![Tiles](https://github.com/SvenWerlen/moulinette-tiles/raw/main/docs/img/download-install.jpg)
 <br>_(Tiles on the screenshot are from [Forgotten Adventures](https://www.forgotten-adventures.net/) which are license under [Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/))_
 
 You created or downloaded some tokens/assets you'd like Moulinette to manage for you?
@@ -78,7 +78,7 @@ You created or downloaded some tokens/assets you'd like Moulinette to manage for
 * Index images
 * Moulinette provides you now the same features as for tiles (see above)
 
-![Bring your own images](docs/img/moulinette-forge-byoi.jpg)
+![Bring your own images](https://raw.githubusercontent.com/SvenWerlen/moulinette-tiles/main/docs/img/bring-your-own.jpg)
 <br>_(Tokens on the screenshot have been downloaded from [Devin's Token Site](https://immortalnights.com/tokens/token-packs/). 20 token packs have been made free to the public.)_
 
 ## <a name="forge-tiles"/>Moulinette Forge - Audio
@@ -91,7 +91,7 @@ You created or downloaded some sounds you'd like Moulinette to manage for you?
  * Play a sound *on-the-fly*
  * Select sounds and create a playlist
 
-![Bring your own sounds](docs/img/moulinette-forge-audio.jpg)
+![Bring your own sounds](https://github.com/SvenWerlen/moulinette-sounds/raw/main/docs/img/bring-your-own.jpg)
 <br>_(Ambience sounds on the screenshot have been downloaded from [Tabletop Audio](https://tabletopaudio.com/) which are licensed under a [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International](https://creativecommons.org/licenses/by-nc-nd/4.0/) License.)_
 
 ## <a name="scribe"/>Moulinette Soundboard
@@ -102,25 +102,8 @@ You can also create your own soundboard.
 * Simply click on the sound to play it
 * Sounds can be modified or moved on the soundboard
 
-![Create your soundboard](docs/img/moulinette-forge-soundboard.jpg)
+![Create your soundboard](https://github.com/SvenWerlen/moulinette-sounds/raw/main/docs/img/soundboard.jpg)
 <br>_(Icons on the screenshot are from [Game-icons.net](https://game-icons.net/) and are provided under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license.)_
-
-## <a name="scribe"/>Moulinette Scribe
-
-Scribe is intended for non-english communities. Moulinette Scribe lets you browse a catalog of available translations maintained by the communities
-* Search in the catalog (use smart filters!)
-* Check the translations you want to install
-* Scribe!
-
-![Translations](docs/img/moulinette-scribe.jpg)
-
-### Benefits
-* Quick and easy search for available translations
-* Doesn't require the installation of additional modules
-* Supports Core & Babele translations
-* Can be updated without exiting your worlds nor restarting the server
-* Translators can provide translations for any module/system without having to create a module or ask the developer to include the translations
-* Translations can be hosted anywhere (GitHub, GitLab, public website, etc.)
 
 
 ## <a name="install"/>Install the module
