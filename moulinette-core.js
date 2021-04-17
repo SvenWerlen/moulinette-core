@@ -49,7 +49,7 @@ Hooks.once("ready", async function () {
     // open moulinette on CTRL+M
     document.addEventListener("keydown", evt => {
       if(evt.key == "m" && evt.ctrlKey && !evt.altKey && !evt.metaKey) {
-        game.moulinette.Moulinette.showMoulinette()
+        game.moulinette.applications.Moulinette.showMoulinette()
       }
     });
    
