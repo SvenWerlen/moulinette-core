@@ -123,10 +123,17 @@ To **install** the module from FoundryVTT:
 2. Search for "Moulinette Core" and click install
 
 To **manually install** the module (not recommended), follow these instructions:
-
 1. Start FVTT and browse to the Game Modules tab in the Configuration and Setup menu
 2. Select the Install Module button and enter the following URL: https://raw.githubusercontent.com/svenwerlen/moulinette-core/master/module.json
 3. Click Install and wait for installation to complete 
+
+List of all existing sub-modules:
+* https://raw.githubusercontent.com/SvenWerlen/moulinette-scenes/master/module.json
+* https://raw.githubusercontent.com/SvenWerlen/moulinette-gameicons/master/module.json
+* https://raw.githubusercontent.com/SvenWerlen/moulinette-imagesearch/master/module.json
+* https://raw.githubusercontent.com/SvenWerlen/moulinette-tiles/master/module.json
+* https://raw.githubusercontent.com/SvenWerlen/moulinette-sounds/master/module.json
+* https://raw.githubusercontent.com/SvenWerlen/moulinette-scribe/master/module.json
 
 ![Install custom module](docs/img/moulinette-install.jpg)
 
