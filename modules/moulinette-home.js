@@ -20,7 +20,7 @@ export class MoulinetteHome extends FormApplication {
     if (!game.user.isGM) {
       return { error: game.i18n.localize("mtte.errorGMOnly") }
     }
-    return { modules: game.moulinette.modules }
+    return { modules: game.moulinette.modules.sort((a,b) => a.name < b.name ? -1 : 1) }
   }
 
   activateListeners(html) {

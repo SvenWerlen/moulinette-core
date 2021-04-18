@@ -8,7 +8,9 @@
 }
 
 .mtte .module {
-  width: 40%;
+  margin: 5px;
+  width: 45%;
+  display: inline-block;
 }
 
 .mtte img.button {
