@@ -1,5 +1,7 @@
 {
   "mtte.allPacks": "Tous les packs",
+  "mtte.configCustomPath": "Chemin personnalis\u00e9 (assets)",
+  "mtte.configCustomPathHint": "Sp\u00e9cifier un r\u00e9pertorie personnalis\u00e9 (en plus de /moulinette) que Moulinette utilisera lors de l'indexation.",
   "mtte.errorGMOnly": "Cette interface est destin\u00e9e pour les MJs.",
   "mtte.errorNoModule": "Il semblerait que seul le core ait \u00e9t\u00e9 install\u00e9. Assurez-vous qu'au moins 1 module Moulinette soit install\u00e9 et activ\u00e9.",
   "mtte.homeWelcome": "Bienvenue! Moulinette donne acc\u00e8s \u00e0 de nombreux \u00e9l\u00e9ments (sc\u00e8nes, images, icons, sons, traductions) que vous pourrez rapidement forger/transcrire sans avoir besoin de modules s\u00e9par\u00e9s.",

@@ -14,8 +14,8 @@ Hooks.once("init", async function () {
   game.settings.register("moulinette", "currentTab", { scope: "world", config: false, type: String, default: "scenes" })
   
   game.settings.register("moulinette-core", "customPath", {
-    name: game.i18n.localize("config.mtteCustomPath"), 
-    hint: game.i18n.localize("config.mtteCustomPathHint"), 
+    name: game.i18n.localize("mtte.configCustomPath"), 
+    hint: game.i18n.localize("mtte.configCustomPathHint"), 
     scope: "world",
     config: true,
     default: "",
