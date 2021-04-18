@@ -1,0 +1,66 @@
+{
+  "name": "moulinette-core",
+  "title": "Moulinette Core",
+  "description": "Moulinette provides multiple tools and assets for DMs (dungeon masters) to help them prepare their games. ",
+  "version": "1.0.2",
+  "author": "Sven Werlen",
+  "esmodules": ["moulinette-core.js"],
+  "styles": ["moulinette-core.css"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "fr",
+      "name": "French",
+      "path": "lang/fr.json"
+    }
+  ],
+  "packs": [
+    {
+      "name": "moulinette-macros",
+      "label": "Moulinette Macros",
+      "path": "./packs/moulinette-macros.db",
+      "entity": "Macro"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "moulinette-scenes",
+      "type": "module",
+      "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-scenes/master/module.json",
+    },
+    {
+      "name": "moulinette-gameicons",
+      "type": "module",
+      "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-gameicons/master/module.json",
+    },
+    {
+      "name": "moulinette-imagesearch",
+      "type": "module",
+      "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-imagesearch/master/module.json",
+    },
+    {
+      "name": "moulinette-tiles",
+      "type": "module",
+      "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-tiles/master/module.json",
+    },
+    {
+      "name": "moulinette-sounds",
+      "type": "module",
+      "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-sounds/master/module.json",
+    },
+    {
+      "name": "moulinette-scribe",
+      "type": "module",
+      "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-scribe/master/module.json",
+    }
+  ],
+  "url": "https://github.com/SvenWerlen/moulinette-core",
+  "download": "https://github.com/SvenWerlen/moulinette-core/archive/v-1.0.2.zip",
+  "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-core/master/module.json",
+  "minimumCoreVersion": "0.7.6",
+  "compatibleCoreVersion": "0.7.9"
+}
