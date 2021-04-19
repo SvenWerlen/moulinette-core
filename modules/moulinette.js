@@ -61,6 +61,13 @@ export class Moulinette {
   }
   
   /**
+   * Converts filename into pretty text
+   */
+  static prettyNumber(num) {
+    return num.toLocaleString()
+  }
+  
+  /**
    * Toggles options visibility
    */
   static async toggleOptions(event, html) {

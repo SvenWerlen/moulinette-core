@@ -19,7 +19,7 @@
         {{#if packs}}
         <select class="packlist">
           <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
-          {{#each packs as |p|}}<option value="{{p.idx}}">{{p.publisher}} | {{p.name}} {{#unless p.special}}({{p.count}}){{/unless}}</option>{{/each}}
+          {{#each packs as |p|}}<option value="{{p.idx}}">{{pretty p.publisher}} | {{pretty p.name}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
         </select>
         {{/if}}
       </div>

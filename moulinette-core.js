@@ -33,8 +33,8 @@ Hooks.once("init", async function () {
     forge: []
   }
 
-  Handlebars.registerHelper('pretty', function(text) {
-    return Moulinette.prettyText(text)
+  Handlebars.registerHelper('pretty', function(value) {
+    return isNaN(value) ? Moulinette.prettyText(value) : Moulinette.prettyNumber(value)
   });
   
 });

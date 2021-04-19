@@ -69,7 +69,7 @@ export class MoulinetteForge extends FormApplication {
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
       packs: packs,
-      assetsCount: `${assetsCount}${special ? "+" : ""}`,
+      assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: assets,
       footer: await this.activeModule.instance.getFooter()
     }
