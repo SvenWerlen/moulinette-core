@@ -5,6 +5,8 @@ import { MoulinetteForgeModule } from "./moulinette-forge-module.js"
  *************************/
 export class MoulinetteForge extends FormApplication {
   
+  static MAX_ASSETS = 100
+  
   static get TABS() { return game.moulinette.forge.map( f => f.id ) }
   
   constructor(tab) {
@@ -99,6 +101,9 @@ export class MoulinetteForge extends FormApplication {
       this.activeModule.instance.activateListeners(html)
     }
     
+    // autoload on scroll
+    html.find(".list").on('scroll', this._onScroll.bind(this))
+    
     this.html = html
   }
   
@@ -154,26 +159,29 @@ export class MoulinetteForge extends FormApplication {
   async _searchAssets() {
     const searchTerms = this.html.find("#search").val()
     const selectedPack = this.html.find(".packlist").children("option:selected").val()
-    const assets = await this.activeModule.instance.getAssetList(searchTerms, selectedPack)
+    this.assets = await this.activeModule.instance.getAssetList(searchTerms, selectedPack)
     
-    if(assets.length == 0 && searchTerms.length == 0) {
+    if(this.assets.length == 0 && searchTerms.length == 0) {
       this.html.find('.list').html(`<div class="error">${game.i18n.localize("mtte.specialSearch")}</div>`)
     }
-    else if(assets.length == 0) {
+    else if(this.assets.length == 0) {
       this.html.find('.list').html(`<div class="error">${game.i18n.localize("mtte.noResult")}</div>`)
     }
     else {
-      this.html.find('.list').html(assets.join(""))
-    }
+      this.assetInc = 0
+      const html = this.html.find('.list').html(this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join(""))
       
-    // delegate activation to module
-    if(this.activeModule) {
-      this.activeModule.instance.activateListeners(this.html)
+      // delegate activation to module
+      if(this.activeModule) {
+        html.find("*").off() // remove all events
+        html.find(".list").on('scroll', this._onScroll.bind(this))
+        this.activeModule.instance.activateListeners(html)
+      }
+      
+      // re-apply drag-drop
+      const el = this.html[0]
+      this._dragDrop.forEach(d => d.bind(el));
     }
-    
-    // re-apply drag-drop
-    const el = this.html[0]
-    this._dragDrop.forEach(d => d.bind(el));
   }
   
   /**
@@ -187,4 +195,26 @@ export class MoulinetteForge extends FormApplication {
       this.activeModule.instance.onDragStart(event)
     }
   }
+  
+  /**
+   * Scroll event
+   */
+  async _onScroll(event) {
+    const bottom = $(event.currentTarget).prop("scrollHeight") - $(event.currentTarget).scrollTop()
+    const height = $(event.currentTarget).height();
+    if(bottom == height) {
+      if(this.assetInc * MoulinetteForge.MAX_ASSETS < this.assets.length) {
+        this.assetInc++
+        const html = this.html.find('.list').append(this.assets.slice(this.assetInc * MoulinetteForge.MAX_ASSETS, (this.assetInc+1) * MoulinetteForge.MAX_ASSETS))
+        
+        // delegate activation to module
+        if(this.activeModule) {
+          html.find("*").off() // remove all events
+          html.find(".list").on('scroll', this._onScroll.bind(this))
+          this.activeModule.instance.activateListeners(html)
+        }
+      }
+    }
+  }
+  
 }
