@@ -30,13 +30,29 @@ Hooks.once("init", async function () {
       MoulinetteForgeModule,
       MoulinetteFileUtil
     },
-    forge: []
+    forge: [],
+    macros: []
   }
 
   Handlebars.registerHelper('pretty', function(value) {
     return isNaN(value) ? Moulinette.prettyText(value) : Moulinette.prettyNumber(value)
   });
   
+});
+
+
+/**
+ * Setup: defines add a default module (Forge)
+ */
+Hooks.once("ready", async function () {
+  // load one default module (Forge)
+  game.moulinette.modules.push({
+    id: "forge",
+    name: game.i18n.localize("mtte.moulinetteForge"),
+    descr: game.i18n.localize("mtte.moulinetteForgeHelp"), 
+    icon: "modules/moulinette-core/img/moulinette.png",
+    class: (await import("./modules/moulinette-forge.js")).MoulinetteForge
+  })
 });
 
 /**
@@ -52,15 +68,11 @@ Hooks.once("ready", async function () {
         game.moulinette.applications.Moulinette.showMoulinette()
       }
     });
-   
-    // load one default module (Forge)
-    game.moulinette.modules.push({
-      id: "forge",
-      name: game.i18n.localize("mtte.moulinetteForge"),
-      descr: game.i18n.localize("mtte.moulinetteForgeHelp"), 
-      icon: "modules/moulinette-core/img/moulinette.png",
-      class: (await import("./modules/moulinette-forge.js")).MoulinetteForge
-    })
+    
+    // load macros
+    if(game.moulinette.macros.length > 0) {
+      game.moulinette.applications.Moulinette.loadModuleMacros();      
+    }
   }
 });
 

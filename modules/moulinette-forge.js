@@ -169,18 +169,11 @@ export class MoulinetteForge extends FormApplication {
     }
     else {
       this.assetInc = 0
-      const html = this.html.find('.list').html(this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join(""))
+      this.html.find('.list').html(this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join(""))
       
-      // delegate activation to module
-      if(this.activeModule) {
-        html.find("*").off() // remove all events
-        html.find(".list").on('scroll', this._onScroll.bind(this))
-        this.activeModule.instance.activateListeners(html)
-      }
-      
-      // re-apply drag-drop
-      const el = this.html[0]
-      this._dragDrop.forEach(d => d.bind(el));
+      // re-enable listeners
+      this.html.find("*").off()
+      this.activateListeners(this.html)
     }
   }
   
@@ -205,14 +198,11 @@ export class MoulinetteForge extends FormApplication {
     if(bottom == height) {
       if(this.assetInc * MoulinetteForge.MAX_ASSETS < this.assets.length) {
         this.assetInc++
-        const html = this.html.find('.list').append(this.assets.slice(this.assetInc * MoulinetteForge.MAX_ASSETS, (this.assetInc+1) * MoulinetteForge.MAX_ASSETS))
+        this.html.find('.list').append(this.assets.slice(this.assetInc * MoulinetteForge.MAX_ASSETS, (this.assetInc+1) * MoulinetteForge.MAX_ASSETS))
         
-        // delegate activation to module
-        if(this.activeModule) {
-          html.find("*").off() // remove all events
-          html.find(".list").on('scroll', this._onScroll.bind(this))
-          this.activeModule.instance.activateListeners(html)
-        }
+        // re-enable listeners
+        this.html.find("*").off()
+        this.activateListeners(this.html)
       }
     }
   }

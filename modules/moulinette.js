@@ -149,6 +149,39 @@ export class Moulinette {
     const module = game.moulinette.forge.find(m => m.shortcuts && m.shortcuts.find(s => s.id == type))
     module.instance.onShortcut(type)
   }
-  
-  
+
+  /**
+   * Load modules macros from modules into core compendium
+   */
+  static async loadModuleMacros() {
+    const pack = game.packs.get("moulinette-core.moulinette-macros")
+    const isLocked = pack.locked
+    // unlock pack if needed
+    if(isLocked) {
+      await pack.configure({locked: false})
+    }
+    for(const m of game.moulinette.macros) {
+      // add or update macros
+      let match = (await pack.getIndex()).find( el => el.name === m.name )
+      if(!match) {
+        await pack.createEntity({
+          name: m.name, 
+          type: "script", 
+          flags: {}, 
+          scope: "global",
+          command: m.data,
+          img: m.img,
+          actorIds: []
+        })
+        console.log(`${m.name} successfully created`)
+      } else {
+        pack.updateEntity({_id: match._id, name: m.name, command: m.data, img: m.img})
+        console.log(`${m.name} successfully updated`)
+      }
+    }
+    // unlock pack if needed
+    if(isLocked) {
+      await pack.configure({locked: true})
+    }
+  }
 };
