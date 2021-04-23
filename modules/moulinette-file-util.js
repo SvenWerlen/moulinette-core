@@ -173,6 +173,8 @@ export class MoulinetteFileUtil {
     let assets = []
     let assetsPacks = []
     
+    const showShowCase = game.settings.get("moulinette-core", "showCaseContent")
+    
     // build tiles' index 
     let idx = 0;
     for(const URL of urlList) {
@@ -184,7 +186,10 @@ export class MoulinetteFileUtil {
       const data = await response.json();
       for(const pub of data) {
         for(const pack of pub.packs) {
-          assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: URL.startsWith('http') })
+          // hide showcase content
+          if(pack.showCase && !showShowCase) continue;
+          // add pack
+          assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: URL.startsWith('http'), isShowCase: pack.showCase })
           for(const asset of pack.assets) {
             assets.push({ pack: idx, filename: asset})
           }

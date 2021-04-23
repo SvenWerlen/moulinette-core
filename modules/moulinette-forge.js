@@ -170,11 +170,14 @@ export class MoulinetteForge extends FormApplication {
     else {
       this.assetInc = 0
       this.html.find('.list').html(this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join(""))
-      
-      // re-enable listeners
-      this.html.find("*").off()
-      this.activateListeners(this.html)
     }
+    
+    // re-enable listeners
+    this.html.find("*").off()
+    this.activateListeners(this.html)
+    
+    // force resize window
+    this.setPosition()
   }
   
   /**

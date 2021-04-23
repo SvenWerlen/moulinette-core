@@ -22,6 +22,15 @@ Hooks.once("init", async function () {
     type: String
   });
   
+  game.settings.register("moulinette-core", "showCaseContent", {
+    name: game.i18n.localize("mtte.configShowCase"), 
+    hint: game.i18n.localize("mtte.configShowCaseHint"), 
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean
+  });
+  
   game.moulinette = {
     modules: [],
     applications: {
