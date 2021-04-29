@@ -2,6 +2,8 @@
   "mtte.allPacks": "Tous les packs",
   "mtte.configCustomPath": "Chemin personnalis\u00e9 (assets)",
   "mtte.configCustomPathHint": "Sp\u00e9cifier un r\u00e9pertorie personnalis\u00e9 (en plus de /moulinette) que Moulinette utilisera lors de l'indexation.",
+  "mtte.configS3": "Compartiment S3",
+  "mtte.configS3Hint": "Si vous avez configur\u00e9 du stockage S3 ET que vous souhaitez l'utiliser pour moulinette, sp\u00e9cifiez le nom du compartiment \u00e0 utiliser. Laissez vide sinon",
   "mtte.configShowCase": "Contenu d'exemple",
   "mtte.configShowCaseHint": "Certains packs pr\u00e9sentent du contenu d'exemple (vitrine). D\u00e9cocher pour les retirer de la liste des packs disponibles.",
   "mtte.errorGMOnly": "Cette interface est destin\u00e9e pour les MJs.",

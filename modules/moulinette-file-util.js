@@ -6,25 +6,52 @@
 
 export class MoulinetteFileUtil {
 
+  static BASE_URL = ""
+  
   /**
    * Detects which source to use (depending if server si Forge or local)
    */
   static getSource() {
     var source = "data";
     if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
-        source = "forgevtt";
+      source = "forgevtt";
     }
+    if(game.settings.get("moulinette-core", "s3Bucket").length > 0) {
+      source = "s3"
+    }
+    
     return source;
+  }
+  
+  static getOptions() {
+    let options = {}
+    const bucket = game.settings.get("moulinette-core", "s3Bucket")
+    if(bucket.length > 0) {
+      options.bucket = bucket
+    }
+    return options;
+  }
+  
+  /**
+   * Returns the base URL when available
+   */
+  static getBaseURL() {
+    const bucket = game.settings.get("moulinette-core", "s3Bucket")
+    if(bucket && bucket.length > 0) {
+      const e = game.data.files.s3.endpoint;
+      return `${e.protocol}//${bucket}.${e.host}/`
+    } 
+    return "";
   }
   
   /**
    * Creates a new folder
    */
   static async createFolderIfMissing(parent, childPath) {
-    const parentFolder = await FilePicker.browse(MoulinetteFileUtil.getSource(), parent);
+    const parentFolder = await FilePicker.browse(MoulinetteFileUtil.getSource(), parent, MoulinetteFileUtil.getOptions());
     if (!parentFolder.dirs.includes(childPath)) {
       try {
-        await FilePicker.createDirectory(MoulinetteFileUtil.getSource(), childPath);
+        await FilePicker.createDirectory(MoulinetteFileUtil.getSource(), childPath, MoulinetteFileUtil.getOptions());
       } catch(exc) {
         console.warn(`MoulinetteFileUtil was not able to create ${childPath}`, exc)
       }
@@ -39,12 +66,12 @@ export class MoulinetteFileUtil {
     MoulinetteFileUtil.createFolderIfMissing(folderSrc, folderPath)
     
     // check if file already exist
-    let base = await FilePicker.browse(source, folderPath);
+    let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
     let exist = base.files.filter(f => f == `${folderPath}/${name}`)
-    if(exist.length > 0 && !overwrite) return;
+    if(exist.length > 0 && !overwrite) return {path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}`};
     
     try {
-      let response = await FilePicker.upload(source, folderPath, file, {bucket: null});
+      return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
     } catch (e) {
       console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
       console.log(e)
@@ -58,9 +85,9 @@ export class MoulinetteFileUtil {
   static async scanAssets(sourcePath, extensions) {
     // first level = publishers
     let publishers = []
-    let dir1 = await FilePicker.browse(MoulinetteFileUtil.getSource(), sourcePath);
+    let dir1 = await FilePicker.browse(MoulinetteFileUtil.getSource(), sourcePath, MoulinetteFileUtil.getOptions());
     for(const pub of dir1.dirs) {
-      publishers.push({ publisher: decodeURI(pub.split('/').pop()), packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(pub, extensions) })
+      publishers.push({ publisher: decodeURI(pub.split('/').pop()), packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(decodeURI(pub), extensions) })
     }
     return publishers
   }
@@ -72,9 +99,9 @@ export class MoulinetteFileUtil {
   static async scanAssetsInPublisherFolder(sourcePath, extensions) {
     let packs = []
     // first level = packs
-    let dir = await FilePicker.browse(MoulinetteFileUtil.getSource(), sourcePath);
+    let dir = await FilePicker.browse(MoulinetteFileUtil.getSource(), sourcePath, MoulinetteFileUtil.getOptions());
     for(const pack of dir.dirs) {
-      packs.push({ name: decodeURI(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(pack, extensions) })
+      packs.push({ name: decodeURI(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(decodeURI(pack), extensions) })
     }
     return packs
   }
@@ -85,7 +112,7 @@ export class MoulinetteFileUtil {
    */  
   static async scanAssetsInPackFolder(packPath, extensions) {
     const files = await MoulinetteFileUtil.scanFolder(packPath, extensions)
-    return files.map( (path) => { return decodeURI(path).split(decodeURI(packPath))[1] } )
+    return files.map( (path) => { return decodeURI(path).split(decodeURI(packPath))[1].substr(1) } ) // remove front /
   }
   
   /**
@@ -156,7 +183,7 @@ export class MoulinetteFileUtil {
    */
   static async scanFolder(path, filter) {
     let list = []
-    const base = await FilePicker.browse(MoulinetteFileUtil.getSource(), path);
+    const base = await FilePicker.browse(MoulinetteFileUtil.getSource(), path, MoulinetteFileUtil.getOptions());
     let baseFiles = filter ? base.files.filter(f => filter.includes(f.split(".").pop().toLowerCase())) : base.files
     list.push(...baseFiles)
     for(const d of base.dirs) {
@@ -189,7 +216,7 @@ export class MoulinetteFileUtil {
           // hide showcase content
           if(pack.showCase && !showShowCase) continue;
           // add pack
-          assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: URL.startsWith('http'), isShowCase: pack.showCase })
+          assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: URL.startsWith('https://boisdechet.org'), isShowCase: pack.showCase })
           for(const asset of pack.assets) {
             assets.push({ pack: idx, filename: asset})
           }

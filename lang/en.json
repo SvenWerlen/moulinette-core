@@ -2,6 +2,8 @@
   "mtte.allPacks": "All packs",
   "mtte.configCustomPath": "Assets custom path",
   "mtte.configCustomPathHint": "Specify a custom path (in addition to /moulinette) where moulinette must search for assets (during indexing)",
+  "mtte.configS3": "S3 bucket",
+  "mtte.configS3Hint": "If you have properly configured S3 AND want to use it for moulinette, specify the name of the bucket. Leave blank otherwise",
   "mtte.configShowCase": "Showcase content",
   "mtte.configShowCaseHint": "Some packs are providing showcase content. Uncheck to remove them from the available packs.",
   "mtte.errorGMOnly": "This interface is only for GMs.",

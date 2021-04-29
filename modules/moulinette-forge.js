@@ -115,6 +115,7 @@ export class MoulinetteForge extends FormApplication {
     const source = event.currentTarget;
     const tab = source.dataset.tab;
     if(MoulinetteForge.TABS.includes(tab)) {
+      this.assets = [] // clean search list
       this.tab = tab
       game.settings.set("moulinette", "currentTab", tab)
       this.render();

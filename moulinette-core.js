@@ -31,6 +31,15 @@ Hooks.once("init", async function () {
     type: Boolean
   });
   
+  game.settings.register("moulinette-core", "s3Bucket", {
+    name: game.i18n.localize("mtte.configS3"), 
+    hint: game.i18n.localize("mtte.configS3Hint"), 
+    scope: "world",
+    config: true,
+    default: "",
+    type: String
+  });
+  
   game.moulinette = {
     modules: [],
     applications: {
