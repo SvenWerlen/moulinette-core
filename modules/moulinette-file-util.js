@@ -121,6 +121,7 @@ export class MoulinetteFileUtil {
    */  
   static async scanAssetsInCustomFolders(sourcePath, extensions) {
     let publishers = []
+    const baseURL = MoulinetteFileUtil.getBaseURL()
     let cfgFiles = await MoulinetteFileUtil.scanFolder(sourcePath, ".mtte");
     for(const cfg of cfgFiles) {
       // read ".json" file 
@@ -135,7 +136,11 @@ export class MoulinetteFileUtil {
       } catch(e) {
         console.warn(`${cfg} not processed.`, e);
       }
-      const folder = cfg.substring(0, cfg.lastIndexOf("/") + 1);
+
+      let folder = cfg.substring(0, cfg.lastIndexOf("/"));
+      if(baseURL.length > 0 && folder.startsWith(baseURL)) {
+        folder = folder.substring(baseURL.length)
+      }
       // case #1 : folder is a publisher and subfolders represent packs for that publisher
       if(data.publisher && data.publisher.length >= 3 && !data.pack) {
         let packs = await MoulinetteFileUtil.scanAssetsInPublisherFolder(folder, extensions)
