@@ -19,6 +19,11 @@
 * [Install the module](#install): install the module on your Foundry VTT server.
 * [Support me on Patreon](#support)
 
+
+Watch *Foundry VTT Module Tutorial: Moulinette Forge with Free Forgotten Adventures Assets* from [Baileywiki](https://www.patreon.com/baileywiki​) to have an overview of some of the Moulinette capabilities.
+
+<a href="http://www.youtube.com/watch?v=O2fZIOKT7pk"><img src="https://img.youtube.com/vi/O2fZIOKT7pk/0.jpg" height="180" width="240" ></a>
+
 ## <a name="forge"/>Moulinette Forge - Scenes
 
 [Visit module repository](https://github.com/SvenWerlen/moulinette-scenes)
