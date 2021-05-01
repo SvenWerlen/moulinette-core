@@ -22,6 +22,15 @@ Hooks.once("init", async function () {
     type: String
   });
   
+  game.settings.register("moulinette-core", "debugScanAssets", {
+    name: game.i18n.localize("mtte.configDebugScanAssets"), 
+    hint: game.i18n.localize("mtte.configDebugScanAssetsHint"), 
+    scope: "world",
+    config: true,
+    default: false,
+    type: Boolean
+  });
+  
   game.settings.register("moulinette-core", "showCaseContent", {
     name: game.i18n.localize("mtte.configShowCase"), 
     hint: game.i18n.localize("mtte.configShowCaseHint"), 

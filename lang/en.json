@@ -2,6 +2,8 @@
   "mtte.allPacks": "All packs",
   "mtte.configCustomPath": "Assets custom path",
   "mtte.configCustomPathHint": "Specify a custom path (in addition to /moulinette) where moulinette must search for assets (during indexing)",
+  "mtte.configDebugScanAssets": "Debug indexing process",
+  "mtte.configDebugScanAssetsHint": "When enabled, moulinette adds messages into the console log to let you debug the process of indexing assets.",
   "mtte.configS3": "S3 bucket",
   "mtte.configS3Hint": "If you have properly configured S3 AND want to use it for moulinette, specify the name of the bucket. Leave blank otherwise",
   "mtte.configShowCase": "Showcase content",

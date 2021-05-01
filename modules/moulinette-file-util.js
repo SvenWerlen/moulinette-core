@@ -83,11 +83,15 @@ export class MoulinetteFileUtil {
    * (requires a 2-level folder structure => publishers-packs-files)
    */  
   static async scanAssets(sourcePath, extensions) {
+    const debug = game.settings.get("moulinette-core", "debugScanAssets")
     // first level = publishers
     let publishers = []
+    if(debug) console.log(`Moulinette FileUtil | Root: scanning ${sourcePath} ...`)
     let dir1 = await FilePicker.browse(MoulinetteFileUtil.getSource(), sourcePath, MoulinetteFileUtil.getOptions());
+    if(debug) console.log(`Moulinette FileUtil | Root: ${dir1.dirs.length} subfolders found.`)
     for(const pub of dir1.dirs) {
-      publishers.push({ publisher: decodeURI(pub.split('/').pop()), packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(decodeURI(pub), extensions) })
+      if(debug) console.log(`Moulinette FileUtil | Root: processing publisher ${pub}...`)
+      publishers.push({ publisher: decodeURI(pub.split('/').pop()), packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(decodeURI(pub), extensions, debug) })
     }
     return publishers
   }
@@ -96,12 +100,15 @@ export class MoulinetteFileUtil {
    * Scans a folder for assets matching provided extension
    * (requires a 1-level folder structure => packs-files)
    */  
-  static async scanAssetsInPublisherFolder(sourcePath, extensions) {
-    let packs = []
+  static async scanAssetsInPublisherFolder(sourcePath, extensions, debug = false) {
     // first level = packs
+    let packs = []
+    if(debug) console.log(`Moulinette FileUtil | Publisher: scanning ${sourcePath} ...`)
     let dir = await FilePicker.browse(MoulinetteFileUtil.getSource(), sourcePath, MoulinetteFileUtil.getOptions());
+    if(debug) console.log(`Moulinette FileUtil | Publisher: ${dir.dirs.length} subfolders found.`)
     for(const pack of dir.dirs) {
-      packs.push({ name: decodeURI(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(decodeURI(pack), extensions) })
+      if(debug) console.log(`Moulinette FileUtil | Publisher: processing pack ${pack}...`)
+      packs.push({ name: decodeURI(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(decodeURI(pack), extensions, debug) })
     }
     return packs
   }
@@ -110,8 +117,9 @@ export class MoulinetteFileUtil {
    * Scans a folder for assets matching provided extension
    * (files)
    */  
-  static async scanAssetsInPackFolder(packPath, extensions) {
-    const files = await MoulinetteFileUtil.scanFolder(packPath, extensions)
+  static async scanAssetsInPackFolder(packPath, extensions, debug = false) {
+    const files = await MoulinetteFileUtil.scanFolder(packPath, extensions, debug)
+    if(debug) console.log(`Moulinette FileUtil | Pack: ${files.length} assets found.`)
     return files.map( (path) => { return decodeURI(path).split(decodeURI(packPath))[1].substr(1) } ) // remove front /
   }
   
@@ -120,11 +128,14 @@ export class MoulinetteFileUtil {
    * (files)
    */  
   static async scanAssetsInCustomFolders(sourcePath, extensions) {
+    const debug = game.settings.get("moulinette-core", "debugScanAssets")
     let publishers = []
     const baseURL = MoulinetteFileUtil.getBaseURL()
+    if(debug) console.log(`Moulinette FileUtil | Scanning custom folder ${sourcePath} for .mtte files...`)
     let cfgFiles = await MoulinetteFileUtil.scanFolder(sourcePath, ".mtte");
     for(const cfg of cfgFiles) {
       // read ".json" file 
+      if(debug) console.log(`Moulinette FileUtil | Analyzing ${cfg} file...`)
       const response = await fetch(cfg + "?ms=" + Date.now(), {cache: "no-store"}).catch(function(e) {
         console.log(`MoulinetteFileUtil | Cannot download tiles/asset list`, e)
         return;
@@ -143,7 +154,8 @@ export class MoulinetteFileUtil {
       }
       // case #1 : folder is a publisher and subfolders represent packs for that publisher
       if(data.publisher && data.publisher.length >= 3 && !data.pack) {
-        let packs = await MoulinetteFileUtil.scanAssetsInPublisherFolder(folder, extensions)
+        if(debug) console.log(`Moulinette FileUtil | Case #1. Publisher. Scanning subfolders as packs...`)
+        let packs = await MoulinetteFileUtil.scanAssetsInPublisherFolder(folder, extensions, debug)
         // remove empty packs
         packs = packs.filter(p => p.assets.length > 0) 
         if(packs.length > 0) {
@@ -157,7 +169,8 @@ export class MoulinetteFileUtil {
       }
       // case #2 : folder is a pack
       else if(data.publisher && data.publisher.length >= 3 && data.pack && data.pack.length >= 3) {
-        const pack = { name: data.pack, path: folder, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(folder, extensions) }
+        if(debug) console.log(`Moulinette FileUtil | Case #2. Pack. Scanning files as assets...`)
+        const pack = { name: data.pack, path: folder, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(folder, extensions, debug) }
         if(pack.assets.length > 0) {
           const existingPublisher = publishers.find(p => p.publisher == data.publisher)
           if(existingPublisher) {
@@ -169,7 +182,8 @@ export class MoulinetteFileUtil {
       }
       // case #3 : invalid file or not enough information provided => consider all files
       else {
-        const pack = { name: game.i18n.localize("mtte.unknown"), path: folder, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(folder, extensions) }
+        if(debug) console.log(`Moulinette FileUtil | Case #3. Undefined. Scanning files as assets for unknown publisher and packs...`)
+        const pack = { name: game.i18n.localize("mtte.unknown"), path: folder, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(folder, extensions, debug) }
         if(pack.assets.length > 0) {
           const existingPublisher = publishers.find(p => p.publisher == game.i18n.localize("mtte.unknown"))
           if(existingPublisher) {
@@ -186,13 +200,16 @@ export class MoulinetteFileUtil {
   /**
    * Returns the list of all files in folder (and its subfolders) matching filter
    */
-  static async scanFolder(path, filter) {
+  static async scanFolder(path, filter, debug = false) {
     let list = []
+    if(debug) console.log(`Moulinette FileUtil | Assets: scanning ${path} ...`)
     const base = await FilePicker.browse(MoulinetteFileUtil.getSource(), path, MoulinetteFileUtil.getOptions());
+    if(debug) console.log(`Moulinette FileUtil | Assets: ${base.files.length} assets found`)
     let baseFiles = filter ? base.files.filter(f => filter.includes(f.split(".").pop().toLowerCase())) : base.files
+    if(debug) console.log(`Moulinette FileUtil | Assets: ${baseFiles.length} assets kepts after filtering`)
     list.push(...baseFiles)
     for(const d of base.dirs) {
-      const files = await MoulinetteFileUtil.scanFolder(d, filter)
+      const files = await MoulinetteFileUtil.scanFolder(d, filter, debug)
       list.push(...files)
     }
     return list
