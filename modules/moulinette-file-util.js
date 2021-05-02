@@ -209,8 +209,12 @@ export class MoulinetteFileUtil {
     if(debug) console.log(`Moulinette FileUtil | Assets: ${baseFiles.length} assets kepts after filtering`)
     list.push(...baseFiles)
     for(const d of base.dirs) {
-      const files = await MoulinetteFileUtil.scanFolder(d, filter, debug)
-      list.push(...files)
+      const subpath = decodeURI(d)
+      // workaround : folder must be a subfolder
+      if( subpath.startsWith(path) ) {
+        const files = await MoulinetteFileUtil.scanFolder(subpath, filter, debug)
+        list.push(...files)
+      } else if(debug) console.log(`Moulinette FileUtil | Assets: ignoring ${subpath} which is NOT a subfolder of ${path} as expected!`)
     }
     return list
   }
