@@ -58,7 +58,10 @@ Hooks.once("init", async function () {
       MoulinetteFileUtil
     },
     forge: [],
-    macros: []
+    macros: [],
+    sources: [
+      { type: "images", publisher: "Foundry VTT", pack: "Core Data Icons", source: "public", path: "icons" }
+    ]
   }
 
   Handlebars.registerHelper('pretty', function(value) {
