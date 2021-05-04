@@ -232,22 +232,26 @@ export class MoulinetteFileUtil {
     let idx = 0;
     for(const URL of urlList) {
       const response = await fetch(URL, {cache: "no-store"}).catch(function(e) {
-        console.log(`MoulinetteFileUtil | Cannot download tiles/asset list`, e)
+        console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
         return;
       });
       if(response.status != 200) continue;
-      const data = await response.json();
-      for(const pub of data) {
-        for(const pack of pub.packs) {
-          // hide showcase content
-          if(pack.showCase && !showShowCase) continue;
-          // add pack
-          assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: URL.startsWith('https://boisdechet.org'), isShowCase: pack.showCase })
-          for(const asset of pack.assets) {
-            assets.push({ pack: idx, filename: asset})
+      try {
+        const data = await response.json();
+        for(const pub of data) {
+          for(const pack of pub.packs) {
+            // hide showcase content
+            if(pack.showCase && !showShowCase) continue;
+            // add pack
+            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: URL.startsWith('https://boisdechet.org'), isShowCase: pack.showCase })
+            for(const asset of pack.assets) {
+              assets.push({ pack: idx, filename: asset})
+            }
+            idx++;
           }
-          idx++;
         }
+      } catch (e) {
+        console.log(`Moulinette FileUtil | Error building index of ${URL}`, e)
       }
     }
     if(special) {
