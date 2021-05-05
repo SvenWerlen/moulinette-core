@@ -83,6 +83,14 @@ Hooks.once("ready", async function () {
     icon: "modules/moulinette-core/img/moulinette.png",
     class: (await import("./modules/moulinette-forge.js")).MoulinetteForge
   })
+  // Add asset packs from the Forge's Bazaar if running on the Forge
+  if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
+    const result = await FilePicker.browse("forge-bazaar", "assets");
+    for (const dir of result.dirs) {
+        game.moulinette.sources.push({type: "tiles", "publisher": "Bazaar", pack: dir.slice("assets/".length), source: "forge-bazaar", path: dir});
+        game.moulinette.sources.push({type: "sounds", "publisher": "Bazaar", pack: dir.slice("assets/".length), source: "forge-bazaar", path: dir});
+    }
+  }
 });
 
 /**
