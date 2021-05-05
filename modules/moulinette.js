@@ -190,4 +190,22 @@ export class Moulinette {
       await pack.configure({locked: true})
     }
   }
+  
+  /**
+   * Retrieves linked user if any
+   */
+  static async getUser(force = false) {
+    if(!game.moulinette.user.cache || force) {
+      console.log("Moulinette | Retrieving user details")
+      const userId = game.settings.get("moulinette", "userId");
+      const client = new game.moulinette.applications.MoulinetteClient()
+      const user = await client.get(`/user/${userId}`)
+      if(user.status == 200) {
+        game.moulinette.user = user.data
+      }
+      game.moulinette.user.cache = true
+    }
+    return game.moulinette.user
+  }
+  
 };

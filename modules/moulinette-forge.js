@@ -68,6 +68,7 @@ export class MoulinetteForge extends FormApplication {
     const assets = await this.activeModule.instance.getAssetList()
       
     return { 
+      user: await game.moulinette.applications.Moulinette.getUser(),
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
       packs: packs,

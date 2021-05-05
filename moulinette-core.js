@@ -12,6 +12,7 @@ Hooks.once("init", async function () {
   
   game.settings.register("moulinette", "userId", { scope: "world", config: false, type: String, default: randomID(26) });
   game.settings.register("moulinette", "currentTab", { scope: "world", config: false, type: String, default: "scenes" })
+  //game.settings.set("moulinette", "userId", randomID(26))
   
   game.settings.register("moulinette-core", "customPath", {
     name: game.i18n.localize("mtte.configCustomPath"), 
@@ -50,6 +51,7 @@ Hooks.once("init", async function () {
   });
   
   game.moulinette = {
+    user: {},
     modules: [],
     applications: {
       Moulinette,

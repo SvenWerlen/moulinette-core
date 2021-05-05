@@ -14,6 +14,10 @@
   text-align: center;
 }
 
+.mtte .module.desc {
+  text-align: left;
+}
+
 .mtte img.button {
   width: 100px;
   border: 0px;
@@ -138,4 +142,8 @@
 .moulinette-options li i {
     font-size: 24px;
     vertical-align: middle;
+}
+
+.mtte .red {
+  color: red;
 }
