@@ -176,7 +176,7 @@ export class MoulinetteFileUtil {
         console.log(`MoulinetteFileUtil | Cannot download tiles/asset list`, e)
         return;
       });
-      if(response.status != 200) return;
+      if(response.status != 200) continue;
       let data = {}
       try {
         data = await response.json();
