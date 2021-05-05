@@ -155,7 +155,11 @@ export class MoulinetteFileUtil {
   static async scanAssetsInPackFolder(source, packPath, extensions, debug = false) {
     const files = await MoulinetteFileUtil.scanFolder(source, packPath, extensions, debug)
     if(debug) console.log(`Moulinette FileUtil | Pack: ${files.length} assets found.`)
-    return files.map( (path) => { return decodeURI(path).split(decodeURI(packPath))[1].substr(1) } ) // remove front /
+    packPath = decodeURI(packPath)
+    return files.map( (path) => {
+        if (path.match(/^https?:\/\//)) return path;
+        return decodeURI(path).slice(packPath.length + 1); // remove front /
+    } )
   }
   
   /**
@@ -176,7 +180,7 @@ export class MoulinetteFileUtil {
         console.log(`MoulinetteFileUtil | Cannot download tiles/asset list`, e)
         return;
       });
-      if(response.status != 200) return;
+      if(response.status != 200) continue;
       let data = {}
       try {
         data = await response.json();
