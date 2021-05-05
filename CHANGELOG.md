@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.6.0] - 2021-05-05
 ### Added
-- Support for Forge's Bazaar
+- Support for Forge's Bazaar (Thx: @Kakaroto!!)
 
 ## [1.5.0] - 2021-05-03
 ### Added
