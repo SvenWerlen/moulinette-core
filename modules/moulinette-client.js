@@ -3,11 +3,11 @@
  */
 export class MoulinetteClient {
   
-  static SERVER_URL = "http://127.0.0.1:5000"
-  static SERVER_OUT = "http://127.0.0.1:5000/static/out/"
+  //static SERVER_URL = "http://127.0.0.1:5000"
+  //static SERVER_OUT = "http://127.0.0.1:5000/static/out/"
   //static GITHUB_SRC = "http://127.0.0.1:5000/static"
-  //static SERVER_URL = "https://boisdechet.org/mtte"
-  //static SERVER_OUT = "https://boisdechet.org/mtte/static/out/"
+  static SERVER_URL = "https://boisdechet.org/mtte"
+  static SERVER_OUT = "https://boisdechet.org/mtte/static/out/"
   //static SERVER_URL = "https://boisdechet.org/moulinette"
   //static SERVER_OUT = "https://boisdechet.org/moulinette/static/out/"
   static GITHUB_SRC = "https://raw.githubusercontent.com/SvenWerlen/moulinette-data"

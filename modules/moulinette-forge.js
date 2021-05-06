@@ -200,6 +200,7 @@ export class MoulinetteForge extends FormApplication {
   async _onScroll(event) {
     const bottom = $(event.currentTarget).prop("scrollHeight") - $(event.currentTarget).scrollTop()
     const height = $(event.currentTarget).height();
+    if(!this.assets) return;
     if(bottom == height) {
       if(this.assetInc * MoulinetteForge.MAX_ASSETS < this.assets.length) {
         this.assetInc++
