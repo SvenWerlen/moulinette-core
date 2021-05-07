@@ -155,11 +155,7 @@ export class MoulinetteFileUtil {
   static async scanAssetsInPackFolder(source, packPath, extensions, debug = false) {
     const files = await MoulinetteFileUtil.scanFolder(source, packPath, extensions, debug)
     if(debug) console.log(`Moulinette FileUtil | Pack: ${files.length} assets found.`)
-    packPath = decodeURI(packPath)
-    return files.map( (path) => {
-        if (path.match(/^https?:\/\//)) return path;
-        return decodeURI(path).slice(packPath.length + 1); // remove front /
-    } )
+    return files.map( (path) => { return decodeURI(path).split(decodeURI(packPath))[1].substr(1) } ) // remove front /
   }
   
   /**
