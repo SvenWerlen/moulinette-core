@@ -117,6 +117,10 @@ export class MoulinetteFileUtil {
           path: source.path, 
           assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug) 
         }
+        // support for Forge (assets have full URL)
+        if(source.source == "forge-bazaar" && ForgeVTT.usingTheForge) {
+          pack.path = ""
+        }
         
         // check if publisher already exist
         if( source.publisher in publishersByName ) {
@@ -155,7 +159,12 @@ export class MoulinetteFileUtil {
   static async scanAssetsInPackFolder(source, packPath, extensions, debug = false) {
     const files = await MoulinetteFileUtil.scanFolder(source, packPath, extensions, debug)
     if(debug) console.log(`Moulinette FileUtil | Pack: ${files.length} assets found.`)
-    return files.map( (path) => { return decodeURI(path).split(decodeURI(packPath))[1].substr(1) } ) // remove front /
+    // special case for ForgeVTT => keep entire path
+    if(source == "forge-bazaar" && ForgeVTT.usingTheForge) {
+      return files.map( (path) => { return decodeURI(path) } )
+    } else {
+      return files.map( (path) => { return decodeURI(path).split(decodeURI(packPath))[1].substr(1) } ) // remove front /
+    }
   }
   
   /**
