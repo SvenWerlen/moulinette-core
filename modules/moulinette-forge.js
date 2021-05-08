@@ -197,9 +197,11 @@ export class MoulinetteForge extends FormApplication {
    * Scroll event
    */
   async _onScroll(event) {
+    if(this.ignoreScroll) return;
     const bottom = $(event.currentTarget).prop("scrollHeight") - $(event.currentTarget).scrollTop()
     const height = $(event.currentTarget).height();
-    if(bottom == height) {
+    if(bottom - 20 < height) {
+      this.ignoreScroll = true // avoid multiple events to occur while scrolling
       if(this.assetInc * MoulinetteForge.MAX_ASSETS < this.assets.length) {
         this.assetInc++
         this.html.find('.list').append(this.assets.slice(this.assetInc * MoulinetteForge.MAX_ASSETS, (this.assetInc+1) * MoulinetteForge.MAX_ASSETS))
@@ -208,6 +210,7 @@ export class MoulinetteForge extends FormApplication {
         this.html.find("*").off()
         this.activateListeners(this.html)
       }
+      this.ignoreScroll = false
     }
   }
   
