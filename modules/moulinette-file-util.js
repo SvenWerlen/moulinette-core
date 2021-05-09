@@ -6,7 +6,7 @@
 
 export class MoulinetteFileUtil {
 
-  static BASE_URL = ""
+  static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
   
   /**
    * Detects which source to use (depending if server si Forge or local)
@@ -279,7 +279,7 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // add pack
-            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: URL.startsWith('https://boisdechet.org'), isShowCase: pack.showCase })
+            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase })
             for(const asset of pack.assets) {
               assets.push({ pack: idx, filename: asset})
             }
