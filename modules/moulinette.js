@@ -203,6 +203,7 @@ export class Moulinette {
       if(user.status == 200) {
         game.moulinette.user = user.data
       }
+      game.moulinette.user.id = userId
       game.moulinette.user.cache = true
     }
     return game.moulinette.user
