@@ -271,7 +271,11 @@ export class MoulinetteFileUtil {
         console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
         return;
       });
-      if(response.status != 200) continue;
+      if(!response || response.status != 200) {
+        ui.notifications.warn(game.i18n.localize("mtte.errorBuildingAssetIndex"));
+        console.warn(`Moulinette FileUtil | Couldn't load source ${URL}. Response : `, response)
+        continue;
+      }
       try {
         const data = await response.json();
         for(const pub of data) {
