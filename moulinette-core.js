@@ -13,7 +13,6 @@ Hooks.once("init", async function () {
   game.settings.register("moulinette", "userId", { scope: "world", config: false, type: String, default: randomID(26) });
   game.settings.register("moulinette", "currentTab", { scope: "world", config: false, type: String, default: "scenes" })
   game.settings.register("moulinette", "displayMode", { scope: "world", config: false, type: String, default: "tiles" })
-  //game.settings.set("moulinette", "userId", randomID(26))
   
   game.settings.register("moulinette-core", "customPath", {
     name: game.i18n.localize("mtte.configCustomPath"), 
@@ -64,7 +63,8 @@ Hooks.once("init", async function () {
     macros: [],
     sources: [
       { type: "images", publisher: "Foundry VTT", pack: "Core Data Icons", source: "public", path: "icons" }
-    ]
+    ],
+    toggles: {}
   }
 
   Handlebars.registerHelper('pretty', function(value) {
