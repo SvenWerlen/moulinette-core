@@ -21,6 +21,14 @@
           <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
           {{#each packs as |p|}}<option value="{{p.idx}}">{{pretty p.publisher}} | {{pretty p.name}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
         </select>
+        <div class="filepicker"><div class="form-fields display-modes">
+            <a class="display-mode mode-list" title="{{localize "FILES.DisplayModeList"}}">
+                <i class="fas fa-bars"></i>
+            </a>
+            <a class="display-mode mode-tiles" title="{{localize "FILES.DisplayModeTiles"}}">
+                <i class="fas fa-th-large"></i>
+            </a>
+        </div></div>
         {{/if}}
       </div>
       <div class="list">

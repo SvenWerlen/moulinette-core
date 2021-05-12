@@ -307,25 +307,28 @@ export class MoulinetteFileUtil {
   /**
    * Generates a folder structure based on the index
    */
-  static foldersFromIndex(files) {
+  static foldersFromIndex(files, packs) {
     // sanity check
     if(files.length == 0) return {}
     
     let folders = {}
     let id = 0;
+
     // sort all files back into their folders
     for(const f of files) {
       id++;
       const idx = f.filename.lastIndexOf('/')
       const parent = idx < 0 ? "" : f.filename.substring(0, idx + 1)
+      const path = `${packs[f.pack].name} : ${parent}`
       f.idx = id
-      if(parent in folders) {
-        folders[parent].push(f)
+      if(path in folders) {
+        folders[path].push(f)
       } else {
-        folders[parent] = [f]
+        folders[path] = [f]
       }
     }
     // cleanup folder structure by removing from part if same for all
+    /*
     const paths = Object.keys(folders)[0].split('/')
     for(const p of paths) {
       if(p.length == 0) return folders;
@@ -341,7 +344,7 @@ export class MoulinetteFileUtil {
         newFolders[key.substr(p.length+1)] = folders[key]
       }
       folders = newFolders;
-    }
+    }*/
     
     return folders;
   }

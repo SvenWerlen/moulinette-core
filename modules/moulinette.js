@@ -107,7 +107,7 @@ export class Moulinette {
     for(const s of shortcuts) {
       content += `<li data-type="${s.id}" class="shortcut" title="${s.name}"><i class="${s.icon}"></i></li>`
     }
-    content += `<li data-type="patreon" class="shortcut" title="${game.i18n.localize("mtte.patreon")}"><i class="fab fa-patreon"></i></li>`
+    //content += `<li data-type="patreon" class="shortcut" title="${game.i18n.localize("mtte.patreon")}"><i class="fab fa-patreon"></i></li>`
     content += "</ul>"
     
     // forge modules have the opportunity to add some controls (like the sound board)
@@ -195,6 +195,7 @@ export class Moulinette {
    * Retrieves linked user if any
    */
   static async getUser(force = false) {
+    return {} // patreon integration disabled
     if(!game.moulinette.user.cache || force) {
       console.log("Moulinette | Retrieving user details")
       const userId = game.settings.get("moulinette", "userId");

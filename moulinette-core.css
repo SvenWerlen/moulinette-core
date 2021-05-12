@@ -147,3 +147,8 @@
 .mtte .red {
   color: red;
 }
+
+.mtte .filepicker {
+  max-width: 60px;
+  margin-left: 5px;
+}
