@@ -21,6 +21,14 @@
           <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
           {{#each packs as |p|}}<option value="{{p.idx}}">{{pretty p.publisher}} | {{pretty p.name}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
         </select>
+        <div class="filepicker"><div class="form-fields display-modes">
+            <a class="display-mode mode-list" title="{{localize "FILES.DisplayModeList"}}">
+                <i class="fas fa-bars"></i>
+            </a>
+            <a class="display-mode mode-tiles" title="{{localize "FILES.DisplayModeTiles"}}">
+                <i class="fas fa-th-large"></i>
+            </a>
+        </div></div>
         {{/if}}
       </div>
       <div class="list">
@@ -41,7 +49,12 @@
   {{/unless}}
   <img class="logo" src="modules/moulinette-core/img/moulinette.png" width="60"/>
   <p>
-    Become a <a href="https://www.patreon.com/moulinette" target="_blank">Patreon</a> to support Moulinette.<br/>
+    {{#unless user.patron}}
+    {{{localize "mtte.patreonSupportMe"}}}<br/>
+    {{/unless}}
+    {{#if user.patron}}
+    {{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}}). {{localize "mtte.patreonThanks"}}<br/>
+    {{/if}}
     Join me on <a href="https://discord.gg/xg3dcMQfP2" target="_blank">Moulinette Discord</a> to follow development. <br/>
     <a href="https://github.com/SvenWerlen/moulinette">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
   </p>

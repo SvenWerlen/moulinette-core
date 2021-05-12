@@ -4,6 +4,7 @@
  * Provides functions for all other modules
  */
 import { MoulinetteHome } from "./moulinette-home.js"
+import { MoulinettePatreon } from "./moulinette-patreon.js"
 
 export class Moulinette {
   
@@ -106,6 +107,9 @@ export class Moulinette {
     for(const s of shortcuts) {
       content += `<li data-type="${s.id}" class="shortcut" title="${s.name}"><i class="${s.icon}"></i></li>`
     }
+    if(game.moulinette.toggles.patreon) {
+      content += `<li data-type="patreon" class="shortcut" title="${game.i18n.localize("mtte.patreon")}"><i class="fab fa-patreon"></i></li>`
+    }
     content += "</ul>"
     
     // forge modules have the opportunity to add some controls (like the sound board)
@@ -145,6 +149,10 @@ export class Moulinette {
    */
   static async _onShortcut(event, html) {
     const type = event.currentTarget.dataset.type
+    if(type == "patreon") {
+      new MoulinettePatreon().render(true)
+      return
+    }
     const forgeClass = game.moulinette.modules.find(m => m.id == "forge").class
     const module = game.moulinette.forge.find(m => m.shortcuts && m.shortcuts.find(s => s.id == type))
     module.instance.onShortcut(type)
@@ -184,4 +192,27 @@ export class Moulinette {
       await pack.configure({locked: true})
     }
   }
+  
+  /**
+   * Retrieves linked user if any
+   */
+  static async getUser(force = false) {
+    if(!game.moulinette.user.cache || force) {
+      console.log("Moulinette | Retrieving user details")
+      let userId = game.settings.get("moulinette", "userId");
+      if(game.moulinette.toggles.patreon) {
+        const client = new game.moulinette.applications.MoulinetteClient()
+        const user = await client.get(`/user/${userId}`)
+        if(user.status == 200) {
+          game.moulinette.user = user.data
+        }
+      } else {
+        userId = randomID(26)
+      }
+      game.moulinette.user.id = userId
+      game.moulinette.user.cache = true
+    }
+    return game.moulinette.user
+  }
+  
 };

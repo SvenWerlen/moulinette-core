@@ -6,7 +6,7 @@
 
 export class MoulinetteFileUtil {
 
-  static BASE_URL = ""
+  static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
   
   /**
    * Detects which source to use (depending if server si Forge or local)
@@ -280,7 +280,11 @@ export class MoulinetteFileUtil {
         console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
         return;
       });
-      if(response.status != 200) continue;
+      if(!response || response.status != 200) {
+        ui.notifications.warn(game.i18n.localize("mtte.errorBuildingAssetIndex"));
+        console.warn(`Moulinette FileUtil | Couldn't load source ${URL}. Response : `, response)
+        continue;
+      }
       try {
         const data = await response.json();
         for(const pub of data) {
@@ -288,7 +292,7 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // add pack
-            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: URL.startsWith('https://boisdechet.org'), isShowCase: pack.showCase })
+            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase })
             for(const asset of pack.assets) {
               assets.push({ pack: idx, filename: asset})
             }
@@ -307,6 +311,51 @@ export class MoulinetteFileUtil {
       }
     }
     return { assets: assets, packs: assetsPacks }
+  }
+  
+  /**
+   * Generates a folder structure based on the index
+   */
+  static foldersFromIndex(files, packs) {
+    // sanity check
+    if(files.length == 0) return {}
+    
+    let folders = {}
+    let id = 0;
+
+    // sort all files back into their folders
+    for(const f of files) {
+      id++;
+      const idx = f.filename.lastIndexOf('/')
+      const parent = idx < 0 ? "" : f.filename.substring(0, idx + 1)
+      const path = `${packs[f.pack].name} : ${parent}`
+      f.idx = id
+      if(path in folders) {
+        folders[path].push(f)
+      } else {
+        folders[path] = [f]
+      }
+    }
+    // cleanup folder structure by removing from part if same for all
+    /*
+    const paths = Object.keys(folders)[0].split('/')
+    for(const p of paths) {
+      if(p.length == 0) return folders;
+      for(const key of Object.keys(folders)) {
+        // if one unmatch => return the result
+        if(!key.startsWith(p)) {
+          return folders;
+        }
+      }
+      // all matches, so remove that part of the path
+      let newFolders = {}
+      for(const key of Object.keys(folders)) {
+        newFolders[key.substr(p.length+1)] = folders[key]
+      }
+      folders = newFolders;
+    }*/
+    
+    return folders;
   }
   
 }

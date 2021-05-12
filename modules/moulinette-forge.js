@@ -68,6 +68,7 @@ export class MoulinetteForge extends FormApplication {
     const assets = await this.activeModule.instance.getAssetList()
       
     return { 
+      user: await game.moulinette.applications.Moulinette.getUser(),
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
       packs: packs,
@@ -92,6 +93,13 @@ export class MoulinetteForge extends FormApplication {
     // buttons
     html.find("button").click(this._onClickButton.bind(this))
    
+    // display mode
+    html.find(".display-modes a").click(this._onChangeDisplayMode.bind(this))
+    
+    // highlight current displayMode
+    const dMode = game.settings.get("moulinette", "displayMode")
+    html.find(`.display-modes .mode-${dMode}`).addClass("active")
+    
     // asset search (filter on pack)
     const parent = this
     html.find("select.packlist").on('change', this._onPackSelected.bind(this));
@@ -158,7 +166,7 @@ export class MoulinetteForge extends FormApplication {
    * Refresh the list based on the new search
    */
   async _searchAssets() {
-    const searchTerms = this.html.find("#search").val()
+    const searchTerms = this.html.find("#search").val().toLowerCase()
     const selectedPack = this.html.find(".packlist").children("option:selected").val()
     this.assets = await this.activeModule.instance.getAssetList(searchTerms, selectedPack)
     
@@ -200,6 +208,7 @@ export class MoulinetteForge extends FormApplication {
     if(this.ignoreScroll) return;
     const bottom = $(event.currentTarget).prop("scrollHeight") - $(event.currentTarget).scrollTop()
     const height = $(event.currentTarget).height();
+    if(!this.assets) return;
     if(bottom - 20 < height) {
       this.ignoreScroll = true // avoid multiple events to occur while scrolling
       if(this.assetInc * MoulinetteForge.MAX_ASSETS < this.assets.length) {
@@ -212,6 +221,21 @@ export class MoulinetteForge extends FormApplication {
       }
       this.ignoreScroll = false
     }
+  }
+  
+  /**
+   * User chose display mode
+   */
+  async _onChangeDisplayMode(event) {
+    event.preventDefault();
+    let mode = "tiles"
+    const source = event.currentTarget
+    if(source.classList.contains("mode-list")) {
+      mode = "list"
+    }
+    await game.settings.set("moulinette", "displayMode", mode == "tiles" ? "tiles" : "list")
+    this.html.find(".display-modes a").toggleClass("active")
+    this._searchAssets()
   }
   
 }

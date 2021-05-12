@@ -11,6 +11,11 @@
   margin: 5px;
   width: 45%;
   display: inline-block;
+  text-align: center;
+}
+
+.mtte .module.desc {
+  text-align: left;
 }
 
 .mtte img.button {
@@ -137,4 +142,13 @@
 .moulinette-options li i {
     font-size: 24px;
     vertical-align: middle;
+}
+
+.mtte .red {
+  color: red;
+}
+
+.mtte .filepicker {
+  max-width: 60px;
+  margin-left: 5px;
 }

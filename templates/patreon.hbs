@@ -1,0 +1,34 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  {{#unless user.vanity}}
+  <p>{{localize "mtte.patreonWelcome"}}</p>
+  <p>
+    <div class="error">{{localize "mtte.patreonDescription"}}</div>
+  </p>
+  {{/unless}}
+  <div class="module">
+    <p><a href="{{url}}" target="_blank"><i class="fab fa-patreon fa-5x"></i></a></p>
+  </div>
+  
+  <div class="module desc">
+    {{#if user.vanity}}
+    {{localize "mtte.patreonLinked"}}
+    <ul>
+    <li>{{user.fullName}} ({{user.vanity}})</li>
+    {{#if user.patron}}
+    <li>{{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}})</li>
+    {{/if}}
+    </ul>
+    {{/if}}
+    
+    {{#unless user.vanity}}
+    <p><button class="continue"><i class="fas fa-arrow-alt-circle-right"></i>{{localize "mtte.continue"}}</button></p>
+    {{/unless}}
+  </div>
+  
+  {{#unless user.vanity}}
+  <p><em>
+    <a href="https://github.com/SvenWerlen/moulinette-core">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
+  </em></p>
+  {{/unless}}
+  
+</form>
