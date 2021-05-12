@@ -2,7 +2,7 @@
   "name": "moulinette-core",
   "title": "Moulinette Core",
   "description": "Moulinette provides multiple tools and assets for DMs (dungeon masters) to help them prepare their games. ",
-  "version": "1.8.0",
+  "version": "1.7.1",
   "author": "Sven Werlen",
   "esmodules": ["moulinette-core.js"],
   "styles": ["moulinette-core.css"],
@@ -27,7 +27,7 @@
     }
   ],
   "url": "https://github.com/SvenWerlen/moulinette-core",
-  "download": "https://github.com/SvenWerlen/moulinette-core/archive/v-1.8.0.zip",
+  "download": "https://github.com/SvenWerlen/moulinette-core/archive/v-1.7.1.zip",
   "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-core/master/module.json",
   "minimumCoreVersion": "0.7.6",
   "compatibleCoreVersion": "0.7.9"
