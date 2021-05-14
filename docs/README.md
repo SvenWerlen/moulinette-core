@@ -1,6 +1,6 @@
 # Moulinette Documentation
 
-Most screenshots on the [Home page](..) are self-explanatory. 
+Most screenshots on the [Home page](https://github.com/SvenWerlen/moulinette-core) are self-explanatory. 
 This page provides additional details as a FAQ.
 
 * [How to bring my assets and let Moulinette manage them?](#how-to-bring-my-assets-and-let-moulinette-manage-them)
