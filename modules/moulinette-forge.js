@@ -71,7 +71,7 @@ export class MoulinetteForge extends FormApplication {
       user: await game.moulinette.applications.Moulinette.getUser(),
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
-      packs: packs,
+      packs: packs.filter(p => p.count > 0 || p.special),
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: assets,
       footer: await this.activeModule.instance.getFooter()

@@ -45,6 +45,14 @@ export class MoulinetteFileUtil {
   }
   
   /**
+   * Generates clean path (without space or special character)
+   */
+  static generatePathFromName(name) {
+    let cleanName = name.replace(/[^\w\s]/gi, '')
+    return cleanName.replace(/ /g, "-").toLowerCase()
+  }
+  
+  /**
    * Creates a new folder
    */
   static async createFolderIfMissing(parent, childPath) {
@@ -292,9 +300,17 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // add pack
-            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase })
+            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, prefix: pack.prefix, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase })
             for(const asset of pack.assets) {
-              assets.push({ pack: idx, filename: asset})
+              // default (basic asset is only filepath)
+              if (typeof asset === 'string' || asset instanceof String) {
+                assets.push({ pack: idx, filename: asset, type: "img"})
+              }
+              else {
+                const path = asset['path']
+                delete asset['path']
+                assets.push({ pack: idx, filename: path, data: asset})
+              }
             }
             idx++;
           }

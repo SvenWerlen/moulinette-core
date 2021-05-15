@@ -66,6 +66,7 @@ Hooks.once("init", async function () {
     ],
     toggles: {}
   }
+  //game.moulinette.toggles.patreon = true
 
   Handlebars.registerHelper('pretty', function(value) {
     return isNaN(value) ? Moulinette.prettyText(value) : Moulinette.prettyNumber(value)
