@@ -123,7 +123,8 @@ export class MoulinetteFileUtil {
         const pack = { 
           name: source.pack, 
           path: source.path, 
-          assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug) 
+          assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug),
+          isLocal: true,
         }
         // support for Forge (assets have full URL)
         if(source.source == "forge-bazaar" && ForgeVTT.usingTheForge) {
@@ -300,7 +301,7 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // add pack
-            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, prefix: pack.prefix, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase })
+            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, prefix: pack.prefix, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase, isLocal: pack.isLocal })
             for(const asset of pack.assets) {
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {
