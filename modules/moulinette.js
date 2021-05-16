@@ -102,7 +102,6 @@ export class Moulinette {
       }
     }
     content += `<li class="quick" data-type="empty">&nbsp;</li>`
-    content += `<li class="quick" data-type="empty">&nbsp;</li>`
     // add other actions
     for(const s of shortcuts) {
       content += `<li data-type="${s.id}" class="shortcut" title="${s.name}"><i class="${s.icon}"></i></li>`
@@ -155,7 +154,9 @@ export class Moulinette {
     }
     const forgeClass = game.moulinette.modules.find(m => m.id == "forge").class
     const module = game.moulinette.forge.find(m => m.shortcuts && m.shortcuts.find(s => s.id == type))
-    module.instance.onShortcut(type)
+    if(module.instance.onShortcut(type)) {
+      event.stopPropagation();
+    }
   }
 
   /**
