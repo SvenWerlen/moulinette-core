@@ -67,7 +67,42 @@ export class MoulinetteFileUtil {
   }
   
   /**
-   * Downloads a file into the right folder
+   * Creates folders recursively (much better than previous 
+   */
+  static async createFolderRecursive(path) {
+    const source = MoulinetteFileUtil.getSource()
+    const folders = path.split("/")
+    let curFolder = ""
+    for( const f of folders ) {
+      const parentFolder = await FilePicker.browse(source, curFolder, MoulinetteFileUtil.getOptions());
+      curFolder += (curFolder.length > 0 ? "/" : "" ) + f
+      if (!parentFolder.dirs.includes(curFolder)) {
+        try {
+          await FilePicker.createDirectory(source, curFolder, MoulinetteFileUtil.getOptions());
+        } catch(exc) {
+          console.warn(`MoulinetteFileUtil was not able to create ${curFolder}`, exc)
+          return;
+        }
+      }
+    }
+  }
+  
+  /**
+   * Checks if a file exists (based on its path)
+   */
+  static async fileExists(path) {
+    try {
+      const parentFolder = await FilePicker.browse(MoulinetteFileUtil.getSource(), path.substring(0, path.lastIndexOf('/')), MoulinetteFileUtil.getOptions());
+      return parentFolder.files.includes(path)
+    } catch(exc) {
+      console.log(exc)
+      return false
+    }
+  }
+  
+  
+  /**
+   * Uploads a file into the right folder
    */
   static async upload(file, name, folderSrc, folderPath, overwrite = false) {
     const source = MoulinetteFileUtil.getSource()
@@ -77,6 +112,26 @@ export class MoulinetteFileUtil {
     let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
     let exist = base.files.filter(f => f == `${folderPath}/${name}`)
     if(exist.length > 0 && !overwrite) return {path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}`};
+    
+    try {
+      return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+    } catch (e) {
+      console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
+      console.log(e)
+    }
+  }
+  
+  /**
+   * Uploads a file into the right folder (improved version)
+   */
+  static async uploadFile(file, name, folderPath, overwrite = false) {
+    const source = MoulinetteFileUtil.getSource()
+    MoulinetteFileUtil.createFolderRecursive(folderPath)
+    
+    // check if file already exist
+    let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
+    let exist = base.files.filter(f => f == `${folderPath}/${name}`)
+    if(exist.length > 0 && !overwrite) return { path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}` };
     
     try {
       return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
@@ -301,7 +356,7 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // add pack
-            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, prefix: pack.prefix, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase, isLocal: pack.isLocal })
+            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase, isLocal: pack.isLocal })
             for(const asset of pack.assets) {
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {
@@ -375,4 +430,33 @@ export class MoulinetteFileUtil {
     return folders;
   }
   
+  /**
+   * Downloads all provided dependencies into specified folder
+   * - deps    : list of dependencies (rel path)
+   * - baseURL : base URL (for deps)
+   * - sas     : SAS token
+   * - path    : target source path
+   */
+  static async downloadAssetDependencies(deps, baseURL, sas, path) {
+    
+    for(const dep of deps) {
+      const filepath = path + dep
+      const folder = filepath.substring(0, filepath.lastIndexOf('/'))
+      const filename = dep.split('/').pop()
+      const srcURL = baseURL + dep + sas
+      
+      if(!await MoulinetteFileUtil.fileExists(filepath)) {
+        // create target folder
+        await MoulinetteFileUtil.createFolderRecursive(folder)
+        // download file
+        let res = await fetch(srcURL).catch(function(e) {
+          console.log(`Moulinette | Not able to fetch file`, e)
+        });
+        if(!res) return ui.notifications.error(game.i18n.localize("mtte.downloadError"));
+    
+        const blob = await res.blob()
+        await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, false)
+      }
+    }
+  }
 }
