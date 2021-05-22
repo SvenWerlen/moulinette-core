@@ -356,7 +356,7 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // add pack
-            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase, isLocal: pack.isLocal })
+            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase, deps: pack.deps, isLocal: pack.isLocal })
             for(const asset of pack.assets) {
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {
@@ -382,6 +382,17 @@ export class MoulinetteFileUtil {
         idx++;
       }
     }
+    
+    // add dependencies
+    for(const pack of assetsPacks) {
+      pack.depsPath = []
+      if(!pack.deps) continue
+      for(const dep of pack.deps) {
+        const depPack = assetsPacks.find( p => p.path.endsWith("/" + dep))
+        pack.depsPath.push( depPack ? { publisher: depPack.publisher, name: depPack.name, path: depPack.path } : "" )
+      }
+    }
+    
     return { assets: assets, packs: assetsPacks }
   }
   
@@ -432,18 +443,54 @@ export class MoulinetteFileUtil {
   
   /**
    * Downloads all provided dependencies into specified folder
-   * - deps    : list of dependencies (rel path)
-   * - baseURL : base URL (for deps)
-   * - sas     : SAS token
-   * - path    : target source path
+   * - asset : asset for which dependencies must be downloaded
+   * - pack  : asset's pack
+   * - type  : type of asset (generally cloud)
    */
-  static async downloadAssetDependencies(deps, baseURL, sas, path) {
+  static async downloadAssetDependencies(asset, pack, type) {
     
-    for(const dep of deps) {
-      const filepath = path + dep
+    let targetPaths = []
+    
+    const publisherPath = MoulinetteFileUtil.generatePathFromName(pack.publisher)
+    const packPath = MoulinetteFileUtil.generatePathFromName(pack.name)
+    const path = `moulinette/${type}/${publisherPath}/${packPath}/`
+    
+    // download direct dependencies
+    await MoulinetteFileUtil.downloadDependencies(asset.data.deps, pack.path, asset.sas, path)
+    targetPaths.push(path)
+    
+    // download all external dependencies
+    for (const [idx, deps] of Object.entries(asset.data.eDeps)) {
+      const i = Number(idx)
+      if( i >= 0 && i < pack.depsPath.length ) {
+        const ePack = pack.depsPath[i]
+        const ePublisherPath = MoulinetteFileUtil.generatePathFromName(ePack.publisher)
+        const ePackPath = MoulinetteFileUtil.generatePathFromName(ePack.name)
+        const ePath = `moulinette/${type}/${ePublisherPath}/${ePackPath}/`
+        await MoulinetteFileUtil.downloadDependencies(deps, ePack.path, asset.sas, ePath)
+        targetPaths.push(ePath)
+      } else {
+        console.error("Moulinette FileUtil | Invalid external dependency " + i)
+        targetPaths.push("")
+      }
+    }
+    return targetPaths;
+  }
+  
+  /**
+   * Downloads all dependencies into specified folder
+   * - depList  : list of depenencies to download (urls)
+   * - packURL  : pack base URL
+   * - sas      : Azure Blob SAS
+   * - destPath : target destinatin (in FoundryVTT)
+   */
+  static async downloadDependencies(depList, packURL, sas, destPath) {
+    // download direct dependencies
+    for(const dep of depList) {
+      const filepath = destPath + dep
       const folder = filepath.substring(0, filepath.lastIndexOf('/'))
       const filename = dep.split('/').pop()
-      const srcURL = baseURL + dep + sas
+      const srcURL = packURL + "/" + dep + sas
       
       if(!await MoulinetteFileUtil.fileExists(filepath)) {
         // create target folder
