@@ -110,7 +110,8 @@ export class MoulinetteFileUtil {
     
     // check if file already exist
     let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
-    let exist = base.files.filter(f => f == `${folderPath}/${name}`)
+    const path = `${folderPath}/${name}`
+    let exist = base.files.filter(f =>  decodeURI(f) == path)
     if(exist.length > 0 && !overwrite) return {path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}`};
     
     try {
