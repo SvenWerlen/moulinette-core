@@ -27,7 +27,7 @@ export class MoulinettePatreon extends FormApplication {
     const userId = game.settings.get("moulinette", "userId");
     const user = await game.moulinette.applications.Moulinette.getUser(true)
     const callback = `${game.moulinette.applications.MoulinetteClient.SERVER_URL}/patreon/callback`
-    const patreonURL = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.CLIENT_ID}&redirect_uri=${callback}&scope=identity&state=${userId}`
+    const patreonURL = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.CLIENT_ID}&redirect_uri=${callback}&scope=identity campaigns.members&state=${userId}`
     
     return { user: user, url: patreonURL }
   }
