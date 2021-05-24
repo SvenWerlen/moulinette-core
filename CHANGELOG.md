@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2021-05-24
+### Added
+- Compatibility with FVTT 0.8.5
+
 ## [1.9.2] - 2021-05-23
 ### Added
 - Capabilities for downloading all dependencies
