@@ -78,10 +78,10 @@ export class MoulinetteFileUtil {
       curFolder += (curFolder.length > 0 ? "/" : "" ) + f
       if (!parentFolder.dirs.includes(curFolder)) {
         try {
+          console.log(`MoulinetteFileUtil | Create folder ${curFolder}`)
           await FilePicker.createDirectory(source, curFolder, MoulinetteFileUtil.getOptions());
         } catch(exc) {
           console.warn(`MoulinetteFileUtil was not able to create ${curFolder}`, exc)
-          return;
         }
       }
     }
@@ -127,7 +127,7 @@ export class MoulinetteFileUtil {
    */
   static async uploadFile(file, name, folderPath, overwrite = false) {
     const source = MoulinetteFileUtil.getSource()
-    MoulinetteFileUtil.createFolderRecursive(folderPath)
+    await MoulinetteFileUtil.createFolderRecursive(folderPath)
     
     // check if file already exist
     let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());

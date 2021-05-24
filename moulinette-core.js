@@ -102,7 +102,7 @@ Hooks.once("ready", async function () {
  */
 Hooks.once("ready", async function () {
   if (game.user.isGM) {
-    await MoulinetteFileUtil.createFolderIfMissing(".", "moulinette");
+    await MoulinetteFileUtil.createFolderRecursive("moulinette");
     
     // open moulinette on CTRL+M
     document.addEventListener("keydown", evt => {
