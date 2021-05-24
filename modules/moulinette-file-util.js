@@ -155,6 +155,13 @@ export class MoulinetteFileUtil {
     if(debug) console.log(`Moulinette FileUtil | Root: scanning ${sourcePath} ...`)
     let dir1 = await FilePicker.browse(source, sourcePath, MoulinetteFileUtil.getOptions());
     if(debug) console.log(`Moulinette FileUtil | Root: ${dir1.dirs.length} subfolders found.`)
+      
+    // stop scanning if ignore.info file found
+    if(dir1.files.find(f => f.endsWith("/ignore.info"))) {
+      if(debug) console.log(`Moulinette FileUtil | File ignore.info found. Stop scanning.`)
+      return publishers;
+    }
+      
     for(const pub of dir1.dirs) {
       if(debug) console.log(`Moulinette FileUtil | Root: processing publisher ${pub}...`)
       publishers.push({ publisher: decodeURI(pub.split('/').pop()), packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(source, decodeURI(pub), extensions, debug) })
@@ -210,6 +217,13 @@ export class MoulinetteFileUtil {
     if(debug) console.log(`Moulinette FileUtil | Publisher: scanning ${sourcePath} ...`)
     let dir = await FilePicker.browse(source, sourcePath, MoulinetteFileUtil.getOptions());
     if(debug) console.log(`Moulinette FileUtil | Publisher: ${dir.dirs.length} subfolders found.`)
+    
+    // stop scanning if ignore.info file found
+    if(dir.files.find(f => f.endsWith("/ignore.info"))) {
+      if(debug) console.log(`Moulinette FileUtil | File ignore.info found. Stop scanning.`)
+      return packs;
+    }
+    
     for(const pack of dir.dirs) {
       if(debug) console.log(`Moulinette FileUtil | Publisher: processing pack ${pack}...`)
       packs.push({ name: decodeURI(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source, decodeURI(pack), extensions, debug) })
@@ -314,10 +328,18 @@ export class MoulinetteFileUtil {
     let list = []
     if(debug) console.log(`Moulinette FileUtil | Assets: scanning ${path} ...`)
     const base = await FilePicker.browse(source, path, MoulinetteFileUtil.getOptions());
+    
+    // stop scanning if ignore.info file found
+    if(base.files.find(f => f.endsWith("/ignore.info"))) {
+      if(debug) console.log(`Moulinette FileUtil | File ignore.info found. Stop scanning.`)
+      return list;
+    }
+    
     if(debug) console.log(`Moulinette FileUtil | Assets: ${base.files.length} assets found`)
     let baseFiles = filter ? base.files.filter(f => filter.includes(f.split(".").pop().toLowerCase())) : base.files
     if(debug) console.log(`Moulinette FileUtil | Assets: ${baseFiles.length} assets kepts after filtering`)
     list.push(...baseFiles)
+    
     for(const d of base.dirs) {
       const subpath = decodeURI(d)
       // workaround : folder must be a subfolder
