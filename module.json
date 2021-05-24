@@ -30,5 +30,5 @@
   "download": "https://github.com/SvenWerlen/moulinette-core/archive/v-1.9.2.zip",
   "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-core/master/module.json",
   "minimumCoreVersion": "0.7.6",
-  "compatibleCoreVersion": "0.7.9"
+  "compatibleCoreVersion": "0.8.5"
 }
