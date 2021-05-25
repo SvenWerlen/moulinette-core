@@ -1,5 +1,5 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
-  {{#unless user.vanity}}
+  {{#unless user.fullName}}
   <p>{{localize "mtte.patreonWelcome"}}</p>
   <p>
     <div class="error">{{localize "mtte.patreonDescription"}}</div>
@@ -10,22 +10,22 @@
   </div>
   
   <div class="module desc">
-    {{#if user.vanity}}
+    {{#if user.fullName}}
     {{localize "mtte.patreonLinked"}}
     <ul>
-    <li>{{user.fullName}} ({{user.vanity}})</li>
+    <li>{{user.fullName}} {{#if user.vanity}}({{user.vanity}}){{/if}}</li>
     {{#if user.patron}}
     <li>{{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}})</li>
     {{/if}}
     </ul>
     {{/if}}
     
-    {{#unless user.vanity}}
+    {{#unless user.fullName}}
     <p><button class="continue"><i class="fas fa-arrow-alt-circle-right"></i>{{localize "mtte.continue"}}</button></p>
     {{/unless}}
   </div>
   
-  {{#unless user.vanity}}
+  {{#unless user.fullName}}
   <p><em>
     <a href="https://github.com/SvenWerlen/moulinette-core">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
   </em></p>
