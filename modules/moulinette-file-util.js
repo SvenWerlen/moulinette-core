@@ -226,7 +226,28 @@ export class MoulinetteFileUtil {
     
     for(const pack of dir.dirs) {
       if(debug) console.log(`Moulinette FileUtil | Publisher: processing pack ${pack}...`)
-      packs.push({ name: decodeURI(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source, decodeURI(pack), extensions, debug) })
+      const packEntry = { name: decodeURI(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source, decodeURI(pack), extensions, debug) }
+      
+      // check if folder has meta-information attached  
+      let dir = await FilePicker.browse(source, decodeURI(pack), MoulinetteFileUtil.getOptions());
+      const info = dir.files.find(f => f.endsWith("/moulinette.json"))
+      if(info) {
+        if(debug) console.log(`Moulinette FileUtil | Analyzing ${info} file...`)
+        const response = await fetch(info + "?ms=" + Date.now(), {cache: "no-store"}).catch(function(e) {
+          console.log(`MoulinetteFileUtil | Cannot download tiles/asset list`, e)
+          return;
+        });
+        if(response.status != 200) continue;
+        let data = {}
+        try {
+          data = await response.json();
+          packEntry.meta = data
+        } catch(e) {
+          console.warn(`${info} not processed.`, e);
+        }
+      }
+    
+      packs.push(packEntry)
     }
     return packs
   }
@@ -236,7 +257,8 @@ export class MoulinetteFileUtil {
    * (files)
    */  
   static async scanAssetsInPackFolder(source, packPath, extensions, debug = false) {
-    const files = await MoulinetteFileUtil.scanFolder(source, packPath, extensions, debug)
+    let files = await MoulinetteFileUtil.scanFolder(source, packPath, extensions, debug)
+    files = files.filter(f => f.indexOf("_thumb") < 0) // remove thumbnails
     if(debug) console.log(`Moulinette FileUtil | Pack: ${files.length} assets found.`)
     // special case for ForgeVTT => keep entire path
     if(source == "forge-bazaar" && ForgeVTT.usingTheForge) {
@@ -261,7 +283,7 @@ export class MoulinetteFileUtil {
       // read ".json" file 
       if(debug) console.log(`Moulinette FileUtil | Analyzing ${cfg} file...`)
       const response = await fetch(cfg + "?ms=" + Date.now(), {cache: "no-store"}).catch(function(e) {
-        console.log(`MoulinetteFileUtil | Cannot download tiles/asset list`, e)
+        console.log(`MoulinetteFileUtil | Cannot download configuration file`, e)
         return;
       });
       if(response.status != 200) continue;
@@ -383,7 +405,8 @@ export class MoulinetteFileUtil {
             for(const asset of pack.assets) {
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {
-                assets.push({ pack: idx, filename: asset, type: "img"})
+                const type = pack.meta && pack.meta.type ? pack.meta.type : "img"
+                assets.push({ pack: idx, filename: asset, type: type})
               }
               else {
                 const path = asset['path']
