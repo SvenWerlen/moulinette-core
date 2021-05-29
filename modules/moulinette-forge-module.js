@@ -4,6 +4,13 @@
 export class MoulinetteForgeModule {
   
   /**
+   * Overwrite this function to implement your clear cache
+   */
+  clearCache() {
+    console.debug("Moulinette Forge Module | Default clearCache() not implemented")
+  }
+  
+  /**
    * Overwrite this function to implement your asset packs/categories
    */
   async getPackList() {

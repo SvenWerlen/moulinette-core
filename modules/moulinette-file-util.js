@@ -401,7 +401,22 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // add pack
-            assetsPacks.push({ idx: idx, publisher: pub.publisher, pubWebsite: pub.website, name: pack.name, url: pack.url, license: pack.license, licenseUrl: pack.licenseUrl, path: pack.path, count: pack.assets.length, isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), isShowCase: pack.showCase, deps: pack.deps, isLocal: pack.isLocal })
+            assetsPacks.push({ 
+              idx: idx, 
+              publisher: pub.publisher, 
+              pubWebsite: pub.website, 
+              name: pack.name, 
+              url: pack.url, 
+              license: pack.license, 
+              licenseUrl: pack.licenseUrl, 
+              path: pack.path, 
+              count: pack.assets.length, 
+              isLocal: pack.isLocal,
+              isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), 
+              isShowCase: pack.showCase,
+              deps: pack.deps, 
+              sas: pack.sas
+            })
             for(const asset of pack.assets) {
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {

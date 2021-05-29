@@ -13,6 +13,11 @@ export class MoulinetteForge extends FormApplication {
     super()
     const curTab = tab ? tab : game.settings.get("moulinette", "currentTab")
     this.tab = MoulinetteForge.TABS.includes(curTab) ? curTab : null
+    
+    // clear all caches
+    for(const f of game.moulinette.forge) {
+      f.instance.clearCache()
+    }
   }
   
   static get defaultOptions() {
