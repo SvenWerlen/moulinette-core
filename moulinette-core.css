@@ -130,6 +130,7 @@
     height: 48px;
     cursor: pointer;
     overflow: hidden;
+    pointer-events: all;
 }
 
 .moulinette-options li:hover {
