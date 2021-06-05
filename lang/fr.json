@@ -1,5 +1,6 @@
 {
   "mtte.allPacks": "Tous les packs",
+  "mtte.authenticate": "S'authentifier sur Patreon",
   "mtte.configCustomPath": "Chemin personnalis\u00e9 (assets)",
   "mtte.configCustomPathHint": "Sp\u00e9cifier un r\u00e9pertorie personnalis\u00e9 (en plus de /moulinette) que Moulinette utilisera lors de l'indexation.",
   "mtte.configDebugScanAssets": "D\u00e9boguer l'indexation",
@@ -21,7 +22,7 @@
   "mtte.moulinettePatreon": "Int\u00e9gration de Moulinette avec Patreon",
   "mtte.noResult": "Aucun r\u00e9sultat! Essayer avec moins de termes ou v\u00e9rifier vos donn\u00e9es.",
   "mtte.patreon": "Patreon",
-  "mtte.patreonDescription": "Vous n'\u00eates pas encore connect\u00e9 \u00e0 Patreon. Cliquer sur le logo ci-dessous pour lier Moulinette avec votre compte Patreon. Puis cliquer sur le bouton \"continuer\".",
+  "mtte.patreonDescription": "Vous n'\u00eates pas encore connect\u00e9 \u00e0 Patreon. Suivez les 2 \u00e9tapes ci-dessous pour lier Moulinette avec votre compte Patreon.",
   "mtte.patreonLinked": "Votre compte est li\u00e9 comme suit",
   "mtte.patreonSupportMe": "Si vous trouvez ce module utile, consid\u00e9rez apporter votre soutien en <a href=\"https://www.patreon.com/moulinette\" target=\"_blank\">devenant mon patron</i></a>.",
   "mtte.patreonThanks": "Merci pour votre soutien!",

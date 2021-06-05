@@ -11,7 +11,7 @@ export class MoulinettePatreon extends FormApplication {
   
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      id: "moulinette-patreon",
+      id: "moulinette",
       classes: ["mtte", "patreon"],
       title: game.i18n.localize("mtte.moulinettePatreon"),
       template: "modules/moulinette-core/templates/patreon.hbs",
@@ -24,8 +24,8 @@ export class MoulinettePatreon extends FormApplication {
   }
   
   async getData() {
-    const userId = game.settings.get("moulinette", "userId");
     const user = await game.moulinette.applications.Moulinette.getUser(true)
+    const userId = game.settings.get("moulinette", "userId");
     const callback = `${game.moulinette.applications.MoulinetteClient.SERVER_URL}/patreon/callback`
     const patreonURL = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.CLIENT_ID}&redirect_uri=${callback}&scope=identity identity.memberships&state=${userId}`
     
@@ -45,8 +45,11 @@ export class MoulinettePatreon extends FormApplication {
    */
   async _onClickButton(event) {
     event.preventDefault();
-    console.log("Moulinette Patreon | Refreshing")
-    this.render()
+    const source = event.currentTarget
+    if(source.classList.contains("continue")) {
+      console.log("Moulinette Patreon | Refreshing")
+      this.render()
+    }
   }
 
 }

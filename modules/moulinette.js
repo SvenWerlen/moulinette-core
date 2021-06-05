@@ -204,14 +204,17 @@ export class Moulinette {
     if(!game.moulinette.user.cache || force) {
       console.log("Moulinette | Retrieving user details")
       let userId = game.settings.get("moulinette", "userId");
-      if(game.moulinette.toggles.patreon) {
-        const client = new game.moulinette.applications.MoulinetteClient()
-        const user = await client.get(`/user/${userId}`)
-        if(user.status == 200) {
-          game.moulinette.user = user.data
-        }
-      } else {
+      const client = new game.moulinette.applications.MoulinetteClient()
+      const user = await client.get(`/user/${userId}`)
+      console.log(user)
+      if(user && user.status == 200) {
+        game.moulinette.user = user.data
+      } 
+      else if(user && (user.status == 404 || user.status == 403)) {
+        console.log("Moulinette | Expired session. Renewing ID")
         userId = randomID(26)
+        await game.settings.set("moulinette", "userId", userId);
+        game.moulinette.user = {}
       }
       game.moulinette.user.id = userId
       game.moulinette.user.cache = true

@@ -1,5 +1,6 @@
 {
   "mtte.allPacks": "All packs",
+  "mtte.authenticate": "Authenticate on Patreon",
   "mtte.configCustomPath": "Assets custom path",
   "mtte.configCustomPathHint": "Specify a custom path (in addition to /moulinette) where moulinette must search for assets (during indexing)",
   "mtte.configDebugScanAssets": "Debug indexing process",
@@ -21,7 +22,7 @@
   "mtte.moulinettePatreon": "Moulinette integration with Patreon",
   "mtte.noResult": "No result found! Try with less terms or check your data.",
   "mtte.patreon": "Patreon",
-  "mtte.patreonDescription": "You're not connected to Patreon yet. Click on the logo below to link Moulinette with your Patron account. Then click continue.",
+  "mtte.patreonDescription": "You're not connected to Patreon yet. Follow the 2 steps below to link Moulinette with your Patron account.",
   "mtte.patreonLinked": "Your account is linked as",
   "mtte.patreonSupportMe": "If you find this module useful, please consider supporting by <a href=\"https://www.patreon.com/moulinette\" target=\"_blank\">becoming my patron</i></a>.",
   "mtte.patreonThanks": "Thank you for supporting me!",
