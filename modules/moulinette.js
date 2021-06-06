@@ -50,13 +50,13 @@ export class Moulinette {
     text = text.replace( /(\d+)$/g, " $1");
     
     // capitalize each word (ugly hack for BBC)
-    if(text.indexOf("BBC") < 0) {
-      var splitStr = text.toLowerCase().split(' ');
-      for (let i = 0; i < splitStr.length; i++) {
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
-      }
-      text = splitStr.join(' ');
-    }
+//     if(text.indexOf("BBC") < 0) {
+//       var splitStr = text.toLowerCase().split(' ');
+//       for (let i = 0; i < splitStr.length; i++) {
+//         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+//       }
+//       text = splitStr.join(' ');
+//     }
     
     return text;
   }
