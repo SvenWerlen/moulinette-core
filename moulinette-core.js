@@ -1,5 +1,6 @@
 
 import { Moulinette } from "./modules/moulinette.js"
+import { MoulinetteCache } from "./modules/moulinette-cache.js"
 import { MoulinetteFileUtil } from "./modules/moulinette-file-util.js"
 import { MoulinetteClient } from "./modules/moulinette-client.js"
 import { MoulinetteForgeModule } from "./modules/moulinette-forge-module.js"
@@ -59,6 +60,7 @@ Hooks.once("init", async function () {
       MoulinetteForgeModule,
       MoulinetteFileUtil
     },
+    cache: new MoulinetteCache(),
     forge: [],
     macros: [],
     sources: [

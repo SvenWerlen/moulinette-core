@@ -76,6 +76,7 @@ export class MoulinetteForge extends FormApplication {
       user: await game.moulinette.applications.Moulinette.getUser(),
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
+      supportsModes: this.activeModule.instance.supportsModes(),
       packs: packs.filter(p => p.count > 0 || p.special),
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: assets,
@@ -113,6 +114,9 @@ export class MoulinetteForge extends FormApplication {
     if(this.activeModule) {
       this.activeModule.instance.activateListeners(html)
     }
+    
+    // enable expand listeners
+    html.find(".folder.expand").click(this._onToggleExpand.bind(this));
     
     // autoload on scroll
     html.find(".list").on('scroll', this._onScroll.bind(this))
@@ -174,7 +178,9 @@ export class MoulinetteForge extends FormApplication {
     const searchTerms = this.html.find("#search").val().toLowerCase()
     const selectedPack = this.html.find(".packlist").children("option:selected").val()
     this.assets = await this.activeModule.instance.getAssetList(searchTerms, selectedPack)
+    const supportsModes = this.activeModule.instance.supportsModes()
     
+    this.expand = true // flag to disable expand/collapse
     if(this.assets.length == 0 && searchTerms.length == 0) {
       this.html.find('.list').html(`<div class="error">${game.i18n.localize("mtte.specialSearch")}</div>`)
     }
@@ -182,15 +188,29 @@ export class MoulinetteForge extends FormApplication {
       this.html.find('.list').html(`<div class="error">${game.i18n.localize("mtte.noResult")}</div>`)
     }
     else {
+      // browse => show all folders but no asset
+      const viewMode = game.settings.get("moulinette", "displayMode")
+      let assetsToShow = supportsModes && viewMode == "browse" ? this.assets.filter(a => a.indexOf('class="folder expand"') > 0) : this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join("")
+      // if only 1 folder, show all assets
+      if(assetsToShow.length == 1 && viewMode == "browse") {
+        assetsToShow = this.assets
+        this.expand = false
+      }
+      
+      if(assetsToShow.length == 0 && viewMode == "browse") {
+        this.html.find('.list').html(`<div class="error">${game.i18n.localize("mtte.errorBrowseUpdateModule")}</div>`)
+      } else {
+        this.html.find('.list').html(assetsToShow)
+      }
+      this.ignoreScroll = supportsModes && viewMode == "browse"
       this.assetInc = 0
-      this.html.find('.list').html(this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join(""))
     }
     
     // re-enable listeners
     this.html.find("*").off()
     this.activateListeners(this.html)
     
-    // re-enable core   listeners (for drag & drop)
+    // re-enable core listeners (for drag & drop)
     if(!game.data.version.startsWith("0.7")) {
       this._activateCoreListeners(this.html)
     }
@@ -209,6 +229,35 @@ export class MoulinetteForge extends FormApplication {
     if(this.activeModule) {
       this.activeModule.instance.onDragStart(event)
     }
+  }
+  
+  /**
+   * Show/hide assets in one specific folder
+   */
+  async _onToggleExpand(event) {
+    event.preventDefault();
+    const source = event.currentTarget
+    const folderEl = $(source)
+    const folder = folderEl.data('path')
+    if(!this.expand || folderEl.hasClass("expanded")) {
+      folderEl.find("div").toggle()
+      return
+    }
+    
+    const regex = new RegExp(`data-path="${folder.replace("(",'\\(').replace(")",'\\)')}[^"/]+"`, "g")
+    let matchList = []
+    console.log(`data-path="${folder.replace("(",'\\(').replace(")",'\\)')}[^"/]+"`)
+    for(const a of this.assets) {
+      if(a.match(regex)) {
+        matchList.push(a)
+      }
+    }
+    folderEl.append(matchList)
+    folderEl.addClass("expanded")
+    
+    // re-enable listeners
+    this.html.find("*").off()
+    this.activateListeners(this.html)
   }
   
   /**
@@ -242,9 +291,13 @@ export class MoulinetteForge extends FormApplication {
     const source = event.currentTarget
     if(source.classList.contains("mode-list")) {
       mode = "list"
+    } else if(source.classList.contains("mode-browse")) {
+      mode = "browse"
     }
-    await game.settings.set("moulinette", "displayMode", mode == "tiles" ? "tiles" : "list")
-    this.html.find(".display-modes a").toggleClass("active")
+    this.ignoreScroll = mode == "browse"
+    await game.settings.set("moulinette", "displayMode", mode)
+    this.html.find(".display-modes a").removeClass("active")
+    this.html.find(`.display-modes a.mode-${mode}`).removeClass("active")
     this._searchAssets()
   }
   

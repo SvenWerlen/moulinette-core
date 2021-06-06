@@ -10,7 +10,9 @@
   "mtte.configShowCase": "Contenu d'exemple",
   "mtte.configShowCaseHint": "Certains packs pr\u00e9sentent du contenu d'exemple (vitrine). D\u00e9cocher pour les retirer de la liste des packs disponibles.",
   "mtte.continue": "Continuer",
+  "mtte.errorBrowseUpdateModule": "Ce mode requiert une mise \u00e0 jour du module.",
   "mtte.errorBuildingAssetIndex": "Une des sources de donn\u00e9es (indexes) n'a pas pu \u00eatre charg\u00e9e. Voir dans la console pour plus de d\u00e9tails!",
+  "mtte.errorDownload": "L'image n'a pas pu \u00eatre t\u00e9l\u00e9charg\u00e9e. Veuillez r\u00e9essayer plus tard!!",
   "mtte.errorGMOnly": "Cette interface est destin\u00e9e pour les MJs.",
   "mtte.errorNoModule": "Il semblerait que seul le core ait \u00e9t\u00e9 install\u00e9. Assurez-vous qu'au moins 1 module Moulinette soit install\u00e9 et activ\u00e9.",
   "mtte.homeWelcome": "Bienvenue! Moulinette donne acc\u00e8s \u00e0 de nombreux \u00e9l\u00e9ments (sc\u00e8nes, images, icons, sons, traductions) que vous pourrez rapidement forger/transcrire sans avoir besoin de modules s\u00e9par\u00e9s.",
@@ -29,8 +31,10 @@
   "mtte.patreonWelcome": "Moulinette vous offre la possibilit\u00e9 de liver votre compte Patreon. Moulinette vous offrira alors des capacit\u00e9s additionnelles et des contenus bas\u00e9s sur vos abonnements, non seulement \u00e0 Moulinette mais \u00e9galement \u00e0 d'autres cr\u00e9ateurs.",
   "mtte.patron": "Vous \u00eates mon patron",
   "mtte.quickOpen": "Lien rapide",
+  "mtte.refreshed": "Donn\u00e9es en cache vid\u00e9es. R\u00e9-ouvrir moulinette pour obtenir les nouvelles donn\u00e9es!",
   "mtte.search": "Saisir des mots pour rechercher... puis ENTR\u00c9E (or cliquer sur bouton)",
   "mtte.seeDoc": "Voir documentation",
   "mtte.specialSearch": "Ce pack n\u00e9cessite que vous fassiez une recherche",
+  "mtte.sync": "Recharger les donn\u00e9es depuis Moulinette Cloud",
   "mtte.unknown": "Inconnu"
 }

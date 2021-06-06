@@ -109,6 +109,7 @@ export class Moulinette {
     if(game.moulinette.toggles.patreon) {
       content += `<li data-type="patreon" class="shortcut" title="${game.i18n.localize("mtte.patreon")}"><i class="fab fa-patreon"></i></li>`
     }
+    content += `<li data-type="sync" class="shortcut" title="${game.i18n.localize("mtte.sync")}"><i class="fas fa-sync"></i></li>`
     content += "</ul>"
     
     // forge modules have the opportunity to add some controls (like the sound board)
@@ -150,6 +151,10 @@ export class Moulinette {
     const type = event.currentTarget.dataset.type
     if(type == "patreon") {
       new MoulinettePatreon().render(true)
+      return
+    } else if(type == "sync") {
+      game.moulinette.cache.clear()
+      ui.notifications.info(game.i18n.localize("mtte.refreshed"));
       return
     }
     const forgeClass = game.moulinette.modules.find(m => m.id == "forge").class
@@ -206,7 +211,6 @@ export class Moulinette {
       let userId = game.settings.get("moulinette", "userId");
       const client = new game.moulinette.applications.MoulinetteClient()
       const user = await client.get(`/user/${userId}`)
-      console.log(user)
       if(user && user.status == 200) {
         game.moulinette.user = user.data
       } 

@@ -11,6 +11,14 @@ export class MoulinetteForgeModule {
   }
   
   /**
+   * Overwrite this function to indicate if the module supports multiple modes
+   */
+  supportsModes() {
+    console.debug("Moulinette Forge Module | Default supportsMode() not implemented")
+    return true
+  }
+  
+  /**
    * Overwrite this function to implement your asset packs/categories
    */
   async getPackList() {
