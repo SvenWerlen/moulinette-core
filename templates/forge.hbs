@@ -19,7 +19,7 @@
         {{#if packs}}
         <select class="packlist">
           <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
-          {{#each packs as |p|}}<option value="{{p.idx}}">{{pretty p.publisher}} | {{pretty p.name}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
+          {{#each packs as |p|}}<option value="{{p.idx}}" {{#if p.isRemote}}class="cloud"{{/if}}>{{pretty p.publisher}} | {{pretty p.name}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
         </select>
         {{#if supportsModes}}
         <div class="filepicker"><div class="form-fields display-modes">

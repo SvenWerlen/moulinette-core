@@ -207,13 +207,7 @@ export class MoulinetteForge extends FormApplication {
     }
     
     // re-enable listeners
-    this.html.find("*").off()
-    this.activateListeners(this.html)
-    
-    // re-enable core listeners (for drag & drop)
-    if(!game.data.version.startsWith("0.7")) {
-      this._activateCoreListeners(this.html)
-    }
+    this._reEnableListeners()
     
     // force resize window
     this.setPosition()
@@ -246,7 +240,6 @@ export class MoulinetteForge extends FormApplication {
     
     const regex = new RegExp(`data-path="${folder.replace("(",'\\(').replace(")",'\\)')}[^"/]+"`, "g")
     let matchList = []
-    console.log(`data-path="${folder.replace("(",'\\(').replace(")",'\\)')}[^"/]+"`)
     for(const a of this.assets) {
       if(a.match(regex)) {
         matchList.push(a)
@@ -256,8 +249,7 @@ export class MoulinetteForge extends FormApplication {
     folderEl.addClass("expanded")
     
     // re-enable listeners
-    this.html.find("*").off()
-    this.activateListeners(this.html)
+    this._reEnableListeners()
   }
   
   /**
@@ -273,12 +265,19 @@ export class MoulinetteForge extends FormApplication {
       if(this.assetInc * MoulinetteForge.MAX_ASSETS < this.assets.length) {
         this.assetInc++
         this.html.find('.list').append(this.assets.slice(this.assetInc * MoulinetteForge.MAX_ASSETS, (this.assetInc+1) * MoulinetteForge.MAX_ASSETS))
-        
-        // re-enable listeners
-        this.html.find("*").off()
-        this.activateListeners(this.html)
+        this._reEnableListeners()
       }
       this.ignoreScroll = false
+    }
+  }
+
+  // re-enable listeners
+  _reEnableListeners() {
+    this.html.find("*").off()
+    this.activateListeners(this.html)
+    // re-enable core listeners (for drag & drop)
+    if(!game.data.version.startsWith("0.7")) {
+      this._activateCoreListeners(this.html)
     }
   }
   

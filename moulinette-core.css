@@ -164,3 +164,7 @@
 .mtte .expand {
   cursor: pointer;
 }
+
+.mtte option.cloud {
+  color: #f79007;
+}
