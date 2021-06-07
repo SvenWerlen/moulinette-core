@@ -506,11 +506,11 @@ export class MoulinetteFileUtil {
     
     const publisherPath = MoulinetteFileUtil.generatePathFromName(pack.publisher)
     const packPath = MoulinetteFileUtil.generatePathFromName(pack.name)
-    const path = `moulinette/${type}/${publisherPath}/${packPath}/`
+    const path =`moulinette/${type}/${publisherPath}/${packPath}/`
     
     // download direct dependencies
     await MoulinetteFileUtil.downloadDependencies(asset.data.deps, pack.path, asset.sas, path)
-    targetPaths.push(path)
+    targetPaths.push(MoulinetteFileUtil.getBaseURL() + path)
     
     // download all external dependencies
     for (const [idx, deps] of Object.entries(asset.data.eDeps)) {
@@ -521,7 +521,7 @@ export class MoulinetteFileUtil {
         const ePackPath = MoulinetteFileUtil.generatePathFromName(ePack.name)
         const ePath = `moulinette/${type}/${ePublisherPath}/${ePackPath}/`
         await MoulinetteFileUtil.downloadDependencies(deps, ePack.path, asset.sas, ePath)
-        targetPaths.push(ePath)
+        targetPaths.push(MoulinetteFileUtil.getBaseURL() + ePath)
       } else {
         console.error("Moulinette FileUtil | Invalid external dependency " + i)
         targetPaths.push("")
