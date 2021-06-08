@@ -111,7 +111,7 @@ export class MoulinetteFileUtil {
     // check if file already exist
     let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
     const path = `${folderPath}/${name}`
-    let exist = base.files.filter(f =>  decodeURI(f) == path)
+    let exist = base.files.filter(f =>  decodeURIComponent(f) == path)
     if(exist.length > 0 && !overwrite) return {path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}`};
     
     try {
@@ -164,7 +164,7 @@ export class MoulinetteFileUtil {
       
     for(const pub of dir1.dirs) {
       if(debug) console.log(`Moulinette FileUtil | Root: processing publisher ${pub}...`)
-      publishers.push({ publisher: decodeURI(pub.split('/').pop()), packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(source, decodeURI(pub), extensions, debug) })
+      publishers.push({ publisher: decodeURIComponent(pub.split('/').pop()), packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(source, decodeURIComponent(pub), extensions, debug) })
     }
     return publishers
   }
@@ -226,10 +226,10 @@ export class MoulinetteFileUtil {
     
     for(const pack of dir.dirs) {
       if(debug) console.log(`Moulinette FileUtil | Publisher: processing pack ${pack}...`)
-      const packEntry = { name: decodeURI(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source, decodeURI(pack), extensions, debug) }
+      const packEntry = { name: decodeURIComponent(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source, decodeURIComponent(pack), extensions, debug) }
       
       // check if folder has meta-information attached  
-      let dir = await FilePicker.browse(source, decodeURI(pack), MoulinetteFileUtil.getOptions());
+      let dir = await FilePicker.browse(source, decodeURIComponent(pack), MoulinetteFileUtil.getOptions());
       const info = dir.files.find(f => f.endsWith("/moulinette.json"))
       if(info) {
         if(debug) console.log(`Moulinette FileUtil | Analyzing ${info} file...`)
@@ -262,9 +262,9 @@ export class MoulinetteFileUtil {
     if(debug) console.log(`Moulinette FileUtil | Pack: ${files.length} assets found.`)
     // special case for ForgeVTT => keep entire path
     if(source == "forge-bazaar" && ForgeVTT.usingTheForge) {
-      return files.map( (path) => { return decodeURI(path) } )
+      return files.map( (path) => { return decodeURIComponent(path) } )
     } else {
-      return files.map( (path) => { return decodeURI(path).split(decodeURI(packPath))[1].substr(1) } ) // remove front /
+      return files.map( (path) => { return decodeURIComponent(path).split(decodeURIComponent(packPath))[1].substr(1) } ) // remove front /
     }
   }
   
@@ -363,7 +363,7 @@ export class MoulinetteFileUtil {
     list.push(...baseFiles)
     
     for(const d of base.dirs) {
-      const subpath = decodeURI(d)
+      const subpath = decodeURIComponent(d)
       // workaround : folder must be a subfolder
       if( subpath.startsWith(path) ) {
         const files = await MoulinetteFileUtil.scanFolder(source, subpath, filter, debug)
