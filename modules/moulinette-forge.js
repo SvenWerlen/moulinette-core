@@ -69,6 +69,13 @@ export class MoulinetteForge extends FormApplication {
       else assetsCount += p.count
     })
     
+    // prepare packs 
+    // - cleans packname by removing publisher from pack name to avoid redundancy
+    packs = duplicate(packs.filter(p => p.count > 0 || p.special))
+    for(const p of packs) {
+      p["cleanName"] = p["name"].startsWith(p["publisher"]) ? p["name"].substring(p["publisher"].length).trim() : p["name"]
+    }
+    
     // fetch initial asset list
     const assets = await this.activeModule.instance.getAssetList()
       
@@ -77,7 +84,7 @@ export class MoulinetteForge extends FormApplication {
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
       supportsModes: this.activeModule.instance.supportsModes(),
-      packs: packs.filter(p => p.count > 0 || p.special),
+      packs: packs,
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: assets,
       footer: await this.activeModule.instance.getFooter()
