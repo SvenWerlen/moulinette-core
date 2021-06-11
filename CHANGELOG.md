@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.5.3] - 2021-06-07
+## [2.5.4] - 2021-06-07
 ### Added
 - New view mode (browse)
 - Data caching
@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Download to S3 storage
 - Dependencies not properly handled for BW packs
 - Indexing fails if "&" in pack names
+- Postpone download after drop
 
 ## [2.4.1] - 2021-06-06
 ### Fixed

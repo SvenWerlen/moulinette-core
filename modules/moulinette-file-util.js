@@ -131,7 +131,7 @@ export class MoulinetteFileUtil {
     
     // check if file already exist
     let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
-    let exist = base.files.filter(f => f == `${folderPath}/${name}`)
+    let exist = base.files.filter(f => decodeURIComponent(f) == `${folderPath}/${name}`)
     if(exist.length > 0 && !overwrite) return { path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}` };
     
     try {
@@ -495,6 +495,15 @@ export class MoulinetteFileUtil {
   }
   
   /**
+   * Generates the base path for moulinette
+   */
+  static getMoulinetteBasePath(type, publisher, pack) {
+    const publisherPath = MoulinetteFileUtil.generatePathFromName(publisher)
+    const packPath = MoulinetteFileUtil.generatePathFromName(pack)
+    return `moulinette/${type}/${publisherPath}/${packPath}/`
+  }
+  
+  /**
    * Downloads all provided dependencies into specified folder
    * - asset : asset for which dependencies must be downloaded
    * - pack  : asset's pack
@@ -502,11 +511,15 @@ export class MoulinetteFileUtil {
    */
   static async downloadAssetDependencies(asset, pack, type) {
     
-    const publisherPath = MoulinetteFileUtil.generatePathFromName(pack.publisher)
-    const packPath = MoulinetteFileUtil.generatePathFromName(pack.name)
-    const path =`moulinette/${type}/${publisherPath}/${packPath}/`
+    const path = MoulinetteFileUtil.getMoulinetteBasePath(type, pack.publisher, pack.name)
+    
+    // simple type => generate 1 dependency
+    if( !asset.data ) {
+      asset = { data: { deps: [ asset.filename ], eDeps: {} }, sas: asset.sas }
+    }
     
     // download direct dependencies
+    
     await MoulinetteFileUtil.downloadDependencies(asset.data.deps, pack.path, asset.sas, path)
     
     // download all external dependencies
@@ -514,9 +527,7 @@ export class MoulinetteFileUtil {
       const i = Number(idx)
       if( i >= 0 && i < pack.depsPath.length ) {
         const ePack = pack.depsPath[i]
-        const ePublisherPath = MoulinetteFileUtil.generatePathFromName(ePack.publisher)
-        const ePackPath = MoulinetteFileUtil.generatePathFromName(ePack.name)
-        const ePath = `moulinette/${type}/${ePublisherPath}/${ePackPath}/`
+        const ePath = MoulinetteFileUtil.getMoulinetteBasePath(type, ePack.publisher, ePack.name)
         await MoulinetteFileUtil.downloadDependencies(deps, ePack.path, asset.sas, ePath)
       } else {
         console.error("Moulinette FileUtil | Invalid external dependency " + i)
@@ -531,7 +542,7 @@ export class MoulinetteFileUtil {
     let targetPaths = []    
     targetPaths.push(MoulinetteFileUtil.getBaseURL() + path)
     for(const dep of pack.deps) {
-      targetPaths.push(MoulinetteFileUtil.getBaseURL() + `moulinette/${type}/${publisherPath}/${dep}/`)
+      targetPaths.push(MoulinetteFileUtil.getBaseURL() + MoulinetteFileUtil.getMoulinetteBasePath(type, pack.publisher, dep))
     }
     
     return targetPaths;
