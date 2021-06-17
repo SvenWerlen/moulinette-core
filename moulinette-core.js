@@ -51,6 +51,17 @@ Hooks.once("init", async function () {
     type: String
   });
   
+  game.settings.register("moulinette-core", "browseMode", {
+    name: game.i18n.localize("mtte.configBrowseMode"), 
+    hint: game.i18n.localize("mtte.configBrowseModeHint"), 
+    scope: "world",
+    config: true,
+    default: "",
+    choices: { byPack: game.i18n.localize("mtte.browseByPack"), byPub: game.i18n.localize("mtte.browseByPublisher") },
+    type: String
+  });
+  
+  
   game.moulinette = {
     user: {},
     modules: [],
