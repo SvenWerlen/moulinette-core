@@ -35,6 +35,14 @@ export class MoulinetteForgeModule {
   }
   
   /**
+   * Overwrite this function to implement your asset search (filter with searchTerms)
+   */
+  async getAssetList(searchTerms, pack, publisher) {
+    console.debug("Moulinette Forge Module | Default getAssetList() returns empty list")
+    return []
+  }
+  
+  /**
    * Overwrite this function to add your listeners
    */
   activateListeners(html) {

@@ -213,6 +213,7 @@ export class Moulinette {
       const user = await client.get(`/user/${userId}`)
       if(user && user.status == 200) {
         game.moulinette.user = user.data
+        game.moulinette.user.hasEarlyAccess = MoulinettePatreon.hasEarlyAccess
       } 
       else if(user && (user.status == 404 || user.status == 403)) {
         console.log("Moulinette | Expired session. Renewing ID")

@@ -51,5 +51,15 @@ export class MoulinettePatreon extends FormApplication {
       this.render()
     }
   }
+  
+  /**
+   * Check if patreon level is > 5$/month
+   * It's not a robust implementation and is not intended to be.
+   * If you really want to not support me, feel free to hijack it :)
+   */
+  static hasEarlyAccess(warn = false) {
+    return ["Dwarf blacksmith", "Dwarf goldsmith", "Owner"].includes(game.moulinette.user.patron)
+  }
 
 }
+

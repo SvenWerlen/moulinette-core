@@ -1,6 +1,11 @@
 {
   "mtte.allPacks": "Tous les packs",
+  "mtte.allPubs": "Tous les cr\u00e9ateurs",
   "mtte.authenticate": "S'authentifier sur Patreon",
+  "mtte.browseByPack": "Par pack",
+  "mtte.browseByPublisher": "Par cr\u00e9ateur",
+  "mtte.configBrowseMode": "Mode de visionnement",
+  "mtte.configBrowseModeHint": "En fonction de vos pr\u00e9f\u00e9rences, choisissez si vous pr\u00e9f\u00e9rez visionner/naviguer par cr\u00e9ateur ou by pack (d\u00e9faut)",
   "mtte.configCustomPath": "Chemin personnalis\u00e9 (assets)",
   "mtte.configCustomPathHint": "Sp\u00e9cifier un r\u00e9pertorie personnalis\u00e9 (en plus de /moulinette) que Moulinette utilisera lors de l'indexation.",
   "mtte.configDebugScanAssets": "D\u00e9boguer l'indexation",

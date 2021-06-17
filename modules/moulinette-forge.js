@@ -59,7 +59,8 @@ export class MoulinetteForge extends FormApplication {
       this.activeModule.active = true
     }
     
-    // fetch available packs
+    // fetch available packs & build publishers
+    let publishers = {}
     let packs = await this.activeModule.instance.getPackList()
     packs = packs.sort((a, b) => (a.publisher == b.publisher) ? (a.name > b.name ? 1 : -1) : (a.publisher > b.publisher ? 1 : -1)) // sort by 1) publisher and 2) name
     let assetsCount = 0
@@ -67,7 +68,15 @@ export class MoulinetteForge extends FormApplication {
     packs.forEach(p => { 
       if(p.special) special = true
       else assetsCount += p.count
+        
+      if(p.publisher in publishers) {
+        publishers[p.publisher].count += p.count
+        if(p.isRemote) publishers[p.publisher].isRemote = true
+      } else {
+        publishers[p.publisher] = { name: p.publisher, count: p.count, isRemote: p.isRemote }
+      }
     })
+    publishers = Object.values(publishers).filter(p => p.count > 0).sort((a,b) => a.name > b.name)   
     
     // prepare packs 
     // - cleans packname by removing publisher from pack name to avoid redundancy
@@ -79,16 +88,28 @@ export class MoulinetteForge extends FormApplication {
     // fetch initial asset list
     const assets = await this.activeModule.instance.getAssetList()
       
-    return { 
+    const data = { 
       user: await game.moulinette.applications.Moulinette.getUser(),
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
       supportsModes: this.activeModule.instance.supportsModes(),
-      packs: packs,
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: assets,
       footer: await this.activeModule.instance.getFooter()
     }
+    
+    // 
+    const browseMode = game.settings.get("moulinette-core", "browseMode")
+    if(browseMode == "byPub" && game.moulinette.user.hasEarlyAccess(true)) {
+      data.publishers = publishers
+    } else {
+      if(browseMode == "byPub") {
+        console.warn("Moulinette Core | This feature (browse by creator) is available to early access members only. Requires tier 'Dwarf blacksmith' or more.")
+      }
+      data.packs = packs
+    }
+      
+    return data;
   }
 
   activateListeners(html) {
@@ -114,8 +135,7 @@ export class MoulinetteForge extends FormApplication {
     html.find(`.display-modes .mode-${dMode}`).addClass("active")
     
     // asset search (filter on pack)
-    const parent = this
-    html.find("select.packlist").on('change', this._onPackSelected.bind(this));
+    html.find("select.plist").on('change', this._onPackOrPubSelected.bind(this));
     
     // delegate activation to module
     if(this.activeModule) {
@@ -149,7 +169,7 @@ export class MoulinetteForge extends FormApplication {
   /**
    * User selected a pack
    */
-  async _onPackSelected(event) {
+  async _onPackOrPubSelected(event) {
     this.html.find("#search").val("")
     await this._searchAssets()
   }
@@ -183,8 +203,15 @@ export class MoulinetteForge extends FormApplication {
    */
   async _searchAssets() {
     const searchTerms = this.html.find("#search").val().toLowerCase()
-    const selectedPack = this.html.find(".packlist").children("option:selected").val()
-    this.assets = await this.activeModule.instance.getAssetList(searchTerms, selectedPack)
+    const selectedValue = this.html.find(".plist").children("option:selected").val()
+    
+    const browseMode = game.settings.get("moulinette-core", "browseMode")
+    if(browseMode == "byPub" && game.moulinette.user.hasEarlyAccess(true)) {
+      this.assets = await this.activeModule.instance.getAssetList(searchTerms, -1, selectedValue)
+    } else {
+      this.assets = await this.activeModule.instance.getAssetList(searchTerms, selectedValue)
+    }
+    
     const supportsModes = this.activeModule.instance.supportsModes()
     
     this.expand = true // flag to disable expand/collapse

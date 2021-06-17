@@ -1,6 +1,11 @@
 {
   "mtte.allPacks": "All packs",
+  "mtte.allPubs": "All creators",
   "mtte.authenticate": "Authenticate on Patreon",
+  "mtte.browseByPack": "By pack",
+  "mtte.browseByPublisher": "By creator",
+  "mtte.configBrowseMode": "Browse mode",
+  "mtte.configBrowseModeHint": "Depending on your preferences, you can choose to browse by creator or by pack (default)",
   "mtte.configCustomPath": "Assets custom path",
   "mtte.configCustomPathHint": "Specify a custom path (in addition to /moulinette) where moulinette must search for assets (during indexing)",
   "mtte.configDebugScanAssets": "Debug indexing process",

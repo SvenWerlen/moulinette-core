@@ -17,10 +17,17 @@
         <input id="search" type="text" placeholder="{{localize "mtte.search"}}"></input>
         <button class="search"><i class="fas fa-search"></i></button>
         {{#if packs}}
-        <select class="packlist">
+        <select class="plist">
           <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
           {{#each packs as |p|}}<option value="{{p.idx}}" {{#if p.isRemote}}class="cloud"{{/if}}>{{pretty p.publisher}} | {{pretty p.cleanName}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
         </select>
+        {{/if}}
+        {{#if publishers}}
+        <select class="plist">
+          <option value="-1">{{localize "mtte.allPubs"}} ({{assetsCount}})</option>
+          {{#each publishers as |p|}}<option value="{{p.name}}" {{#if p.isRemote}}class="cloud"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
+        </select>
+        {{/if}}
         {{#if supportsModes}}
         <div class="filepicker"><div class="form-fields display-modes">
             <a class="display-mode mode-browse" title="{{localize "FILES.DisplayModeList"}}">
@@ -33,7 +40,6 @@
                 <i class="fas fa-th-large"></i>
             </a>
         </div></div>
-        {{/if}}
         {{/if}}
       </div>
       <div class="list">
