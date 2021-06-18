@@ -63,7 +63,7 @@ Hooks.once("init", async function () {
   
   
   game.moulinette = {
-    user: {},
+    user: { hasEarlyAccess: function() { return false } },
     modules: [],
     applications: {
       Moulinette,

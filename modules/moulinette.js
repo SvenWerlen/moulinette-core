@@ -220,6 +220,7 @@ export class Moulinette {
         userId = randomID(26)
         await game.settings.set("moulinette", "userId", userId);
         game.moulinette.user = {}
+        game.moulinette.user.hasEarlyAccess = function() { return false }
       }
       game.moulinette.user.id = userId
       game.moulinette.user.cache = true
