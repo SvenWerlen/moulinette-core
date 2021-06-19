@@ -1,0 +1,60 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  {{#if error}}
+  <div class="error">{{error}}</div>
+  {{/if}}
+  {{#unless error}}
+  
+  <div class="main">
+    <p>
+      <div class="form-group search">
+        <input id="search" type="text" placeholder="{{localize "mtte.search"}}"></input>
+        <button class="search"><i class="fas fa-search"></i></button>
+        {{#if packs}}
+        <select class="plist">
+          <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
+          {{#each packs as |p|}}<option value="{{p.idx}}" {{#if p.isRemote}}class="cloud"{{/if}}>{{pretty p.publisher}} | {{pretty p.cleanName}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
+        </select>
+        {{/if}}
+        {{#if publishers}}
+        <select class="plist">
+          <option value="-1">{{localize "mtte.allPubs"}} ({{assetsCount}})</option>
+          {{#each publishers as |p|}}<option value="{{p.name}}" {{#if p.isRemote}}class="cloud"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
+        </select>
+        {{/if}}
+        {{#if supportsModes}}
+        <div class="filepicker"><div class="form-fields display-modes">
+            <a class="display-mode mode-browse" title="{{localize "FILES.DisplayModeList"}}">
+                <i class="fas fa-bars"></i>
+            </a>
+            <a class="display-mode mode-list" title="{{localize "FILES.DisplayModeThumbs"}}">
+                <i class="fas fa-th-list"></i>
+            </a>
+            <a class="display-mode mode-tiles" title="{{localize "FILES.DisplayModeTiles"}}">
+                <i class="fas fa-th-large"></i>
+            </a>
+        </div></div>
+        {{/if}}
+      </div>
+      <div class="list">
+        {{#each assets as |a|}}{{{a}}}{{/each}}
+      </div>
+    </p>
+    <footer>
+      <div class="actions">
+       <button class="fvtt-picker" title="{{localize "mtte.defaultPickerHint"}}"><i class="fas fa-folder-open"></i> {{localize "mtte.defaultPicker"}}</button>
+      </div>
+    </footer>
+  </div>  
+  {{/unless}}
+  <img class="logo" src="modules/moulinette-core/img/moulinette.png" width="60"/>
+  <p>
+    {{#unless user.patron}}
+    {{{localize "mtte.patreonSupportMe"}}}<br/>
+    {{/unless}}
+    {{#if user.patron}}
+    {{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}}). {{localize "mtte.patreonThanks"}}<br/>
+    {{/if}}
+    Join me on <a href="https://discord.gg/xg3dcMQfP2" target="_blank">Moulinette Discord</a> to follow development. <br/>
+    <a href="https://github.com/SvenWerlen/moulinette-core">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
+  </p>
+</form>

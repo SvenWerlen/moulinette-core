@@ -2,6 +2,7 @@
 import { Moulinette } from "./modules/moulinette.js"
 import { MoulinetteCache } from "./modules/moulinette-cache.js"
 import { MoulinetteFileUtil } from "./modules/moulinette-file-util.js"
+import { MoulinetteFilePicker } from "./modules/moulinette-filepicker.js"
 import { MoulinetteClient } from "./modules/moulinette-client.js"
 import { MoulinetteForgeModule } from "./modules/moulinette-forge-module.js"
 
@@ -69,7 +70,8 @@ Hooks.once("init", async function () {
       Moulinette,
       MoulinetteClient,
       MoulinetteForgeModule,
-      MoulinetteFileUtil
+      MoulinetteFileUtil,
+      MoulinetteFilePicker
     },
     cache: new MoulinetteCache(),
     forge: [],
@@ -108,6 +110,8 @@ Hooks.once("ready", async function () {
         game.moulinette.sources.push({type: "sounds", "publisher": "Bazaar", pack: dir.slice("assets/".length), source: "forge-bazaar", path: dir});
     }
   }
+  
+  FilePicker = game.moulinette.applications.MoulinetteFilePicker
 });
 
 /**

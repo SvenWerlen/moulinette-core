@@ -57,7 +57,7 @@ export class MoulinettePatreon extends FormApplication {
    * It's not a robust implementation and is not intended to be.
    * If you really want to not support me, feel free to hijack it :)
    */
-  static hasEarlyAccess(warn = false) {
+  static hasEarlyAccess() {
     return ["Dwarf blacksmith", "Dwarf goldsmith", "Owner"].includes(game.moulinette.user.patron)
   }
 

@@ -1,67 +1,89 @@
-import { MoulinetteForgeModule } from "./moulinette-forge-module.js"
 
-/*************************
- * Moulinette Forge
- *************************/
-export class MoulinetteForge extends FormApplication {
+
+export class MoulinetteFilePicker extends FilePicker {
+  
+  constructor(options={}) {
+    super(options);
+  }
+
+  async browse(target, options={}) {
+    if ( game.world && !game.user.can("FILES_BROWSE") ) return;
+    
+    console.log(`Moulinette FilePicker | Type = ${this.type}`)
+    // force retrieve user
+    await game.moulinette.applications.Moulinette.getUser()
+    
+    if(game.moulinette.user.hasEarlyAccess()) {
+      if(["image", "imagevideo"].includes(this.type) && !this.default) {
+        const module = game.moulinette.forge.filter(f => f.id == "tiles")
+        if(module && module.length == 1) {
+          this.picker = new MoulinetteFilePickerUI(module[0], { type: this.type, callbackSelect: this._onSelect.bind(this), callbackDefault: this._onDefault.bind(this, target) })
+          this.picker.render(true)
+          return;
+        }
+      }
+    }
+    return super.browse(target)
+  }
+  
+    
+  /**
+   * User chose display mode
+   */
+  async _onSelect(path) {
+    if ( !path ) return ui.notifications.error("You must select a file to proceed.");
+
+    // Update the target field
+    if ( this.field ) {
+      this.field.value = path;
+      this.field.dispatchEvent(new Event("change"));
+    }
+
+    // Trigger a callback and close
+    if ( this.callback ) this.callback(path, this);
+    return this.picker.close();
+  }
+  
+  /**
+   * User chose display mode
+   */
+  async _onDefault(target) {
+    this.default = true
+    return super.browse(target)
+  }
+}
+
+
+class MoulinetteFilePickerUI extends FormApplication {
   
   static MAX_ASSETS = 100
   
-  static get TABS() { return game.moulinette.forge.map( f => f.id ) }
-  
-  constructor(tab) {
-    super()
-    const curTab = tab ? tab : game.settings.get("moulinette", "currentTab")
-    this.tab = MoulinetteForge.TABS.includes(curTab) ? curTab : null
-    
-    // clear all caches
-    for(const f of game.moulinette.forge) {
-      f.instance.clearCache()
-    }
+  constructor(module, options) {
+    super();
+    this.module = module
+    this.type = options.type
+    this.callback = options.callbackSelect
+    this.defaultUI = options.callbackDefault
   }
   
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      id: "moulinette",
+      id: "moulinette-picker",
       classes: ["mtte", "forge"],
-      title: game.i18n.localize("mtte.moulinetteForge"),
-      template: "modules/moulinette-core/templates/forge.hbs",
+      title: game.i18n.localize("mtte.moulinetteFilePicker"),
+      template: "modules/moulinette-core/templates/filepicker.hbs",
       width: 880,
       height: "auto",
       resizable: true,
-      dragDrop: [{dragSelector: ".draggable"}],
       closeOnSubmit: false,
       submitOnClose: false,
     });
   }
   
   async getData() {
-    if(!game.user.isGM) {
-      return { error: game.i18n.localize("mtte.errorGMOnly") }
-    }
-    
-    // no module available
-    if(game.moulinette.forge.length == 0) {
-      return { error: game.i18n.localize("mtte.errorNoModule") }
-    }
-    
-    // highlight selected tab
-    for(const f of game.moulinette.forge) {
-      f.active = this.tab == f.id
-      if(f.active) {
-        this.activeModule = f
-      }
-    }
-    
-    // no active module => select first
-    if(!this.activeModule) {
-      this.activeModule = game.moulinette.forge[0]
-      this.activeModule.active = true
-    }
-    
     // fetch available packs & build publishers
     let publishers = {}
-    let packs = await this.activeModule.instance.getPackList()
+    let packs = await this.module.instance.getPackList()
     packs = packs.sort((a, b) => (a.publisher == b.publisher) ? (a.name > b.name ? 1 : -1) : (a.publisher > b.publisher ? 1 : -1)) // sort by 1) publisher and 2) name
     let assetsCount = 0
     let special = false
@@ -86,16 +108,13 @@ export class MoulinetteForge extends FormApplication {
     }
     
     // fetch initial asset list
-    const assets = await this.activeModule.instance.getAssetList()
+    const assets = await this.module.instance.getAssetList()
       
     const data = { 
       user: await game.moulinette.applications.Moulinette.getUser(),
-      modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
-      activeModule: this.activeModule,
-      supportsModes: this.activeModule.instance.supportsModes(),
+      supportsModes: this.module.instance.supportsModes(),
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
-      assets: assets,
-      footer: await this.activeModule.instance.getFooter()
+      assets: assets
     }
     
     // 
@@ -111,7 +130,8 @@ export class MoulinetteForge extends FormApplication {
       
     return data;
   }
-
+  
+  
   activateListeners(html) {
     super.activateListeners(html);
     
@@ -121,12 +141,9 @@ export class MoulinetteForge extends FormApplication {
     // give focus to input text
     html.find("#search").focus();
     
-    // module navigation
-    html.find(".tabs a").click(this._onNavigate.bind(this));
-    
     // buttons
     html.find("button").click(this._onClickButton.bind(this))
-   
+    
     // display mode
     html.find(".display-modes a").click(this._onChangeDisplayMode.bind(this))
     
@@ -138,9 +155,7 @@ export class MoulinetteForge extends FormApplication {
     html.find("select.plist").on('change', this._onPackOrPubSelected.bind(this));
     
     // delegate activation to module
-    if(this.activeModule) {
-      this.activeModule.instance.activateListeners(html)
-    }
+    this.module.instance.activateListeners(html, this.callback, this.type)
     
     // enable expand listeners
     html.find(".folder.expand").click(this._onToggleExpand.bind(this));
@@ -149,21 +164,6 @@ export class MoulinetteForge extends FormApplication {
     html.find(".list").on('scroll', this._onScroll.bind(this))
     
     this.html = html
-  }
-  
-  /**
-   * User clicked on another tab (i.e. module)
-   */
-  _onNavigate(event) {
-    event.preventDefault();
-    const source = event.currentTarget;
-    const tab = source.dataset.tab;
-    if(MoulinetteForge.TABS.includes(tab)) {
-      this.assets = [] // clean search list
-      this.tab = tab
-      game.settings.set("moulinette", "currentTab", tab)
-      this.render();
-    }
   }
   
   /**
@@ -179,22 +179,13 @@ export class MoulinetteForge extends FormApplication {
    */
   async _onClickButton(event) {
     event.preventDefault();
-
-    // delegate activation to module
-    if(this.activeModule) {
-
-      const source = event.currentTarget;
-      // search
-      if(source.classList.contains("search")) {
-        await this._searchAssets()
-      } 
-      // any other action
-      else {
-        const refresh = await this.activeModule.instance.onAction(source.classList)
-        if(refresh) {
-          this.render()
-        }
-      }
+    const source = event.currentTarget;
+    // search
+    if(source.classList.contains("search")) {
+      await this._searchAssets()
+    } else if(source.classList.contains("fvtt-picker")) {
+      this.defaultUI()
+      this.close()
     }
   }
   
@@ -207,12 +198,12 @@ export class MoulinetteForge extends FormApplication {
     
     const browseMode = game.settings.get("moulinette-core", "browseMode")
     if(browseMode == "byPub") {
-      this.assets = await this.activeModule.instance.getAssetList(searchTerms, -1, selectedValue)
+      this.assets = await this.module.instance.getAssetList(searchTerms, -1, selectedValue, this.type)
     } else {
-      this.assets = await this.activeModule.instance.getAssetList(searchTerms, selectedValue)
+      this.assets = await this.module.instance.getAssetList(searchTerms, selectedValue, null, this.type)
     }
     
-    const supportsModes = this.activeModule.instance.supportsModes()
+    const supportsModes = this.module.instance.supportsModes()
     
     this.expand = true // flag to disable expand/collapse
     if(this.assets.length == 0 && searchTerms.length == 0) {
@@ -224,7 +215,7 @@ export class MoulinetteForge extends FormApplication {
     else {
       // browse => show all folders but no asset
       const viewMode = game.settings.get("moulinette", "displayMode")
-      let assetsToShow = supportsModes && viewMode == "browse" ? this.assets.filter(a => a.indexOf('class="folder expand"') > 0) : this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join("")
+      let assetsToShow = supportsModes && viewMode == "browse" ? this.assets.filter(a => a.indexOf('class="folder expand"') > 0) : this.assets.slice(0, MoulinetteFilePickerUI.MAX_ASSETS).join("")
       // if only 1 folder, show all assets
       if(assetsToShow.length == 1 && viewMode == "browse") {
         assetsToShow = this.assets
@@ -247,17 +238,6 @@ export class MoulinetteForge extends FormApplication {
     this.setPosition()
   }
   
-  /**
-   * Dragging event
-   */
-  _onDragStart(event) {
-    super._onDragStart(event)
-    
-    // delegate activation to module
-    if(this.activeModule) {
-      this.activeModule.instance.onDragStart(event)
-    }
-  }
   
   /**
    * Show/hide assets in one specific folder
@@ -296,9 +276,9 @@ export class MoulinetteForge extends FormApplication {
     if(!this.assets) return;
     if(bottom - 20 < height) {
       this.ignoreScroll = true // avoid multiple events to occur while scrolling
-      if(this.assetInc * MoulinetteForge.MAX_ASSETS < this.assets.length) {
+      if(this.assetInc * MoulinetteFilePickerUI.MAX_ASSETS < this.assets.length) {
         this.assetInc++
-        this.html.find('.list').append(this.assets.slice(this.assetInc * MoulinetteForge.MAX_ASSETS, (this.assetInc+1) * MoulinetteForge.MAX_ASSETS))
+        this.html.find('.list').append(this.assets.slice(this.assetInc * MoulinetteFilePickerUI.MAX_ASSETS, (this.assetInc+1) * MoulinetteFilePickerUI.MAX_ASSETS))
         this._reEnableListeners()
       }
       this.ignoreScroll = false
@@ -333,5 +313,6 @@ export class MoulinetteForge extends FormApplication {
     this.html.find(`.display-modes a.mode-${mode}`).removeClass("active")
     this._searchAssets()
   }
+
   
 }

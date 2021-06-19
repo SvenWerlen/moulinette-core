@@ -397,8 +397,10 @@ export class MoulinetteFileUtil {
           return;
         });
         if(!response || response.status != 200) {
-          ui.notifications.warn(game.i18n.localize("mtte.errorBuildingAssetIndex"));
-          console.warn(`Moulinette FileUtil | Couldn't load source ${URL}. Response : `, response)
+          if(!URL.endsWith("index.json")) {
+            ui.notifications.warn(game.i18n.localize("mtte.errorBuildingAssetIndex"));
+            console.warn(`Moulinette FileUtil | Couldn't load source ${URL}. Response : `, response)
+          }
           continue;
         }
         data = await response.json();

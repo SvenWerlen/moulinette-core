@@ -25,19 +25,11 @@ export class MoulinetteForgeModule {
     console.debug("Moulinette Forge Module | Default getPackList() returns empty list")
     return []
   }
-  
+    
   /**
    * Overwrite this function to implement your asset search (filter with searchTerms)
    */
-  async getAssetList(searchTerms, pack) {
-    console.debug("Moulinette Forge Module | Default getAssetList() returns empty list")
-    return []
-  }
-  
-  /**
-   * Overwrite this function to implement your asset search (filter with searchTerms)
-   */
-  async getAssetList(searchTerms, pack, publisher) {
+  async getAssetList(searchTerms, pack, publisher, type) {
     console.debug("Moulinette Forge Module | Default getAssetList() returns empty list")
     return []
   }
@@ -45,7 +37,7 @@ export class MoulinetteForgeModule {
   /**
    * Overwrite this function to add your listeners
    */
-  activateListeners(html) {
+  activateListeners(html, callbackSelect) {
     console.debug("Moulinette Forge Module | Default activeListeners() does nothing")
   }
   
@@ -89,7 +81,7 @@ export class MoulinetteForgeModule {
   /**
    * Overwrite this function to implement your module controls
    */
-  async activateControlsListeners(html) {
+  async activateControlsListeners(html, mode) {
     console.debug("Moulinette Forge Module | Default activateControlsListeners() does nothing")
   }
   
