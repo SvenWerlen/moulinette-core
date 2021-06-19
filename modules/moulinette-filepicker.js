@@ -10,16 +10,19 @@ export class MoulinetteFilePicker extends FilePicker {
     if ( game.world && !game.user.can("FILES_BROWSE") ) return;
     
     console.log(`Moulinette FilePicker | Type = ${this.type}`)
-    // force retrieve user
-    await game.moulinette.applications.Moulinette.getUser()
+    const filepicker = game.settings.get("moulinette-core", "filepicker")
     
-    if(game.moulinette.user.hasEarlyAccess()) {
-      if(["image", "imagevideo"].includes(this.type) && !this.default) {
-        const module = game.moulinette.forge.filter(f => f.id == "tiles")
-        if(module && module.length == 1) {
-          this.picker = new MoulinetteFilePickerUI(module[0], { type: this.type, callbackSelect: this._onSelect.bind(this), callbackDefault: this._onDefault.bind(this, target) })
-          this.picker.render(true)
-          return;
+    if(filepicker) {
+      // force retrieve user
+      await game.moulinette.applications.Moulinette.getUser() 
+      if(game.moulinette.user.hasEarlyAccess()) {
+        if(["image", "imagevideo"].includes(this.type) && !this.default) {
+          const module = game.moulinette.forge.filter(f => f.id == "tiles")
+          if(module && module.length == 1) {
+            this.picker = new MoulinetteFilePickerUI(module[0], { type: this.type, callbackSelect: this._onSelect.bind(this), callbackDefault: this._onDefault.bind(this, target) })
+            this.picker.render(true)
+            return;
+          }
         }
       }
     }

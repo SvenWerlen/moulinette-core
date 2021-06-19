@@ -62,6 +62,15 @@ Hooks.once("init", async function () {
     type: String
   });
   
+  game.settings.register("moulinette-core", "filepicker", {
+    name: game.i18n.localize("mtte.configFilepicker"), 
+    hint: game.i18n.localize("mtte.configFilepickerHint"), 
+    scope: "world",
+    config: true,
+    default: false,
+    type: Boolean
+  });
+  
   
   game.moulinette = {
     user: { hasEarlyAccess: function() { return false } },
