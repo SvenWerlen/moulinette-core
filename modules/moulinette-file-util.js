@@ -76,7 +76,8 @@ export class MoulinetteFileUtil {
     for( const f of folders ) {
       const parentFolder = await FilePicker.browse(source, curFolder, MoulinetteFileUtil.getOptions());
       curFolder += (curFolder.length > 0 ? "/" : "" ) + f
-      if (!parentFolder.dirs.includes(curFolder)) {
+      const dirs = parentFolder.dirs.map(d => decodeURIComponent(d))
+      if (!dirs.includes(curFolder)) {
         try {
           console.log(`MoulinetteFileUtil | Create folder ${curFolder}`)
           await FilePicker.createDirectory(source, curFolder, MoulinetteFileUtil.getOptions());
@@ -273,6 +274,7 @@ export class MoulinetteFileUtil {
    * (files)
    */  
   static async scanAssetsInCustomFolders(sourcePath, extensions) {
+    if(sourcePath == ".") sourcePath = ""
     const debug = game.settings.get("moulinette-core", "debugScanAssets")
     let publishers = []
     const baseURL = MoulinetteFileUtil.getBaseURL()
