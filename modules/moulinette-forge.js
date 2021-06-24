@@ -21,13 +21,16 @@ export class MoulinetteForge extends FormApplication {
   }
   
   static get defaultOptions() {
+    const position = game.settings.get("moulinette", "winPosForge")
     return mergeObject(super.defaultOptions, {
       id: "moulinette",
       classes: ["mtte", "forge"],
       title: game.i18n.localize("mtte.moulinetteForge"),
       template: "modules/moulinette-core/templates/forge.hbs",
-      width: 880,
+      width: position ? position.width : 880,
       height: "auto",
+      left: position ? position.left : null,
+      top: position ? position.top : null,
       resizable: true,
       dragDrop: [{dragSelector: ".draggable"}],
       closeOnSubmit: false,
@@ -35,7 +38,14 @@ export class MoulinetteForge extends FormApplication {
     });
   }
   
+  close() {
+    // store window position and size
+    game.settings.set("moulinette", "winPosForge", this.position)
+    super.close()
+  }
+  
   async getData() {
+    const uiMode = game.settings.get("moulinette-core", "uiMode")
     if(!game.user.isGM) {
       return { error: game.i18n.localize("mtte.errorGMOnly") }
     }
@@ -95,10 +105,10 @@ export class MoulinetteForge extends FormApplication {
       supportsModes: this.activeModule.instance.supportsModes(),
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: assets,
-      footer: await this.activeModule.instance.getFooter()
+      footer: await this.activeModule.instance.getFooter(),
+      compactUI: uiMode == "compact"
     }
     
-    // 
     const browseMode = game.settings.get("moulinette-core", "browseMode")
     if(browseMode == "byPub") {
       data.publishers = publishers

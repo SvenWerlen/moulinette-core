@@ -6,13 +6,13 @@
   
   <nav class="sheet-tabs tabs">
     {{#each modules as |m|}}
-      <a class="item {{#if m.active}}active{{/if}}" data-tab="{{m.id}}"><i class="{{m.icon}}"></i> {{m.name}}</a>
+      <a class="item {{#if m.active}}active{{/if}}" data-tab="{{m.id}}"><i class="{{m.icon}}"></i>{{#unless ../compactUI}} {{m.name}}{{/unless}}</a>
     {{/each}}
   </nav>
 
   <div class="main">
     <p>
-      <div class="description">{{{activeModule.description}}}</div>
+      {{#unless compactUI}}<div class="description">{{{activeModule.description}}}</div>{{/unless}}
       <div class="form-group search">
         <input id="search" type="text" placeholder="{{localize "mtte.search"}}"></input>
         <button class="search"><i class="fas fa-search"></i></button>
@@ -49,16 +49,17 @@
     {{{footer}}}
     <footer>
       <div class="actions">
-        {{#each activeModule.actions as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i> {{a.name}}</button>{{/each}}
+        {{#each activeModule.actions as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
       </div>
       <div class="actions">
-        {{#each activeModule.actionsExt as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i> {{a.name}}</button>{{/each}}
+        {{#each activeModule.actionsExt as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
       </div>
     </footer>
   </div>
   
   {{/unless}}
-  <img class="logo" src="modules/moulinette-core/img/moulinette.png" width="60"/>
+  
+  <img class="logo" src="modules/moulinette-core/img/moulinette.png" width="{{#if compactUI}}40{{/if}}{{#unless compactUI}}60{{/unless}}"/>
   <p>
     {{#unless user.patron}}
     {{{localize "mtte.patreonSupportMe"}}}<br/>
@@ -66,7 +67,9 @@
     {{#if user.patron}}
     {{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}}). {{localize "mtte.patreonThanks"}}<br/>
     {{/if}}
+    {{#unless compactUI}}
     Join me on <a href="https://discord.gg/xg3dcMQfP2" target="_blank">Moulinette Discord</a> to follow development. <br/>
     <a href="https://github.com/SvenWerlen/moulinette-core">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
+    {{/unless}}
   </p>
 </form>

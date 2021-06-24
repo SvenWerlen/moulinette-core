@@ -77,7 +77,7 @@ export class MoulinetteFileUtil {
       const parentFolder = await FilePicker.browse(source, curFolder, MoulinetteFileUtil.getOptions());
       curFolder += (curFolder.length > 0 ? "/" : "" ) + f
       const dirs = parentFolder.dirs.map(d => decodeURIComponent(d))
-      if (!dirs.includes(curFolder)) {
+      if (!dirs.includes(decodeURIComponent(curFolder))) {
         try {
           console.log(`MoulinetteFileUtil | Create folder ${curFolder}`)
           await FilePicker.createDirectory(source, curFolder, MoulinetteFileUtil.getOptions());
@@ -435,7 +435,10 @@ export class MoulinetteFileUtil {
             for(const asset of pack.assets) {
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {
-                const type = pack.meta && pack.meta.type ? pack.meta.type : "img"
+                let type = pack.meta && pack.meta.type ? pack.meta.type : "img"
+                if(asset.endsWith(".ogg") || asset.endsWith(".mp3")) {
+                  type = "snd"
+                }
                 assets.push({ pack: idx, filename: asset, type: type})
               }
               else {

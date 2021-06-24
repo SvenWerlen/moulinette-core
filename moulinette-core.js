@@ -15,6 +15,7 @@ Hooks.once("init", async function () {
   game.settings.register("moulinette", "userId", { scope: "world", config: false, type: String, default: randomID(26) });
   game.settings.register("moulinette", "currentTab", { scope: "world", config: false, type: String, default: "scenes" })
   game.settings.register("moulinette", "displayMode", { scope: "world", config: false, type: String, default: "tiles" })
+  game.settings.register("moulinette", "winPosForge", { scope: "world", config: false, type: Object })
   
   game.settings.register("moulinette-core", "customPath", {
     name: game.i18n.localize("mtte.configCustomPath"), 
@@ -69,6 +70,16 @@ Hooks.once("init", async function () {
     config: true,
     default: false,
     type: Boolean
+  });
+  
+   game.settings.register("moulinette-core", "uiMode", {
+    name: game.i18n.localize("mtte.configUIMode"), 
+    hint: game.i18n.localize("mtte.configUIModeHint"), 
+    scope: "world",
+    config: true,
+    default: "default",
+    choices: { compact: game.i18n.localize("mtte.uiModeCompact"), default: game.i18n.localize("mtte.uiModeDefault") },
+    type: String
   });
   
   

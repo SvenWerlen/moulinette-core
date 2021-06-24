@@ -16,6 +16,8 @@
   "mtte.configS3Hint": "Si vous avez configur\u00e9 du stockage S3 ET que vous souhaitez l'utiliser pour moulinette, sp\u00e9cifiez le nom du compartiment \u00e0 utiliser. Laissez vide sinon",
   "mtte.configShowCase": "Contenu d'exemple",
   "mtte.configShowCaseHint": "Certains packs pr\u00e9sentent du contenu d'exemple (vitrine). D\u00e9cocher pour les retirer de la liste des packs disponibles.",
+  "mtte.configUIMode": "Interface",
+  "mtte.configUIModeHint": "Lorsque vous choissez le mode \"compact\" les libell\u00e9s seront cach\u00e9s pour gagner de la place. Inter\u00e9ssant pour les MJs exp\u00e9riment\u00e9s qui veulent optimiser leur espace de travail.",
   "mtte.continue": "Continuer",
   "mtte.defaultPicker": "FilePicker par d\u00e9faut",
   "mtte.defaultPickerHint": "Ouvrir le FilePicker FoundryVTT d'origine",
@@ -46,5 +48,7 @@
   "mtte.seeDoc": "Voir documentation",
   "mtte.specialSearch": "Ce pack n\u00e9cessite que vous fassiez une recherche",
   "mtte.sync": "Recharger les donn\u00e9es depuis Moulinette Cloud",
+  "mtte.uiModeCompact": "Compact",
+  "mtte.uiModeDefault": "Par d\u00e9faut",
   "mtte.unknown": "Inconnu"
 }

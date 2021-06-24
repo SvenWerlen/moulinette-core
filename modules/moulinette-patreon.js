@@ -11,7 +11,7 @@ export class MoulinettePatreon extends FormApplication {
   
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      id: "moulinette",
+      id: "moulinette-patreon",
       classes: ["mtte", "patreon"],
       title: game.i18n.localize("mtte.moulinettePatreon"),
       template: "modules/moulinette-core/templates/patreon.hbs",

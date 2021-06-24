@@ -16,6 +16,8 @@
   "mtte.configS3Hint": "If you have properly configured S3 AND want to use it for moulinette, specify the name of the bucket. Leave blank otherwise",
   "mtte.configShowCase": "Showcase content",
   "mtte.configShowCaseHint": "Some packs are providing showcase content. Uncheck to remove them from the available packs.",
+  "mtte.configUIMode": "Interface",
+  "mtte.configUIModeHint": "When choosing \"compact\", labels will be removed to save space. Useful for advanced GMs that want to optimize their workspace.",
   "mtte.continue": "Continue",
   "mtte.defaultPicker": "Default FilePicker",
   "mtte.defaultPickerHint": "Open FoundryVTT default FilePicker",
@@ -46,5 +48,7 @@
   "mtte.seeDoc": "See documentation",
   "mtte.specialSearch": "This pack contains no asset or requires you to provide search terms",
   "mtte.sync": "Reload data from Moulinette Cloud",
+  "mtte.uiModeCompact": "Compact",
+  "mtte.uiModeDefault": "Default",
   "mtte.unknown": "Unknown"
 }
