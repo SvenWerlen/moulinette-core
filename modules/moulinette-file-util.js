@@ -566,8 +566,8 @@ export class MoulinetteFileUtil {
     // download direct dependencies
     for(const dep of depList) {
       const filepath = destPath + dep
-      const folder = filepath.substring(0, filepath.lastIndexOf('/'))
-      const filename = dep.split('/').pop()
+      const folder = decodeURIComponent(filepath.substring(0, filepath.lastIndexOf('/')))
+      const filename = decodeURIComponent(dep.split('/').pop())
       const srcURL = packURL + "/" + dep + sas
       
       if(!await MoulinetteFileUtil.fileExists(filepath)) {
