@@ -153,7 +153,7 @@ export class MoulinetteForge extends FormApplication {
     }
     
     // enable expand listeners
-    html.find(".folder.expand").click(this._onToggleExpand.bind(this));
+    html.find(".expand").click(this._onToggleExpand.bind(this));
     
     // autoload on scroll
     html.find(".list").on('scroll', this._onScroll.bind(this))
@@ -234,7 +234,7 @@ export class MoulinetteForge extends FormApplication {
     else {
       // browse => show all folders but no asset
       const viewMode = game.settings.get("moulinette", "displayMode")
-      let assetsToShow = supportsModes && viewMode == "browse" ? this.assets.filter(a => a.indexOf('class="folder expand"') > 0) : this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join("")
+      let assetsToShow = supportsModes && viewMode == "browse" ? this.assets.filter(a => a.indexOf('class="folder"') > 0) : this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join("")
       // if only 1 folder, show all assets
       if(assetsToShow.length == 1 && viewMode == "browse") {
         assetsToShow = this.assets
@@ -275,7 +275,7 @@ export class MoulinetteForge extends FormApplication {
   async _onToggleExpand(event) {
     event.preventDefault();
     const source = event.currentTarget
-    const folderEl = $(source)
+    const folderEl = $(source).closest('.folder')
     const folder = folderEl.data('path')
     if(!this.expand || folderEl.hasClass("expanded")) {
       folderEl.find("div").toggle()
