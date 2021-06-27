@@ -217,7 +217,7 @@ export class MoulinetteForge extends FormApplication {
     
     const browseMode = game.settings.get("moulinette-core", "browseMode")
     if(browseMode == "byPub") {
-      this.assets = await this.activeModule.instance.getAssetList(searchTerms, -1, selectedValue)
+      this.assets = await this.activeModule.instance.getAssetList(searchTerms, -1, selectedValue == -1 ? undefined : selectedValue)
     } else {
       this.assets = await this.activeModule.instance.getAssetList(searchTerms, selectedValue)
     }
