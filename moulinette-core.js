@@ -72,7 +72,7 @@ Hooks.once("init", async function () {
     type: Boolean
   });
   
-   game.settings.register("moulinette-core", "uiMode", {
+  game.settings.register("moulinette-core", "uiMode", {
     name: game.i18n.localize("mtte.configUIMode"), 
     hint: game.i18n.localize("mtte.configUIModeHint"), 
     scope: "world",

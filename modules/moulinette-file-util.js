@@ -386,7 +386,7 @@ export class MoulinetteFileUtil {
     
     // build tiles' index 
     let idx = 0;
-    for(const URL of urlList) {
+    for(let URL of urlList) {
       
       // try to load from cache when exists
       let data;
@@ -394,15 +394,27 @@ export class MoulinetteFileUtil {
         data = game.moulinette.cache.getData(URL);
       } 
       else { 
+        // workaround for The Forge
+        if(URL.endsWith("index.json")) {
+          const fb = await FilePicker.browse(MoulinetteFileUtil.getSource(), URL).catch(function(e) {
+            console.warn(`Moulinette FileUtil | No index ${URL} exists yet.`)
+            return;
+          });
+          if(fb && fb.files.length == 1) {
+            URL = fb.files[0] + (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge ? `?t=${Date.now()}` : "")
+          } else {
+            console.log(`Moulinette FileUtil | `, fb)
+            continue
+          }
+        }
+        // download index file from URL
         const response = await fetch(URL, {cache: "no-store"}).catch(function(e) {
           console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
           return;
         });
         if(!response || response.status != 200) {
-          if(!URL.endsWith("index.json")) {
-            ui.notifications.warn(game.i18n.localize("mtte.errorBuildingAssetIndex"));
-            console.warn(`Moulinette FileUtil | Couldn't load source ${URL}. Response : `, response)
-          }
+          ui.notifications.warn(game.i18n.localize("mtte.errorBuildingAssetIndex"));
+          console.warn(`Moulinette FileUtil | Couldn't load source ${URL}. Response : `, response)
           continue;
         }
         data = await response.json();
