@@ -396,12 +396,13 @@ export class MoulinetteFileUtil {
       else { 
         // workaround for The Forge
         if(URL.endsWith("index.json")) {
-          const fb = await FilePicker.browse(MoulinetteFileUtil.getSource(), URL).catch(function(e) {
+          const fb = await FilePicker.browse(MoulinetteFileUtil.getSource(), URL.substring(0, URL.lastIndexOf("/"))).catch(function(e) {
             console.warn(`Moulinette FileUtil | No index ${URL} exists yet.`)
             return;
           });
-          if(fb && fb.files.length == 1) {
-            URL = fb.files[0] + (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge ? `?t=${Date.now()}` : "")
+          const found = fb.files.filter(f => f.endsWith(URL))
+          if(found && found.length == 1) {
+            URL = found[0] + (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge ? `?t=${Date.now()}` : "")
           } else {
             console.log(`Moulinette FileUtil | `, fb)
             continue
