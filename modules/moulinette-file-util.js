@@ -436,7 +436,7 @@ export class MoulinetteFileUtil {
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {
                 let type = pack.meta && pack.meta.type ? pack.meta.type : "img"
-                if(asset.endsWith(".ogg") || asset.endsWith(".mp3")) {
+                if(asset.endsWith(".ogg") || asset.endsWith(".mp3") || asset.endsWith(".wav") || asset.endsWith(".m4a")) {
                   type = "snd"
                 }
                 assets.push({ pack: idx, filename: asset, type: type})
