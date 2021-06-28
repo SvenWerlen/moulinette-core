@@ -396,7 +396,13 @@ export class MoulinetteFileUtil {
       else { 
         // workaround for The Forge
         if(URL.endsWith("index.json")) {
-          const fb = await FilePicker.browse(MoulinetteFileUtil.getSource(), URL.substring(0, URL.lastIndexOf("/"))).catch(function(e) {
+          // prepare URL
+          const baseURL = MoulinetteFileUtil.getBaseURL()
+          if( baseURL.length > 0 && URL.startsWith(baseURL) ) {
+            URL = URL.substring(baseURL.length)
+          }
+          // download indexes
+          const fb = await FilePicker.browse(MoulinetteFileUtil.getSource(), URL.substring(0, URL.lastIndexOf("/")), MoulinetteFileUtil.getOptions()).catch(function(e) {
             console.warn(`Moulinette FileUtil | No index ${URL} exists yet.`)
             return;
           });
@@ -404,7 +410,7 @@ export class MoulinetteFileUtil {
           if(found && found.length == 1) {
             URL = found[0] + (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge ? `?t=${Date.now()}` : "")
           } else {
-            console.log(`Moulinette FileUtil | `, fb)
+            console.log(`Moulinette FileUtil | `, URL, fb)
             continue
           }
         }
