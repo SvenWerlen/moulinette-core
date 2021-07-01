@@ -4,11 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.1.0] - 2021-06-24
+## [3.1.8] - 2021-06-24
 ### Added
 - UI modes (compact/default)
 ### Changed
 - Window position and width saved/restored
+### Fixed
+- [3.1.8] Missing settings when default FilePicker used
+- [3.1.7] Indexing not working on S3
+- [3.1.6] Search when "All publishers" selected
+- [3.1.5] Folder collapsing when clicking on assets
+- [3.1.4] Workaround for "The Forge" (index.json & server-side caching)
+- [3.1.3] Workaround for "The Forge" (index.json & server-side caching)
+- [3.1.2] .mp3 and .wav not indexed
+- [3.1.1] Downloading fails for names with spaces
 
 ## [3.0.0] - 2021-06-19
 ### Added

@@ -23,7 +23,7 @@ export class MoulinetteFilePicker extends FilePicker {
         }
       }
     }
-    return super.browse(target)
+    return super.browse(target, options)
   }
   
     
