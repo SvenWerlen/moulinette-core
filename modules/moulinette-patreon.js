@@ -15,7 +15,7 @@ export class MoulinettePatreon extends FormApplication {
       classes: ["mtte", "patreon"],
       title: game.i18n.localize("mtte.moulinettePatreon"),
       template: "modules/moulinette-core/templates/patreon.hbs",
-      width: 500,
+      width: 550,
       height: "auto",
       resizable: true,
       closeOnSubmit: false,
@@ -48,6 +48,12 @@ export class MoulinettePatreon extends FormApplication {
     const source = event.currentTarget
     if(source.classList.contains("continue")) {
       console.log("Moulinette Patreon | Refreshing")
+      game.moulinette.cache.clear()
+      this.render()
+    } else if(source.classList.contains("logout")) {
+      console.log("Moulinette Patreon | Loging out")
+      await game.settings.set("moulinette", "userId", randomID(26));
+      game.moulinette.cache.clear()
       this.render()
     }
   }

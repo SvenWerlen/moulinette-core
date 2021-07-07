@@ -376,6 +376,17 @@ export class MoulinetteFileUtil {
   }
   
   /**
+   * Check SAS expiration
+   * Returns remaining time (in minutes)
+   */
+  static getSASExpiration(sas) {
+    if(!sas || sas.length == 0) return 24*60
+    const timeAsString = decodeURIComponent(sas.substring(3, sas.indexOf('&')))
+    const timeDiff = Date.parse(timeAsString) - Date.now()
+    return Math.round(timeDiff/1000/60)
+  }
+  
+  /**
    * Reads a given URL (json) and builds an asset index
    */
   static async buildAssetIndex(urlList, special = null) {
@@ -430,7 +441,19 @@ export class MoulinetteFileUtil {
       }
       
       try {
+        let minExpiration = 24*60 // smallest expiration time
         for(const pub of data) {
+          // check sas token (sas are generated per publisher)
+          if(pub.packs.length > 0) {
+            const minutes = MoulinetteFileUtil.getSASExpiration(pub.packs[0].sas)
+            if(minutes < 0) {
+              console.error(`Moulinette FileUtil | Your SAS token expired for ${pub.publisher}.`)
+              continue;
+            } else if(minutes < 30) {
+              console.warn(`Moulinette FileUtil | Your SAS token is about to expire for ${pub.publisher}. Only ${minutes} minutes remaining.`)
+            }
+            minExpiration = Math.min(minExpiration, minutes)
+          }
           for(const pack of pub.packs) {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
@@ -468,6 +491,12 @@ export class MoulinetteFileUtil {
             }
             idx++;
           }
+        }
+        
+        if(minExpiration <= 0) {
+          ui.notifications.error(game.i18n.localize("mtte.errorSASTokenExpired"));
+        } else if(minExpiration <= 30) {
+          ui.notifications.warn(game.i18n.format("mtte.errorSASTokenAboutToExpire", {minutes: minExpiration}));
         }
       } catch (e) {
         console.log(`Moulinette FileUtil | Error building index of ${URL}`, e)

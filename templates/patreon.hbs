@@ -6,7 +6,13 @@
   </p>
   {{/unless}}
   <div class="module">
-    <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i>1 - {{localize "mtte.authenticate"}}</button></a></p>
+    {{#if user.fullName}}
+    <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i> {{localize "mtte.reauthenticate"}}</button></a></p>
+    <p><button class="logout"><i class="fas fa-unlink"></i> {{localize "mtte.disconnect"}}</button></p>
+    {{/if}}
+    {{#unless user.fullName}}
+    <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i> 1 - {{localize "mtte.authenticate"}}</button></a></p>
+    {{/unless}}
   </div>
   
   <div class="module desc">
