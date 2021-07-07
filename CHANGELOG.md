@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2021-07-
+### Added
+- Patreon : disconnect & reconnect buttons
+- Warning message when token will expire in less than 30 minutes
+- Error message when token is expired
+
 ## [3.1.8] - 2021-06-24
 ### Added
 - UI modes (compact/default)
