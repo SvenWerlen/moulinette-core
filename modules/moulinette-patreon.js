@@ -50,6 +50,9 @@ export class MoulinettePatreon extends FormApplication {
       console.log("Moulinette Patreon | Refreshing")
       game.moulinette.cache.clear()
       this.render()
+    } else if(source.classList.contains("login")) {
+      game.moulinette.cache.clear()
+      console.log("login")
     } else if(source.classList.contains("logout")) {
       console.log("Moulinette Patreon | Loging out")
       await game.settings.set("moulinette", "userId", randomID(26));

@@ -446,13 +446,13 @@ export class MoulinetteFileUtil {
           // check sas token (sas are generated per publisher)
           if(pub.packs.length > 0) {
             const minutes = MoulinetteFileUtil.getSASExpiration(pub.packs[0].sas)
+            minExpiration = Math.min(minExpiration, minutes)
             if(minutes < 0) {
               console.error(`Moulinette FileUtil | Your SAS token expired for ${pub.publisher}.`)
               continue;
             } else if(minutes < 30) {
               console.warn(`Moulinette FileUtil | Your SAS token is about to expire for ${pub.publisher}. Only ${minutes} minutes remaining.`)
             }
-            minExpiration = Math.min(minExpiration, minutes)
           }
           for(const pack of pub.packs) {
             // hide showcase content
