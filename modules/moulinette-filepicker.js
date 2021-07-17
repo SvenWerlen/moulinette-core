@@ -158,7 +158,7 @@ class MoulinetteFilePickerUI extends FormApplication {
     this.module.instance.activateListeners(html, this.callback, this.type)
     
     // enable expand listeners
-    html.find(".folder.expand").click(this._onToggleExpand.bind(this));
+    html.find(".expand").click(this._onToggleExpand.bind(this));
     
     // autoload on scroll
     html.find(".list").on('scroll', this._onScroll.bind(this))
@@ -215,7 +215,7 @@ class MoulinetteFilePickerUI extends FormApplication {
     else {
       // browse => show all folders but no asset
       const viewMode = game.settings.get("moulinette", "displayMode")
-      let assetsToShow = supportsModes && viewMode == "browse" ? this.assets.filter(a => a.indexOf('class="folder expand"') > 0) : this.assets.slice(0, MoulinetteFilePickerUI.MAX_ASSETS).join("")
+      let assetsToShow = supportsModes && viewMode == "browse" ? this.assets.filter(a => a.indexOf('class="folder"') > 0) : this.assets.slice(0, MoulinetteFilePickerUI.MAX_ASSETS).join("")
       // if only 1 folder, show all assets
       if(assetsToShow.length == 1 && viewMode == "browse") {
         assetsToShow = this.assets
@@ -238,14 +238,14 @@ class MoulinetteFilePickerUI extends FormApplication {
     this.setPosition()
   }
   
-  
+
   /**
    * Show/hide assets in one specific folder
    */
   async _onToggleExpand(event) {
     event.preventDefault();
     const source = event.currentTarget
-    const folderEl = $(source)
+    const folderEl = $(source).closest('.folder')
     const folder = folderEl.data('path')
     if(!this.expand || folderEl.hasClass("expanded")) {
       folderEl.find("div").toggle()
