@@ -57,6 +57,8 @@ export class MoulinettePatreon extends FormApplication {
       await game.settings.set("moulinette", "userId", randomID(26));
       game.moulinette.cache.clear()
       this.render()
+    } else if(source.classList.contains("gift")) {
+      new MoulinettePatreonGift(this).render(true)
     }
   }
   
@@ -67,6 +69,47 @@ export class MoulinettePatreon extends FormApplication {
    */
   static hasEarlyAccess() {
     return ["Dwarf blacksmith", "Dwarf goldsmith", "Owner"].includes(game.moulinette.user.patron)
+  }
+
+}
+
+export class MoulinettePatreonGift extends FormApplication {
+  
+  constructor(parent) {
+    super()
+    this.parent = parent
+  }
+  
+  static get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
+      id: "moulinette-gift",
+      classes: ["mtte", "gift"],
+      title: game.i18n.localize("mtte.moulinettePatreonGift"),
+      template: "modules/moulinette-core/templates/patreon-gift.hbs",
+      width: 400,
+      height: "auto",
+      closeOnSubmit: false,
+      submitOnClose: false,
+    });
+  }
+  
+  async _updateObject(html) {
+    const gift = this.html.find("#coupon").val()
+    // check guid
+    const client = new game.moulinette.applications.MoulinetteClient()
+    const result = await client.get(`/manage-gifts/claim/${game.moulinette.user.id}/${gift}`)
+    if(!result || result.status != 200) {
+      ui.notifications.error(game.i18n.localize("mtte.errorInvalidGift"))
+      console.error(`Moulinette Patreon | Invalid gift '${gift}'`)
+    } else {
+      this.parent.render()
+      this.close()
+    }
+  }
+  
+  activateListeners(html) {
+    this.html = html
+    super.activateListeners(html);
   }
 
 }
