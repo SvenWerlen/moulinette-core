@@ -24,6 +24,9 @@ export class MoulinettePatreon extends FormApplication {
   }
   
   async getData() {
+    if(!game.settings.get("moulinette-core", "enableMoulinetteCloud")) {
+      return { disabled: true }
+    }
     const user = await game.moulinette.applications.Moulinette.getUser(true)
     const userId = game.settings.get("moulinette", "userId");
     const callback = `${game.moulinette.applications.MoulinetteClient.SERVER_URL}/patreon/callback`

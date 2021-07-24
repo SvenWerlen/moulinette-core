@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.3.0] - 2021-07-23
 ### Changed 
 - Switch to Moulinette Cloud (new servers)
+- Show pledges and gifts on patreon window
 ### Added
 - Claim a gift from a creator
+- Configuration to disable Moulinette Cloud
 
 ## [3.2.1] - 2021-07-11
 ### Added

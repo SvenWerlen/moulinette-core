@@ -44,6 +44,16 @@ Hooks.once("init", async function () {
     type: Boolean
   });
   
+  game.settings.register("moulinette-core", "enableMoulinetteCloud", {
+    name: game.i18n.localize("mtte.configEnableMoulinetteCloud"), 
+    hint: game.i18n.localize("mtte.configEnableMoulinetteCloudHint"), 
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean,
+    onChange: () => game.moulinette.user = {}
+  });
+  
   game.settings.register("moulinette-core", "s3Bucket", {
     name: game.i18n.localize("mtte.configS3"), 
     hint: game.i18n.localize("mtte.configS3Hint"), 
@@ -69,7 +79,8 @@ Hooks.once("init", async function () {
     scope: "world",
     config: true,
     default: false,
-    type: Boolean
+    type: Boolean,
+    onChange: () => window.location.reload()
   });
   
   game.settings.register("moulinette-core", "uiMode", {

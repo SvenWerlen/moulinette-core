@@ -393,6 +393,7 @@ export class MoulinetteFileUtil {
     let assets = []
     let assetsPacks = []
     
+    const cloudEnabled = game.settings.get("moulinette-core", "enableMoulinetteCloud")
     const showShowCase = game.settings.get("moulinette-core", "showCaseContent")
     
     // build tiles' index 
@@ -424,6 +425,10 @@ export class MoulinetteFileUtil {
             console.log(`Moulinette FileUtil | `, URL, fb)
             continue
           }
+        }
+        if(!cloudEnabled && URL.startsWith(game.moulinette.applications.MoulinetteClient.SERVER_URL)) {
+          console.log(`Moulinette FileUtil | Moulinette Cloud disabled `)
+          continue
         }
         // download index file from URL
         const response = await fetch(URL, {cache: "no-store"}).catch(function(e) {

@@ -1,58 +1,63 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
-  {{#unless user.fullName}}
-  <p>{{localize "mtte.patreonWelcome"}}</p>
-  <p>
-    <div class="error">{{localize "mtte.patreonDescription"}}</div>
-  </p>
-  {{/unless}}
-  <div class="module">
-    {{#if user.fullName}}
-    <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i> {{localize "mtte.reauthenticate"}}</button></a></p>
-    <p><button class="logout"><i class="fas fa-unlink"></i> {{localize "mtte.disconnect"}}</button></p>
-    <p><button class="gift"><i class="fas fa-gift"></i> {{localize "mtte.receiveGift"}}</button></p>
-    {{/if}}
+  {{#if disabled}}
+  {{localize "mtte.moulinetteCloudDisabled"}}
+  {{/if}}
+  {{#unless disabled}}
     {{#unless user.fullName}}
-    <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i> 1 - {{localize "mtte.authenticate"}}</button></a></p>
+    <p>{{localize "mtte.patreonWelcome"}}</p>
+    <p>
+      <div class="error">{{localize "mtte.patreonDescription"}}</div>
+    </p>
     {{/unless}}
-  </div>
-  
-  <div class="module desc">
-    {{#if user.fullName}}
-    {{localize "mtte.patreonLinked"}}
-    <ul>
-    <li>{{user.fullName}} {{#if user.vanity}}({{user.vanity}}){{/if}}</li>
-    {{#if user.patron}}
-    <li>{{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}})</li>
-    {{/if}}
-    {{#if user.pledges}}
-      </ul>
-      {{localize "mtte.patreonPledges"}}
+    <div class="module">
+      {{#if user.fullName}}
+      <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i> {{localize "mtte.reauthenticate"}}</button></a></p>
+      <p><button class="logout"><i class="fas fa-unlink"></i> {{localize "mtte.disconnect"}}</button></p>
+      <p><button class="gift"><i class="fas fa-gift"></i> {{localize "mtte.receiveGift"}}</button></p>
+      {{/if}}
+      {{#unless user.fullName}}
+      <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i> 1 - {{localize "mtte.authenticate"}}</button></a></p>
+      {{/unless}}
+    </div>
+    
+    <div class="module desc">
+      {{#if user.fullName}}
+      {{localize "mtte.patreonLinked"}}
       <ul>
-      {{#each user.pledges as |p|}}
-      <li>{{p.vanity}}: {{p.pledge}}</li>
-      {{/each}}
-      </ul>
-    {{/if}}
-    {{#if user.gifts}}
-      </ul>
-      {{localize "mtte.patreonGifts"}}
-      <ul>
-      {{#each user.gifts as |g|}}
-      <li>{{g.vanity}}: {{g.tier}}</li>
-      {{/each}}
-      </ul>
-    {{/if}}
-    {{/if}}
+      <li>{{user.fullName}} {{#if user.vanity}}({{user.vanity}}){{/if}}</li>
+      {{#if user.patron}}
+      <li>{{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}})</li>
+      {{/if}}
+      {{#if user.pledges}}
+        </ul>
+        {{localize "mtte.patreonPledges"}}
+        <ul>
+        {{#each user.pledges as |p|}}
+        <li>{{p.vanity}}: {{p.pledge}}</li>
+        {{/each}}
+        </ul>
+      {{/if}}
+      {{#if user.gifts}}
+        </ul>
+        {{localize "mtte.patreonGifts"}}
+        <ul>
+        {{#each user.gifts as |g|}}
+        <li>{{g.vanity}}: {{g.tier}}</li>
+        {{/each}}
+        </ul>
+      {{/if}}
+      {{/if}}
+      
+      {{#unless user.fullName}}
+      <p><button class="continue"><i class="fas fa-arrow-alt-circle-right"></i>2 - {{localize "mtte.continue"}}</button></p>
+      {{/unless}}
+    </div>
     
     {{#unless user.fullName}}
-    <p><button class="continue"><i class="fas fa-arrow-alt-circle-right"></i>2 - {{localize "mtte.continue"}}</button></p>
+    <p><em>
+      <a href="https://github.com/SvenWerlen/moulinette-core">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
+    </em></p>
     {{/unless}}
-  </div>
-  
-  {{#unless user.fullName}}
-  <p><em>
-    <a href="https://github.com/SvenWerlen/moulinette-core">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
-  </em></p>
   {{/unless}}
   
 </form>

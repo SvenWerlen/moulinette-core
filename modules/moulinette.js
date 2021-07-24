@@ -206,6 +206,14 @@ export class Moulinette {
    * Retrieves linked user if any
    */
   static async getUser(force = false) {
+    // moulinette cloud is disabled
+    if(!game.settings.get("moulinette-core", "enableMoulinetteCloud")) {
+      console.log("Moulinette | Moulinette Cloud is disabled.")
+      game.moulinette.user = { id: game.settings.get("moulinette", "userId") }
+      game.moulinette.user.cache = true
+      return game.moulinette.user
+    }
+    // default behaviour
     if(!game.moulinette.user.cache || force) {
       console.log("Moulinette | Retrieving user details")
       let userId = game.settings.get("moulinette", "userId");
