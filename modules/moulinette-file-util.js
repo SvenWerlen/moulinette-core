@@ -7,6 +7,7 @@
 export class MoulinetteFileUtil {
 
   static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
+  static REMOTE_BASE_S3 = "https://nyc3.digitaloceanspaces.com"
   
   /**
    * Detects which source to use (depending if server si Forge or local)
@@ -380,7 +381,7 @@ export class MoulinetteFileUtil {
    * Returns remaining time (in minutes)
    */
   static getSASExpiration(sas) {
-    if(!sas || sas.length == 0) return 24*60
+    if(Array.isArray(sas) || !sas || sas.length == 0) return 24*60
     const timeAsString = decodeURIComponent(sas.substring(3, sas.indexOf('&')))
     const timeDiff = Date.parse(timeAsString) - Date.now()
     return Math.round(timeDiff/1000/60)
@@ -399,6 +400,7 @@ export class MoulinetteFileUtil {
     // build tiles' index 
     let idx = 0;
     for(let URL of urlList) {
+      SceneNavigation._onLoadProgress(game.i18n.localize("mtte.indexingMoulinette"), Math.round((idx / urlList.length)*100));
       
       // try to load from cache when exists
       let data;
@@ -474,7 +476,7 @@ export class MoulinetteFileUtil {
               path: pack.path, 
               count: pack.assets.length, 
               isLocal: pack.isLocal,
-              isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE), 
+              isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3), 
               isShowCase: pack.showCase,
               deps: pack.deps, 
               sas: pack.sas
@@ -507,6 +509,9 @@ export class MoulinetteFileUtil {
         console.log(`Moulinette FileUtil | Error building index of ${URL}`, e)
       }
     }
+    
+    SceneNavigation._onLoadProgress(game.i18n.localize("mtte.indexingMoulinette"),100);  
+    
     if(special) {
       for(const el of special) {
         el.idx = idx

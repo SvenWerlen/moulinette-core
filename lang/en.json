@@ -35,6 +35,7 @@
   "mtte.errorSASTokenExpired": "Your token expired. Relink your Patreon to get access to Moulinette Cloud assets",
   "mtte.giftWelcome": "If you received a gift from a content creator, you can apply it here. If the coupon is valid, moulinette will list your gift and its benefits. A gift can provide you access to the creator's assets as if you would support him.",
   "mtte.homeWelcome": "Welcome! Moulinette gives you access to various items (scenes, images, icons, sounds, translations) that you can easily forge/scribe without having to install separate modules.",
+  "mtte.indexingMoulinette": "Moulinette indexing",
   "mtte.learnMore": "to learn more about Moulinette and/or support it.",
   "mtte.moulinette": "Moulinette",
   "mtte.moulinetteCloudDisabled": "Moulinette Cloud is disabled in the settings. Patreon integration is part of Moulinette Cloud. Re-enable this configuration to get access to Patreon capabilities.",
