@@ -246,6 +246,12 @@ export class MoulinetteForge extends FormApplication {
       } else {
         this.html.find('.list').html(assetsToShow)
       }
+      
+      //const matches = await game.moulinette.applications.MoulinetteFileUtil.getAvailableMatches(searchTerms)
+      //let count = 0
+      //matches.forEach( m => count += m.matches.length )
+      //console.log("Matching : " + count, matches)
+      
       this.ignoreScroll = supportsModes && viewMode == "browse"
       this.assetInc = 0
     }

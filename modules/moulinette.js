@@ -206,33 +206,30 @@ export class Moulinette {
    * Retrieves linked user if any
    */
   static async getUser(force = false) {
+    // current userId
+    const userId = game.settings.get("moulinette", "userId")
+    
     // moulinette cloud is disabled
     if(!game.settings.get("moulinette-core", "enableMoulinetteCloud")) {
       console.log("Moulinette | Moulinette Cloud is disabled.")
       game.moulinette.user = { id: game.settings.get("moulinette", "userId") }
-      game.moulinette.user.cache = true
       return game.moulinette.user
     }
     // default behaviour
     if(!game.moulinette.user.cache || force) {
       console.log("Moulinette | Retrieving user details")
-      let userId = game.settings.get("moulinette", "userId");
       const client = new game.moulinette.applications.MoulinetteClient()
-      const user = await client.get(`/user/${userId}`)
+      const noCache = "?ms=" + new Date().getTime()
+      const user = await client.get(`/user/${userId}${noCache}`)
       if(user && user.status == 200) {
         game.moulinette.user = user.data
         game.moulinette.user.hasEarlyAccess = MoulinettePatreon.hasEarlyAccess
       } 
-      else if(user && (user.status == 404 || user.status == 403)) {
-        console.log("Moulinette | Expired session. Renewing ID")
-        userId = randomID(26)
-        await game.settings.set("moulinette", "userId", userId);
-        game.moulinette.user = {}
-        game.moulinette.user.hasEarlyAccess = function() { return false }
-      }
-      game.moulinette.user.id = userId
       game.moulinette.user.cache = true
     }
+    
+    // user.id 
+    game.moulinette.user.id = game.settings.get("moulinette", "userId")
     return game.moulinette.user
   }
   

@@ -433,7 +433,8 @@ export class MoulinetteFileUtil {
           continue
         }
         // download index file from URL
-        const response = await fetch(URL, {cache: "no-store"}).catch(function(e) {
+        const noCache = URL.startsWith(game.moulinette.applications.MoulinetteClient.SERVER_URL) ? "?ms=" + new Date().getTime() : "";
+        const response = await fetch(URL + noCache, {cache: "no-store"}).catch(function(e) {
           console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
           return;
         });
@@ -641,5 +642,54 @@ export class MoulinetteFileUtil {
         await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, false)
       }
     }
+  }
+  
+  
+  /**
+   * Downloads available assets
+   */
+  static async getAvailableAssets() {
+    let assets = {}
+    const AVAILABLE_ASSETS = game.moulinette.applications.MoulinetteClient.SERVER_URL + "/static/available.json"
+    
+    // try to load from cache when exists
+    if(game.moulinette.cache.hasData(AVAILABLE_ASSETS)) {
+      return game.moulinette.cache.getData(AVAILABLE_ASSETS);
+    } 
+    else { 
+      const response = await fetch(AVAILABLE_ASSETS).catch(function(e) {
+        console.warn(`MoulinetteClient | Cannot establish connection to server ${MoulinetteClient.SERVER_URL}`, e)
+      });
+      if(!response || response.status != 200) {
+        return assets;
+      }
+      assets = await response.json()
+      game.moulinette.cache.setData(AVAILABLE_ASSETS, assets);
+      return assets
+    }
+  }
+  
+  /**
+   * Search for matching a asset
+   */
+  static async getAvailableMatches(searchTerms) {
+    const available = await MoulinetteFileUtil.getAvailableAssets()
+    const list = []
+    searchTerms = searchTerms.split(" ")
+    
+    for (const [key, pub] of Object.entries(available)) {
+      for (const pack of pub) {
+        const matches = pack.assets.filter( a => {
+          for( const t of searchTerms ) {
+            if( a.toLowerCase().indexOf(t.toLowerCase()) < 0 ) return false
+          }
+          return true;
+        })
+        if(matches.length > 0) {
+          list.push({ creator: key, pack: pack.name, matches: matches })
+        }
+      }
+    }
+    return list
   }
 }
