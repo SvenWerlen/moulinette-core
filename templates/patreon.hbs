@@ -9,6 +9,7 @@
       <div class="error">{{localize "mtte.patreonDescription"}}</div>
     </p>
     {{/unless}}
+    <footer>
     <div class="module">
       {{#if user.fullName}}
       <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i> {{localize "mtte.reauthenticate"}}</button></a></p>
@@ -52,6 +53,7 @@
       <p><button class="continue"><i class="fas fa-arrow-alt-circle-right"></i>2 - {{localize "mtte.continue"}}</button></p>
       {{/unless}}
     </div>
+    </footer>
     
     {{#unless user.fullName}}
     <p><em>
