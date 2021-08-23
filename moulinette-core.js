@@ -142,7 +142,9 @@ Hooks.once("ready", async function () {
     }
   }
   
-  FilePicker = game.moulinette.applications.MoulinetteFilePicker
+  if( game.settings.get("moulinette-core", "filepicker") ) {
+    FilePicker = game.moulinette.applications.MoulinetteFilePicker
+  }
 });
 
 /**
