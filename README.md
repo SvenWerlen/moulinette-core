@@ -36,15 +36,6 @@ You're a GM (game master) preparing a new scenario? Moulinette Forge lets you br
 
 ![Catalog](https://github.com/SvenWerlen/moulinette-scenes/raw/main/docs/img/download-scene.jpg)
 
-You are a map designer and have prepared some scenes you'd like to share? Moulinette facilitates the process of sharing scenes with others.
-* Right click on your scenes
-* Choose "Share the scene with Moulinette"
-* Fill the form
-* Submit! 
-* It will show up in the forge after the review process is completed!
-
-![Catalog](https://github.com/SvenWerlen/moulinette-scenes/raw/main/docs/img/share-scene.jpg)
-<br>_(Scenes on the screenshot are from various creators who have given their permission.)_
 
 ## <a name="forge-game"/>Moulinette Forge - Game icons
 
