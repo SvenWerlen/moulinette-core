@@ -36,6 +36,7 @@ You're a GM (game master) preparing a new scenario? Moulinette Forge lets you br
 
 ![Catalog](https://github.com/SvenWerlen/moulinette-scenes/raw/main/docs/img/download-scene.jpg)
 
+<br>_(Scenes on the screenshot are from [VenatusMaps](https://www.venatusmaps.com/))_
 
 ## <a name="forge-game"/>Moulinette Forge - Game icons
 
