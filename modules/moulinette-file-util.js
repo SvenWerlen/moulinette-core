@@ -672,13 +672,19 @@ export class MoulinetteFileUtil {
   /**
    * Search for matching a asset
    */
-  static async getAvailableMatches(searchTerms) {
+  static async getAvailableMatches(searchTerms, ignorePacks = []) {
     const available = await MoulinetteFileUtil.getAvailableAssets()
     const list = []
+    
+    if(searchTerms.trim().length == 0) return list;
+    
     searchTerms = searchTerms.split(" ")
     
     for (const [key, pub] of Object.entries(available)) {
       for (const pack of pub) {
+        // ignore packs that user already has access
+        if(ignorePacks.find( p => p.name == pack.name && p.publisher == key )) continue;
+        
         const matches = pack.assets.filter( a => {
           for( const t of searchTerms ) {
             if( a.toLowerCase().indexOf(t.toLowerCase()) < 0 ) return false

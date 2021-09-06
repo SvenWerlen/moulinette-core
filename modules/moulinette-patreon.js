@@ -3,7 +3,8 @@
  *************************/
 export class MoulinettePatreon extends FormApplication {
   
-  static CLIENT_ID = "nf1BKT1t1tckhDJlW6vbJsGP3UL1nDL9K_RoSAN_a1kTTvZLdp2fQz347panKMHa"
+  // client ID for FVTT integration
+  static CLIENT_ID = "K3ofcL8XyaObRrO_5VPuzXEPnOVCIW3fbLIt6Vygt_YIM6IKxA404ZQ0pZbZ0VkB"
   
   constructor() {
     super()
@@ -28,11 +29,7 @@ export class MoulinettePatreon extends FormApplication {
       return { disabled: true }
     }
     const user = await game.moulinette.applications.Moulinette.getUser(true)
-    const userId = game.settings.get("moulinette", "userId");
-    const callback = `${game.moulinette.applications.MoulinetteClient.SERVER_URL}/patreon/callback`
-    const patreonURL = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.CLIENT_ID}&redirect_uri=${callback}&scope=identity identity.memberships&state=${userId}`
-    
-    return { user: user, url: patreonURL }
+    return { user: user }
   }
 
   activateListeners(html) {
@@ -54,17 +51,52 @@ export class MoulinettePatreon extends FormApplication {
       game.moulinette.cache.clear()
       this.render()
     } else if(source.classList.contains("login")) {
+      const newGUID = randomID(26);
+      const callback = `${game.moulinette.applications.MoulinetteClient.SERVER_URL}/patreon/callback`
+      const patreonURL = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.CLIENT_ID}&redirect_uri=${callback}&scope=identity identity.memberships&state=${newGUID}`
       game.moulinette.cache.clear()
+      await game.settings.set("moulinette", "userId", newGUID)
+      window.open(patreonURL, '_blank');
+
+      this.html.find(".login").hide()
+      this.html.find(".error").html(game.i18n.localize("mtte.continue"))
+
+      const parent = this
+      this.timerIter = 0
+      this.timer = setInterval(async function(){
+        const progress = parent.html.find(".progress")
+
+        // stop after 2 minutes maximum
+        if(parent.timerIter > 60) {
+          parent.html.find(".error").html(game.i18n.localize("mtte.authenticationTimeout"))
+          progress.html("")
+          return clearInterval(parent.timer);
+        }
+
+        parent.timerIter++;
+        progress.html(progress.text() + " .")
+
+        const client = new game.moulinette.applications.MoulinetteClient()
+        const noCache = "?ms=" + new Date().getTime()
+        const ready = await client.get(`/user/${newGUID}/ready`)
+        if(ready && ready.status == 200 && ready.data.status == "yes") {
+          clearInterval(parent.timer);
+          parent.render()
+        }
+
+      }, 2000);
+
     } else if(source.classList.contains("logout")) {
       console.log("Moulinette Patreon | Loging out")
-      await game.settings.set("moulinette", "userId", randomID(26));
+      await game.settings.set("moulinette", "userId", "anonymous");
       game.moulinette.cache.clear()
       this.render()
     } else if(source.classList.contains("gift")) {
       new MoulinettePatreonGift(this).render(true)
     }
   }
-  
+
+
   /**
    * Check if patreon level is > 5$/month
    * It's not a robust implementation and is not intended to be.
@@ -72,6 +104,13 @@ export class MoulinettePatreon extends FormApplication {
    */
   static hasEarlyAccess() {
     return ["Dwarf blacksmith", "Dwarf goldsmith", "Owner"].includes(game.moulinette.user.patron)
+  }
+
+  close() {
+    if(this.timer) {
+      clearInterval(this.timer);
+    }
+    super.close()
   }
 
 }

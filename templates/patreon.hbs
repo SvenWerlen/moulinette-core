@@ -7,17 +7,17 @@
     <p>{{localize "mtte.patreonWelcome"}}</p>
     <p>
       <div class="error">{{localize "mtte.patreonDescription"}}</div>
+      <div class="progress"></div>
     </p>
     {{/unless}}
     <footer>
     <div class="module">
       {{#if user.fullName}}
-      <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i> {{localize "mtte.reauthenticate"}}</button></a></p>
       <p><button class="logout"><i class="fas fa-unlink"></i> {{localize "mtte.disconnect"}}</button></p>
       <p><button class="gift"><i class="fas fa-gift"></i> {{localize "mtte.receiveGift"}}</button></p>
       {{/if}}
       {{#unless user.fullName}}
-      <p><a href="{{url}}" target="_blank"><button class="login"><i class="fab fa-patreon"></i> 1 - {{localize "mtte.authenticate"}}</button></a></p>
+      <p><button class="login"><i class="fab fa-patreon"></i> {{localize "mtte.authenticate"}}</button></p>
       {{/unless}}
     </div>
     
@@ -48,10 +48,6 @@
         </ul>
       {{/if}}
       {{/if}}
-      
-      {{#unless user.fullName}}
-      <p><button class="continue"><i class="fas fa-arrow-alt-circle-right"></i>2 - {{localize "mtte.continue"}}</button></p>
-      {{/unless}}
     </div>
     </footer>
     

@@ -7,6 +7,10 @@
   padding: 10px;
 }
 
+.mtte .continue {
+  display: none;
+}
+
 .mtte .module {
   margin: 5px;
   width: 45%;

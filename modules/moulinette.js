@@ -224,6 +224,11 @@ export class Moulinette {
       if(user && user.status == 200) {
         game.moulinette.user = user.data
         game.moulinette.user.hasEarlyAccess = MoulinettePatreon.hasEarlyAccess
+        // GUID has been updated (after 24 hours, for security reasons)
+        if(user.data.guid) {
+          await game.settings.set("moulinette", "userId", user.data.guid)
+          delete user.data.guid
+        }
       } 
       game.moulinette.user.cache = true
     }
