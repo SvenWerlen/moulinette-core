@@ -2,6 +2,8 @@
  * Moulinette Forge Module
  *************************/
 export class MoulinetteForgeModule {
+
+  static MAX_HISTORY = 100
   
   /**
    * Overwrite this function to implement your clear cache
@@ -83,6 +85,111 @@ export class MoulinetteForgeModule {
    */
   async activateControlsListeners(html, mode) {
     console.debug("Moulinette Forge Module | Default activateControlsListeners() does nothing")
+  }
+
+  /**
+   * Common function to add asset to history
+   */
+  async addToHistory(pack, tile) {
+    const fav = game.settings.get("moulinette", "favorites")
+
+    if(!("history" in fav)) {
+      fav.history = { icon: "fas fa-history", list: [] }
+    }
+
+    // remove from history if already exists
+    let found = false
+    for(let i = 0; i < fav.history.list.length; i++){
+      const a = fav.history.list[i]
+      if (a.pub == pack.publisher && a.pack == pack.name && a.asset == tile.filename) {
+        fav.history.list.splice(i, 1);
+        found = true
+      }
+    }
+    // add at the end of the list
+    fav.history.list.push({ pub: pack.publisher, pack: pack.name, asset: tile.filename})
+
+    // remove first element if size > MAX_HISTORY
+    if(fav.history.list.length > MoulinetteForgeModule.MAX_HISTORY) {
+      fav.history.list.shift()
+    }
+
+    // store new favorites back
+    await game.settings.set("moulinette", "favorites", fav)
+  }
+
+
+  /**
+   * Common function to toggle an asset as favorite
+   * Returns the list of favorites group the asset is now in
+   *
+   * Structure is : {
+   *   favID : { 'icon': "fa icon", 'list': [{ pub: <publisher>, pack: <pack>, asset: <path> }] },
+   * }
+   */
+  async toggleFavorite(pack, tile, deleteOnly = false) {
+    const fav = game.settings.get("moulinette", "favorites")
+    let curFav = game.settings.get("moulinette", "currentFav")
+
+    if(!(curFav in fav)) {
+      console.warn(`Favorite category ${curFav} doesn't exist!`)
+      return groups
+    }
+
+    if(!deleteOnly && curFav == "history") {
+      curFav = "default"
+    }
+
+    let found = false
+    for(let i = 0; i < fav[curFav].list.length; i++){
+      const a = fav[curFav].list[i]
+      if (a.pub == pack.publisher && a.pack == pack.name && a.asset == tile.filename) {
+        fav[curFav].list.splice(i, 1);
+        found = true
+      }
+    }
+    if(!deleteOnly && !found) {
+      fav[curFav].list.push({ pub: pack.publisher, pack: pack.name, asset: tile.filename})
+    }
+
+    const groups = []
+    for(const f in fav) {
+      const found = fav[f].list.find(a => a.pub == pack.publisher && a.pack == pack.name && a.asset == tile.filename)
+      if(found) {
+        groups.push(fav[f].icon)
+      }
+    }
+
+    // store new favorites back
+    await game.settings.set("moulinette", "favorites", fav)
+    return groups
+  }
+
+  /**
+   * Common function to check if an asset has been selected as favorite or not
+   * Returns a list of favorite groups
+   */
+  isFavorite(pack, tile) {
+    const groups = []
+    const favs = game.settings.get("moulinette", "favorites")
+    for( const f in favs ) {
+      if(f == "history") continue;
+      const found = favs[f].list.find(a => a.pub == pack.publisher && a.pack == pack.name && a.asset == tile.filename)
+      if(found) {
+        groups.push(favs[f].icon)
+      }
+    }
+    return groups
+  }
+
+  /**
+   * Clears the favorites of the currently selected list
+   */
+  async clearFavorites() {
+    const favs = game.settings.get("moulinette", "favorites")
+    const curFav = game.settings.get("moulinette", "currentFav")
+    favs[curFav].list = []
+    await game.settings.set("moulinette", "favorites", favs)
   }
   
 }
