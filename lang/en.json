@@ -14,6 +14,8 @@
   "mtte.configDebugScanAssetsHint": "When enabled, moulinette adds messages into the console log to let you debug the process of indexing assets.",
   "mtte.configEnableMoulinetteCloud": "Enable Moulinette Cloud",
   "mtte.configEnableMoulinetteCloudHint": "When disabled, moulinette modules will not request Moulinette Cloud servers for assets. Patreon integration and showcase content will be disabled. Don't disable unless you only want to rely on local assets.",
+  "mtte.configFavoriteKey": "Keybind for Favorites",
+  "mtte.configFavoriteKeyHint": "Keybind for opening Moulinette Favorites UI",
   "mtte.configFilepicker": "Moulinette FilePicker",
   "mtte.configFilepickerHint": "Use Moulinette FilePicker (replaces the built-in one)",
   "mtte.configS3": "S3 bucket",

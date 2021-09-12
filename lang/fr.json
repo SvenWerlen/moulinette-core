@@ -14,6 +14,8 @@
   "mtte.configDebugScanAssetsHint": "Lorsque activ\u00e9, moulinette affichera des messages dans la console afin que vous puissiez d\u00e9boguer le processus d'indexation.",
   "mtte.configEnableMoulinetteCloud": "Activer Moulinette Cloud",
   "mtte.configEnableMoulinetteCloudHint": "Lorsque d\u00e9sactiv\u00e9, les modules moulinette ne feront plus de requ\u00eates aux serveurs de Moulinette Cloud. L'int\u00e9gration Patreon et les contenus d'exemple seront d\u00e9sactiv\u00e9s. Ne d\u00e9sactivez pas cette option \u00e0 moins que vous souhaitez r\u00e9ellement utiliser uniquement les contenus locaux.",
+  "mtte.configFavoriteKey": "Raccourci pour les favoris",
+  "mtte.configFavoriteKeyHint": "Raccourci clavier pour ouvrir l'interface des favoris de Moulinette",
   "mtte.configFilepicker": "Moulinette FilePicker",
   "mtte.configFilepickerHint": "Utiliser le navigateur d'images de Moulinette (replace celui de Foundry)",
   "mtte.configS3": "Compartiment S3",

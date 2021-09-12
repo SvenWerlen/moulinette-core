@@ -131,13 +131,13 @@ export class MoulinetteForgeModule {
     const fav = game.settings.get("moulinette", "favorites")
     let curFav = game.settings.get("moulinette", "currentFav")
 
-    if(!(curFav in fav)) {
-      console.warn(`Favorite category ${curFav} doesn't exist!`)
-      return groups
-    }
-
     if(!deleteOnly && curFav == "history") {
       curFav = "default"
+    }
+
+    if(!(curFav in fav)) {
+      console.warn(`Favorite category ${curFav} doesn't exist!`)
+      return []
     }
 
     let found = false
@@ -154,6 +154,7 @@ export class MoulinetteForgeModule {
 
     const groups = []
     for(const f in fav) {
+      if(f == "history") continue
       const found = fav[f].list.find(a => a.pub == pack.publisher && a.pack == pack.name && a.asset == tile.filename)
       if(found) {
         groups.push(fav[f].icon)
