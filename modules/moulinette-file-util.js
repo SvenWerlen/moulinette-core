@@ -491,6 +491,7 @@ export class MoulinetteFileUtil {
                 }
                 assets.push({ pack: idx, filename: asset, type: type})
               }
+              // complex type (ex: scene)
               else {
                 const path = asset['path']
                 delete asset['path']
@@ -585,18 +586,19 @@ export class MoulinetteFileUtil {
     }
     
     // download direct dependencies
-    
     await MoulinetteFileUtil.downloadDependencies(asset.data.deps, pack.path, asset.sas, path)
     
     // download all external dependencies
-    for (const [idx, deps] of Object.entries(asset.data.eDeps)) {
-      const i = Number(idx)
-      if( i >= 0 && i < pack.depsPath.length ) {
-        const ePack = pack.depsPath[i]
-        const ePath = MoulinetteFileUtil.getMoulinetteBasePath(type, ePack.publisher, ePack.name)
-        await MoulinetteFileUtil.downloadDependencies(deps, ePack.path, asset.sas, ePath)
-      } else {
-        console.error("Moulinette FileUtil | Invalid external dependency " + i)
+    if(asset.data.eDeps) {
+      for (const [idx, deps] of Object.entries(asset.data.eDeps)) {
+        const i = Number(idx)
+        if( i >= 0 && i < pack.depsPath.length ) {
+          const ePack = pack.depsPath[i]
+          const ePath = MoulinetteFileUtil.getMoulinetteBasePath(type, ePack.publisher, ePack.name)
+          await MoulinetteFileUtil.downloadDependencies(deps, ePack.path, asset.sas, ePath)
+        } else {
+          console.error("Moulinette FileUtil | Invalid external dependency " + i)
+        }
       }
     }
     
@@ -698,4 +700,52 @@ export class MoulinetteFileUtil {
     }
     return list
   }
+
+  /**
+   * This function converts Base 64 thumbs into binary (blob) data
+   */
+  static b64toBlob(b64Data) {
+    const parts = b64Data.split(";base64,")
+    const contentType = parts[0].split(":")[1];
+    const sliceSize = 512;
+
+    const byteCharacters = atob(parts[1]);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+  }
+
+  /**
+   * This function downloads a file into a specific folder
+   */
+  static async downloadFile(url, folder, filename) {
+    // check if file already downloaded
+    await MoulinetteFileUtil.createFolderRecursive(folder)
+    const browse = await FilePicker.browse(MoulinetteFileUtil.getSource(), folder);
+    const files = browse.files.map(f => decodeURIComponent(f))
+    if(files.includes(`${folder}/${filename}`)) return true;
+
+    try {
+      let res = await fetch(url)
+      if(!res || res.status != 200) { return false; }
+      const blob = await res.blob()
+      await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, false)
+      return true
+    } catch(e) {
+      return false
+    }
+  }
+
 }
