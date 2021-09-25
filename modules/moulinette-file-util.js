@@ -650,9 +650,9 @@ export class MoulinetteFileUtil {
   /**
    * Downloads available assets
    */
-  static async getAvailableAssets() {
+  static async getAvailableAssets(type) {
     let assets = {}
-    const AVAILABLE_ASSETS = game.moulinette.applications.MoulinetteClient.SERVER_URL + "/static/available.json"
+    const AVAILABLE_ASSETS = game.moulinette.applications.MoulinetteClient.SERVER_URL + (type == "tiles" ? "/static/available.json" : "/static/available-scenes.json")
     
     // try to load from cache when exists
     if(game.moulinette.cache.hasData(AVAILABLE_ASSETS)) {
@@ -674,8 +674,8 @@ export class MoulinetteFileUtil {
   /**
    * Search for matching a asset
    */
-  static async getAvailableMatches(searchTerms, ignorePacks = []) {
-    const available = await MoulinetteFileUtil.getAvailableAssets()
+  static async getAvailableMatches(searchTerms, type, ignorePacks = []) {
+    const available = await MoulinetteFileUtil.getAvailableAssets(type)
     const list = []
     
     if(searchTerms.trim().length == 0) return list;
