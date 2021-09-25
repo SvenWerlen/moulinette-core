@@ -94,7 +94,22 @@ Hooks.once("init", async function () {
     choices: { compact: game.i18n.localize("mtte.uiModeCompact"), default: game.i18n.localize("mtte.uiModeDefault") },
     type: String
   });
-  
+
+  // Binding with a default key and a simple callback
+  if(typeof KeybindLib != "undefined") {
+    KeybindLib.register("moulinette-core", "favoriteKey", {
+      name: game.i18n.localize("mtte.configFavoriteKey"),
+      hint: game.i18n.localize("mtte.configFavoriteKeyHint"),
+      default: "Ctrl + KeyF",
+      onKeyDown: () => {
+        if(game.moulinette.applications.MoulinetteTilesFavorites) {
+          (new game.moulinette.applications.MoulinetteTilesFavorites()).render(true)
+        } else {
+          console.warn("Moulinette Tiles not enabled (or not up-to-date?)")
+        }
+      }
+    });
+  }
   
   game.moulinette = {
     user: { hasEarlyAccess: function() { return false } },
@@ -119,7 +134,7 @@ Hooks.once("init", async function () {
   Handlebars.registerHelper('pretty', function(value) {
     return isNaN(value) ? Moulinette.prettyText(value) : Moulinette.prettyNumber(value)
   });
-  
+
 });
 
 
@@ -147,6 +162,13 @@ Hooks.once("ready", async function () {
   if( game.settings.get("moulinette-core", "filepicker") ) {
     FilePicker = game.moulinette.applications.MoulinetteFilePicker
   }
+
+  // clear any existing favorite settings
+  const favs = game.settings.get("moulinette", "favorites");
+  if (favs.constructor != Object) {
+    game.settings.set("moulinette", "favorites", { default: { icon: "fas fa-heart", list: [] }});
+  }
+
 });
 
 /**
@@ -164,9 +186,9 @@ Hooks.once("ready", async function () {
     });
     
     // load macros
-    if(game.moulinette.macros.length > 0) {
-      game.moulinette.applications.Moulinette.loadModuleMacros();      
-    }
+    //if(game.moulinette.macros.length > 0) {
+    //  game.moulinette.applications.Moulinette.loadModuleMacros();
+    //}
   }
 });
 
