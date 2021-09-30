@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Previews : search for assets among creators
 
+## [3.7.0] - 2021-09-30
+### Changed
+- Selected pack remains selected when changing tab (if matching pack exists)
+
 ## [3.6.2] - 2021-09-12
 ### Added
 - Favorites : history, groups

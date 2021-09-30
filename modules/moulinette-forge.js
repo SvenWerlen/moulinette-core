@@ -95,8 +95,21 @@ export class MoulinetteForge extends FormApplication {
       p["cleanName"] = p["name"].startsWith(p["publisher"]) ? p["name"].substring(p["publisher"].length).trim() : p["name"]
     }
     
+    const browseMode = game.settings.get("moulinette-core", "browseMode")
+
+    // autoselect matching pack (if any)
+    let publisher = null
+    let packIdx = null
+    if(browseMode == "byPack" && this.curPack) {
+      const matchingPack = packs.find(p => p.path == this.curPack);
+      if(matchingPack) {
+        packIdx = matchingPack.idx
+        matchingPack.selected = "selected"
+      }
+    }
+
     // fetch initial asset list
-    const assets = await this.activeModule.instance.getAssetList()
+    const assets = await this.activeModule.instance.getAssetList("", packIdx, publisher)
       
     const data = { 
       user: await game.moulinette.applications.Moulinette.getUser(),
@@ -109,13 +122,9 @@ export class MoulinetteForge extends FormApplication {
       compactUI: uiMode == "compact"
     }
     
-    const browseMode = game.settings.get("moulinette-core", "browseMode")
     if(browseMode == "byPub") {
       data.publishers = publishers
     } else {
-      if(browseMode == "byPub") {
-        console.warn("Moulinette Core | This feature (browse by creator) is available to early access members only. Requires tier 'Dwarf blacksmith' or more.")
-      }
       data.packs = packs
     }
       
@@ -157,17 +166,27 @@ export class MoulinetteForge extends FormApplication {
     
     // autoload on scroll
     html.find(".list").on('scroll', this._onScroll.bind(this))
-    
+
     this.html = html
   }
   
   /**
    * User clicked on another tab (i.e. module)
    */
-  _onNavigate(event) {
+  async _onNavigate(event) {
     event.preventDefault();
     const source = event.currentTarget;
     const tab = source.dataset.tab;
+    // keep current selection
+    if(game.settings.get("moulinette-core", "browseMode") == "byPack") {
+      const packId = this.html.find(".plist option:selected").val()
+      if(packId) {
+        let packs = await this.activeModule.instance.getPackList()
+        if(packId in packs) {
+          this.curPack = packs[packId].path
+        }
+      }
+    }
     if(MoulinetteForge.TABS.includes(tab)) {
       this.assets = [] // clean search list
       this.tab = tab
