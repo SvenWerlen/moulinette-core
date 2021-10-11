@@ -100,7 +100,7 @@ Hooks.once("init", async function () {
     KeybindLib.register("moulinette-core", "favoriteKey", {
       name: game.i18n.localize("mtte.configFavoriteKey"),
       hint: game.i18n.localize("mtte.configFavoriteKeyHint"),
-      default: "Ctrl + KeyF",
+      default: "Ctrl + KeyM",
       onKeyDown: () => {
         if(game.moulinette.applications.MoulinetteTilesFavorites) {
           (new game.moulinette.applications.MoulinetteTilesFavorites()).render(true)
@@ -179,11 +179,11 @@ Hooks.once("ready", async function () {
     await MoulinetteFileUtil.createFolderRecursive("moulinette");
     
     // open moulinette on CTRL+M
-    document.addEventListener("keydown", evt => {
-      if(evt.key == "m" && evt.ctrlKey && !evt.altKey && !evt.metaKey) {
-        game.moulinette.applications.Moulinette.showMoulinette()
-      }
-    });
+    //document.addEventListener("keydown", evt => {
+    //  if(evt.key == "m" && evt.ctrlKey && !evt.altKey && !evt.metaKey) {
+    //    game.moulinette.applications.Moulinette.showMoulinette()
+    //  }
+    //});
     
     // load macros
     //if(game.moulinette.macros.length > 0) {

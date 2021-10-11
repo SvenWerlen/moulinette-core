@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.0] - 2021-10-11
+### Changed
+- "Forge" removed from all the UI (to avoid confusion with The Forge)
+- Default shortcut has been changed to "CTRL+M" (CTRL+F is too common)
+
+## [3.8.0] - 2021-09-30
+### Changed
+- Selected pack remains selected after changing tab (until new selection)
+
 ## [3.7.1] - 2021-09-25
 ### Added
 - Previews : search for assets among creators

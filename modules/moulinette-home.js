@@ -10,7 +10,7 @@ export class MoulinetteHome extends FormApplication {
       title: game.i18n.localize("mtte.moulinetteHome"),
       template: "modules/moulinette-core/templates/home.hbs",
       width: "400",
-      height: "auto",
+      height: "350",
       closeOnSubmit: false,
       submitOnClose: false,
     });
