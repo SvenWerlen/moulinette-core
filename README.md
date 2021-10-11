@@ -3,7 +3,7 @@
 [![GitHub tags (latest by date)](https://img.shields.io/github/v/tag/SvenWerlen/moulinette-core)](https://github.com/SvenWerlen/moulinette-core/releases)
 [![License](https://img.shields.io/github/license/SvenWerlen/moulinette-core)](https://github.com/SvenWerlen/moulinette-core/LICENSE.txt)
 [![GitHub Download](https://img.shields.io/badge/foundryvtt-Download-important)](#install)
-![Tested on forge-vtt.com](https://img.shields.io/badge/Forge-supported-success)
+![Tested on fvtt-vtt.com](https://img.shields.io/badge/Forge-supported-success)
 [![Support me on Patreon](https://img.shields.io/badge/patreon-Support%20me-informational)](https://www.patreon.com/moulinette)
 
 See [www.moulinette.cloud](https://www.moulinette.cloud) website.
@@ -12,12 +12,12 @@ See [www.moulinette.cloud](https://www.moulinette.cloud) website.
 
 :warning: the core only provides the Moulinette's foundations. You'll have to install additional modules to bring features.
 
-* [Moulinette Forge - Scenes](#forge): import scenes into your world. Share your scenes with the community.
-* [Moulinette Forge - Icons](#forge-game): search and import game icons from <a href="https://game-icons.net/" target="_blank">game-icons.net</a>.
-* [Moulinette Forge - Image search](#forge-search): search images and generate articles.
-* [Moulinette Forge - Tiles](#forge-tiles): search tiles and drop them on your maps. Bring your own images and let Moulinette manage them for you.
-* [Moulinette Forge - Sounds](#forge-sounds): Bring your own sounds and let Moulinette manage them for you. Search and play a sound on-the-fly or create a playlist.
-* [Moulinette Forge - Soundboard](#forge-soundboard): Create your own soundboard. Prepare sounds for your games and play them very quickly and easily.
+* [Moulinette Scenes](#forge): import scenes into your world. Share your scenes with the community.
+* [Moulinette Icons](#fvtt-game): search and import game icons from <a href="https://game-icons.net/" target="_blank">game-icons.net</a>.
+* [Moulinette Image search](#fvtt-search): search images and generate articles.
+* [Moulinette Tiles](#fvtt-tiles): search tiles and drop them on your maps. Bring your own images and let Moulinette manage them for you.
+* [Moulinette Sounds](#fvtt-sounds): Bring your own sounds and let Moulinette manage them for you. Search and play a sound on-the-fly or create a playlist.
+* [Moulinette Soundboard](#fvtt-soundboard): Create your own soundboard. Prepare sounds for your games and play them very quickly and easily.
 * [Install the module](#install): install the module on your Foundry VTT server.
 * [Support me on Patreon](#support)
 
@@ -26,7 +26,7 @@ Watch *Foundry VTT Module Tutorial: Moulinette Forge with Free Forgotten Adventu
 
 <a href="http://www.youtube.com/watch?v=O2fZIOKT7pk"><img src="https://img.youtube.com/vi/O2fZIOKT7pk/0.jpg" height="180" width="240" ></a>
 
-## <a name="forge"/>Moulinette Forge - Scenes
+## <a name="forge"/>Moulinette Scenes
 
 [Visit module repository](https://github.com/SvenWerlen/moulinette-scenes)
 
@@ -34,13 +34,13 @@ You're a GM (game master) preparing a new scenario? Moulinette Forge lets you br
 * Search in the catalog
 * Have a look at the preview
 * Check the scenes you want to import
-* Forge!
+* Import!
 
 ![Catalog](https://github.com/SvenWerlen/moulinette-scenes/raw/main/docs/img/download-scene.jpg)
 
 <br>_(Scenes on the screenshot are from [VenatusMaps](https://www.venatusmaps.com/))_
 
-## <a name="forge-game"/>Moulinette Forge - Game icons
+## <a name="fvtt-game"/>Moulinette Game icons
 
 [Visit module repository](https://github.com/SvenWerlen/moulinette-gameicons)
 
@@ -48,12 +48,12 @@ You need icons for your game (actions, items, etc.).
 * Search <a href="https://game-icons.net/" target="_blank">game-icons.net</a> catalog
 * Check the icons you want to import
 * Choose your favorite colors (foreground/background)
-* Forge!
+* Import!
 
 ![Game icons](https://raw.githubusercontent.com/SvenWerlen/moulinette-gameicons/main/docs/img/download-gameicons.jpg)
 <br>_(Icons on the screenshot are from [Game-icons.net](https://game-icons.net/) and are provided under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) license.)_
 
-## <a name="forge-search"/>Moulinette Forge - Image search
+## <a name="fvtt-search"/>Moulinette Image search
 
 [Visit module repository](https://github.com/SvenWerlen/moulinette-imagesearch)
 
@@ -61,12 +61,12 @@ You need images to enrich your game/campaign
 * Search using <a href="https://www.bing.com" target="_blank">bing.com</a> engine
 * Preview the image
 * Download or generate a journal article
-* Forge!
+* Import!
 
 ![Image search on Bing](https://raw.githubusercontent.com/SvenWerlen/moulinette-imagesearch/main/docs/img/search-bing.jpg)
 <br>_(Images on the screenshot are from [Microsoft Bing](https://www.bing.com) search engine. Images are publicly available but their license varies.)_
 
-## <a name="forge-tiles"/>Moulinette Forge - Tiles
+## <a name="fvtt-tiles"/>Moulinette Tiles
 
 [Visit module repository](https://github.com/SvenWerlen/moulinette-tiles)
 
@@ -88,7 +88,7 @@ You created or downloaded some tokens/assets you'd like Moulinette to manage for
 ![Bring your own images](https://raw.githubusercontent.com/SvenWerlen/moulinette-tiles/main/docs/img/bring-your-own.jpg)
 <br>_(Tokens on the screenshot have been downloaded from [Devin's Token Site](https://immortalnights.com/tokens/token-packs/). 20 token packs have been made free to the public.)_
 
-## <a name="forge-sounds"/>Moulinette Forge - Sounds
+## <a name="fvtt-sounds"/>Moulinette Sounds
 
 [Visit module repository](https://github.com/SvenWerlen/moulinette-sounds)
 
@@ -103,7 +103,7 @@ You created or downloaded some sounds you'd like Moulinette to manage for you?
 ![Bring your own sounds](https://github.com/SvenWerlen/moulinette-sounds/raw/main/docs/img/bring-your-own.jpg)
 <br>_(Ambience sounds on the screenshot have been downloaded from [Tabletop Audio](https://tabletopaudio.com/) which are licensed under a [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International](https://creativecommons.org/licenses/by-nc-nd/4.0/) License.)_
 
-## <a name="forge-soundboard"/>Moulinette Soundboard
+## <a name="fvtt-soundboard"/>Moulinette Soundboard
 
 You can also create your own soundboard. 
 * Sounds can be added by clicking on the "favorite" icon (Moulinette Forge | Audio)
