@@ -244,6 +244,7 @@ export class MoulinetteFileUtil {
         try {
           data = await response.json();
           packEntry.meta = data
+          if(debug) console.log(`Moulinette FileUtil | PackEntry meta`, data)
         } catch(e) {
           console.warn(`${info} not processed.`, e);
         }
@@ -468,6 +469,7 @@ export class MoulinetteFileUtil {
             // add pack
             assetsPacks.push({ 
               idx: idx, 
+              packId: pack.id,
               publisher: pub.publisher, 
               pubWebsite: pub.website, 
               name: pack.name, 
