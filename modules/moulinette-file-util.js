@@ -421,7 +421,7 @@ export class MoulinetteFileUtil {
             console.warn(`Moulinette FileUtil | No index ${URL} exists yet.`)
             return;
           });
-          const found = fb.files.filter(f => f.endsWith(URL))
+          const found = fb.files ? fb.files.filter(f => f.endsWith(URL)) : null
           if(found && found.length == 1) {
             URL = found[0] + (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge ? `?t=${Date.now()}` : "")
           } else {
