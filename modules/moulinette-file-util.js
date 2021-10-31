@@ -117,7 +117,12 @@ export class MoulinetteFileUtil {
     if(exist.length > 0 && !overwrite) return {path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}`};
     
     try {
-      return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+      if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
+        console.log("MoulinetteFileUtil | Uploading with The Forge")
+        return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+      } else {
+        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+      }
     } catch (e) {
       console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
       console.log(e)
@@ -137,7 +142,12 @@ export class MoulinetteFileUtil {
     if(exist.length > 0 && !overwrite) return { path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}` };
     
     try {
-      return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+      if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
+        console.log("MoulinetteFileUtil | Uploading with The Forge")
+        return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+      } else {
+        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+      }
     } catch (e) {
       console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
       console.log(e)
