@@ -14,7 +14,7 @@ Hooks.once("init", async function () {
   
   game.settings.register("moulinette", "userId", { scope: "world", config: false, type: String, default: "anonymous" });
   game.settings.register("moulinette", "currentTab", { scope: "world", config: false, type: String, default: "scenes" })
-  game.settings.register("moulinette", "displayMode", { scope: "world", config: false, type: String, default: "tiles" })
+  game.settings.register("moulinette", "displayMode", { scope: "world", config: false, type: String, default: "list" })
   game.settings.register("moulinette", "winPosForge", { scope: "world", config: false, type: Object })
   game.settings.register("moulinette", "favorites", { scope: "world", config: false, type: Object, default: { default: { icon: "fas fa-heart", list: [] }} })
   game.settings.register("moulinette", "currentFav", { scope: "world", config: false, type: String, default: "history" })
