@@ -302,7 +302,7 @@ export class MoulinetteForge extends FormApplication {
       return
     }
     
-    const regex = new RegExp(`data-path="${folder.replace("(",'\\(').replace(")",'\\)')}[^"/]+"`, "g")
+    const regex = new RegExp(`data-path="[^"]*${folder.replace("(",'\\(').replace(")",'\\)')}[^"/]+"`, "g")
     let matchList = []
     for(const a of this.assets) {
       if(a.match(regex)) {

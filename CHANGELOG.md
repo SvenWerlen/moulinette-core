@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.11.0] - 2021-10-30
+### Fixed
+- Folder view not working in Moulinette Sounds
+### Changed
+- Show lifespan support on Patreon
+
 ## [3.10.0] - 2021-10-16
 ### Changed
 - New Moulinette icon

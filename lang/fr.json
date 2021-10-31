@@ -25,6 +25,7 @@
   "mtte.configUIMode": "Interface",
   "mtte.configUIModeHint": "Lorsque vous choissez le mode \"compact\" les libell\u00e9s seront cach\u00e9s pour gagner de la place. Inter\u00e9ssant pour les MJs exp\u00e9riment\u00e9s qui veulent optimiser leur espace de travail.",
   "mtte.continue": "Le module attend que votre authentification soit compl\u00e9t\u00e9e avec succ\u00e8s. Consultez votre navigateur pour terminer le processus. Si l'authentification \u00e9choue, fermer cette fen\u00eatre et recommencer.",
+  "mtte.days": "jours",
   "mtte.defaultPicker": "FilePicker par d\u00e9faut",
   "mtte.defaultPickerHint": "Ouvrir le FilePicker FoundryVTT d'origine",
   "mtte.disconnect": "Se d\u00e9tacher de Patreon",

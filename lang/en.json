@@ -25,6 +25,7 @@
   "mtte.configUIMode": "Interface",
   "mtte.configUIModeHint": "When choosing \"compact\", labels will be removed to save space. Useful for advanced GMs that want to optimize their workspace.",
   "mtte.continue": "The module waits for the authentication to be successfully completed. Check your browser (new tab) to follow the process. If the authentication failed, close this window and try again!",
+  "mtte.days": "days",
   "mtte.defaultPicker": "Default FilePicker",
   "mtte.defaultPickerHint": "Open FoundryVTT default FilePicker",
   "mtte.disconnect": "Unlink Patreon",

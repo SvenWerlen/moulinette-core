@@ -34,7 +34,7 @@
         {{localize "mtte.patreonPledges"}}
         <ul>
         {{#each user.pledges as |p|}}
-        <li>{{p.vanity}}: {{p.pledge}}</li>
+        <li>{{p.vanity}}: {{p.pledge}} <i class="fas fa-dollar-sign" title="{{p.paid}} $USD ({{p.days}} {{localize "mtte.days"}})"></i></li>
         {{/each}}
         </ul>
       {{/if}}
