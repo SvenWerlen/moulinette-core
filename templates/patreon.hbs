@@ -15,6 +15,9 @@
       {{#if user.fullName}}
       <p><button class="logout"><i class="fas fa-unlink"></i> {{localize "mtte.disconnect"}}</button></p>
       <p><button class="gift"><i class="fas fa-gift"></i> {{localize "mtte.receiveGift"}}</button></p>
+      {{#unless user.patron}}
+      <p><a href="https://www.patreon.com/moulinette" target="_blank"><button><i class="fab fa-patreon"></i> {{localize "mtte.supportMoulinette"}}</button></a></p>
+      {{/unless}}
       {{/if}}
       {{#unless user.fullName}}
       <p><button class="login"><i class="fab fa-patreon"></i> {{localize "mtte.authenticate"}}</button></p>
@@ -29,6 +32,9 @@
       {{#if user.patron}}
       <li>{{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}})</li>
       {{/if}}
+      {{#unless user.patron}}
+      <li class="error">{{localize "mtte.notPatron"}}</li>
+      {{/unless}}
       {{#if user.pledges}}
         </ul>
         {{localize "mtte.patreonPledges"}}
