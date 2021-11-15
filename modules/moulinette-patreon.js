@@ -101,9 +101,10 @@ export class MoulinettePatreon extends FormApplication {
    * Check if patreon level is > 5$/month
    * It's not a robust implementation and is not intended to be.
    * If you really want to not support me, feel free to hijack it :)
+   * However, server-side features double-check the permissions
    */
   static hasEarlyAccess() {
-    return ["Dwarf blacksmith", "Dwarf goldsmith", "Owner"].includes(game.moulinette.user.patron)
+    return ["Dwarf blacksmith", "Dwarf goldsmith", "Dwarf goldsmith II", "Dwarf goldsmith III", "Dwarf noble", "Owner"].includes(game.moulinette.user.patron)
   }
 
   close() {

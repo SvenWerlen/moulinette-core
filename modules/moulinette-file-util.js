@@ -760,4 +760,32 @@ export class MoulinetteFileUtil {
     }
   }
 
+
+  /**
+   * This function attempts to upload a single file to Moulinette server
+   */
+  static async uploadToMoulinette(file, path, state, pack) {
+    const user = await game.moulinette.applications.Moulinette.getUser()
+    const client = new game.moulinette.applications.MoulinetteClient()
+
+    // Create the form data to post
+    const fd = new FormData();
+    fd.set("file", file);
+    fd.set("path", path);
+    fd.set("state", state);
+    fd.set("pack", pack);
+
+    try {
+      const response = await fetch(game.moulinette.applications.MoulinetteClient.SERVER_URL + "/byoa/files/upload/" + user.id, {method: "POST", body: fd});
+      if ( response.status != 200 ) {
+        console.error("Moulinette FileUtil | File upload to Moulinette Cloud failed", response)
+        return false;
+      }
+    } catch (e) {
+      console.error("Moulinette FileUtil | File upload to Moulinette Cloud failed", e)
+      return false
+    }
+
+    return true
+  }
 }
