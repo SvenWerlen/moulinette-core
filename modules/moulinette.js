@@ -25,14 +25,17 @@ export class Moulinette {
       const moulinetteBtn = $(
           `<li class="scene-control moulinette-scene-control" data-control="moulinette" title="${game.i18n.localize("mtte.moulinette")}">
               <i class="fas fa-hammer"></i>
-              <ol class="control-tools">
-                  <div id="moulinetteOptions" class="moulinette-options" style="display: none;">
-                  </div>
-              </ol>
           </li>`
       );
 
-      html.append(moulinetteBtn);
+      const moulinetteSub = $(
+          `<ol class="sub-controls app control-tools moulinetteSub">
+              <div id="moulinetteOptions" class="moulinette-options" style="display: none;"></div>
+           </ol>`)
+
+      html.find(".main-controls").append(moulinetteBtn);
+      html.append(moulinetteSub);
+
       moulinetteBtn[0].addEventListener('click', ev => this.toggleOptions(ev, html));
   }
   
@@ -73,6 +76,7 @@ export class Moulinette {
    */
   static async toggleOptions(event, html) {
     if (html.find('.moulinette-scene-control').hasClass('active')) {
+      html.find('.moulinetteSub').hide();
       html.find('#moulinetteOptions').hide();
       html.find('.moulinette-scene-control').removeClass('active');
       html.find('.scene-control').first().addClass('active');
@@ -80,6 +84,7 @@ export class Moulinette {
     } else {
       this._createOptionsTable(html);
       html.find('.scene-control').removeClass('active');
+      html.find('.moulinetteSub').show();
       html.find('#moulinetteOptions').show();
       html.find('.moulinette-scene-control').addClass('active');
       $(document.getElementById("controls")).css('z-index', 159); // notifications have 160

@@ -110,6 +110,7 @@
     border: 1px solid #000;
     border-radius: 5px;
     z-index: 30;
+    position: absolute;
 }
 
 .moulinette-options ul {

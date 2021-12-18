@@ -169,6 +169,12 @@ Hooks.once("ready", async function () {
     game.settings.set("moulinette", "favorites", { default: { icon: "fas fa-heart", list: [] }});
   }
 
+  // backwards compatibility (0.7.x and 0.8.x)
+  if(!SceneNavigation._onLoadProgress) {
+    SceneNavigation._onLoadProgress = function(message, progress) {
+      SceneNavigation.displayProgressBar({label: message, pct: progress});
+    }
+  }
 });
 
 /**
@@ -196,6 +202,7 @@ Hooks.once("ready", async function () {
  * Controls: adds a new Moulinette control
  */
 Hooks.on('renderSceneControls', (controls, html) => { 
+  console.log(html)
   if (game.user.isGM) { 
     Moulinette.addControls(controls, html) 
   } 
