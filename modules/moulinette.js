@@ -173,8 +173,8 @@ export class Moulinette {
    * Load modules macros from modules into core compendium
    */
   static async loadModuleMacros() {
-    // not yet supported by 0.8.x
-    if(!game.data.version.startsWith("0.7")) return;
+    // not yet supported by 9.x
+    return;
     
     const pack = game.packs.get("moulinette-core.moulinette-macros")
     const isLocked = pack.locked

@@ -339,10 +339,7 @@ export class MoulinetteForge extends FormApplication {
   _reEnableListeners() {
     this.html.find("*").off()
     this.activateListeners(this.html)
-    // re-enable core listeners (for drag & drop)
-    if(!game.data.version.startsWith("0.7")) {
-      this._activateCoreListeners(this.html)
-    }
+    this._activateCoreListeners(this.html)
   }
   
   /**
