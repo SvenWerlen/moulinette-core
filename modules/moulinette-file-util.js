@@ -95,7 +95,8 @@ export class MoulinetteFileUtil {
   static async fileExists(path) {
     try {
       const parentFolder = await FilePicker.browse(MoulinetteFileUtil.getSource(), path.substring(0, path.lastIndexOf('/')), MoulinetteFileUtil.getOptions());
-      return parentFolder.files.includes(path)
+      const decodedPaths = parentFolder.files.map(f => decodeURIComponent(f))
+      return parentFolder.files.includes(path) || decodedPaths.includes(path)
     } catch(exc) {
       console.log(exc)
       return false

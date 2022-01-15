@@ -242,5 +242,52 @@ export class Moulinette {
     game.moulinette.user.id = game.settings.get("moulinette", "userId")
     return game.moulinette.user
   }
-  
+
+  /**
+   * Establish a connection to Moulinette Cloud and fills the cache
+   */
+  static async fillMoulinetteCache() {
+    const user = await game.moulinette.applications.Moulinette.getUser()
+    const index = await game.moulinette.applications.MoulinetteFileUtil.buildAssetIndex([
+      game.moulinette.applications.MoulinetteClient.SERVER_URL + "/assets/" + game.moulinette.user.id])
+    return index
+  }
+
+  static async updateS3URLs() {
+    // force linking to Patreon (required for that feature)
+    await game.moulinette.applications.Moulinette.fillMoulinetteCache()
+
+    if(!game.moulinette.user.id || game.moulinette.user.id == "anonymous") {
+      return ui.notifications.warn(game.i18n.localize("mtte.errorLinkYourPatreon"));
+    }
+
+    // get all scenes with a matching background
+    const s3Exp = /https:\/\/[a-zA-Z0-9\.]+.*digitaloceanspaces\.com\//;
+    const scenes = Array.from(game.scenes.values()).filter(s => s.data.img && s.data.img.match(s3Exp))
+    const urls = scenes.map( s => s.data.img )
+
+    // let Moulinette generate new URLs
+    let params = {
+      method: "POST",
+      body: JSON.stringify(urls),
+      headers: { 'Content-Type': 'application/json' }
+    }
+    const response = await fetch(`${game.moulinette.applications.MoulinetteClient.SERVER_URL}/asset/s3/${game.moulinette.user.id}/BeneosBattlemaps`, params).catch(function(e) {
+      console.log(`MoulinetteClient | Cannot establish connection to server ${game.moulinette.applications.MoulinetteClient.SERVER_URL}`, e)
+    });
+
+    // double check!
+    const newUrls = await response.json()
+    if(newUrls && newUrls.length == scenes.length) {
+      //update all scenes
+      for(let i = 0; i < scenes.length; i++) {
+        await scenes[i].update({ 'id': scenes[i]._id, 'img': newUrls[i]})
+        console.log(`Moulinette | Background scene for ${scenes[i].name} has been successfully updated!`)
+      }
+    } else {
+      console.error("Moulinette | Something wrong on the Moulinette server. Try again or get support on Discord.")
+    }
+
+  }
+
 };

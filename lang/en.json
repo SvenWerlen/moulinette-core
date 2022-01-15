@@ -34,6 +34,7 @@
   "mtte.errorDownload": "Image couldn't be downloaded from website. Try again later!",
   "mtte.errorGMOnly": "This interface is only for GMs.",
   "mtte.errorInvalidGift": "Your gift is invalid!",
+  "mtte.errorLinkYourPatreon": "You need to link Moulinette to Patreon first",
   "mtte.errorNoModule": "It seems that only the core has been installed. Make sure that at least 1 Moulinette module has been installed and enabled.",
   "mtte.errorSASTokenAboutToExpire": "Your token will expire in {minutes} minutes. Relink your Patreon account to hide this message.",
   "mtte.errorSASTokenExpired": "Your token expired. Relink your Patreon to get access to Moulinette Cloud assets",
