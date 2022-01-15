@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2022-01-15
+### Changed
+- Keybind from FoundryVTT (doesn't require extra module anymore)
+
 ## [4.0.2] - 2021-12-23
 ### Fixed
 - 4.0.1: Module version for 9.x release

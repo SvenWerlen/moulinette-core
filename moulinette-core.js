@@ -95,21 +95,22 @@ Hooks.once("init", async function () {
     type: String
   });
 
-  // Binding with a default key and a simple callback
-  if(typeof KeybindLib != "undefined") {
-    KeybindLib.register("moulinette-core", "favoriteKey", {
-      name: game.i18n.localize("mtte.configFavoriteKey"),
-      hint: game.i18n.localize("mtte.configFavoriteKeyHint"),
-      default: "Ctrl + KeyM",
-      onKeyDown: () => {
-        if(game.moulinette.applications.MoulinetteTilesFavorites) {
-          (new game.moulinette.applications.MoulinetteTilesFavorites()).render(true)
-        } else {
-          console.warn("Moulinette Tiles not enabled (or not up-to-date?)")
-        }
+  game.keybindings.register("moulinette-core", "favoriteKey", {
+    name: game.i18n.localize("mtte.configFavoriteKey"),
+    hint: game.i18n.localize("mtte.configFavoriteKeyHint"),
+    editable: [{ key: "KeyM", modifiers: [ "Control" ]}],
+    onDown: () => {
+      if(game.moulinette.applications.MoulinetteTilesFavorites) {
+        (new game.moulinette.applications.MoulinetteTilesFavorites()).render(true)
+      } else {
+        console.warn("Moulinette Tiles not enabled (or not up-to-date?)")
       }
-    });
-  }
+    },
+    onUp: () => {},
+    restricted: true,  // Restrict this Keybinding to gamemaster only?
+    reservedModifiers: [],
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+  })
   
   game.moulinette = {
     user: { hasEarlyAccess: function() { return false } },
@@ -202,7 +203,6 @@ Hooks.once("ready", async function () {
  * Controls: adds a new Moulinette control
  */
 Hooks.on('renderSceneControls', (controls, html) => { 
-  console.log(html)
   if (game.user.isGM) { 
     Moulinette.addControls(controls, html) 
   } 
