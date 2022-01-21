@@ -17,7 +17,8 @@ export class MoulinetteFileUtil {
     if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
       source = "forgevtt";
     }
-    if(game.settings.get("moulinette-core", "s3Bucket").length > 0) {
+    const bucket = game.settings.get("moulinette-core", "s3Bucket")
+    if(bucket.length > 0 && bucket != "null") {
       source = "s3"
     }
     
@@ -27,7 +28,7 @@ export class MoulinetteFileUtil {
   static getOptions() {
     let options = {}
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
-    if(bucket.length > 0) {
+    if(bucket.length > 0 && bucket != "null") {
       options.bucket = bucket
     }
     return options;
@@ -38,7 +39,7 @@ export class MoulinetteFileUtil {
    */
   static getBaseURL() {
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
-    if(bucket && bucket.length > 0) {
+    if(bucket.length > 0 && bucket != "null") {
       const e = game.data.files.s3.endpoint;
       return `${e.protocol}//${bucket}.${e.host}/`
     } 
