@@ -771,7 +771,7 @@ export class MoulinetteFileUtil {
     // Create the form data to post
     const fd = new FormData();
     fd.set("file", file);
-    fd.set("path", path);
+    fd.set("path", decodeURIComponent(path));
     fd.set("state", state);
     fd.set("pack", pack);
 
