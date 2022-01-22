@@ -73,21 +73,6 @@ export class MoulinetteForgeModule {
   }
 
   /**
-   * Overwrite this function to implement your module controls
-   */
-  getControls() {
-    console.debug("Moulinette Forge Module | Default getControls() returns nothing")
-    return ""
-  }
-  
-  /**
-   * Overwrite this function to implement your module controls
-   */
-  async activateControlsListeners(html, mode) {
-    console.debug("Moulinette Forge Module | Default activateControlsListeners() does nothing")
-  }
-
-  /**
    * Common function to add asset to history
    */
   async addToHistory(pack, tile) {

@@ -1,10 +1,12 @@
 
 import { Moulinette } from "./modules/moulinette.js"
+import { MoulinetteLayer } from "./modules/moulinette-layer.js"
 import { MoulinetteCache } from "./modules/moulinette-cache.js"
 import { MoulinetteFileUtil } from "./modules/moulinette-file-util.js"
 import { MoulinetteFilePicker } from "./modules/moulinette-filepicker.js"
 import { MoulinetteClient } from "./modules/moulinette-client.js"
 import { MoulinetteForgeModule } from "./modules/moulinette-forge-module.js"
+import { MoulinettePatreon } from "./modules/moulinette-patreon.js"
 
 /**
  * Init: define global game settings & helpers
@@ -136,6 +138,9 @@ Hooks.once("init", async function () {
     return isNaN(value) ? Moulinette.prettyText(value) : Moulinette.prettyNumber(value)
   });
 
+  const layers = { moulinette: { layerClass: MoulinetteLayer, group: "primary" } }
+  CONFIG.Canvas.layers = foundry.utils.mergeObject(Canvas.layers, layers);
+
 });
 
 
@@ -184,26 +189,81 @@ Hooks.once("ready", async function () {
 Hooks.once("ready", async function () {
   if (game.user.isGM) {
     await MoulinetteFileUtil.createFolderRecursive("moulinette");
-    
-    // open moulinette on CTRL+M
-    //document.addEventListener("keydown", evt => {
-    //  if(evt.key == "m" && evt.ctrlKey && !evt.altKey && !evt.metaKey) {
-    //    game.moulinette.applications.Moulinette.showMoulinette()
-    //  }
-    //});
-    
-    // load macros
-    //if(game.moulinette.macros.length > 0) {
-    //  game.moulinette.applications.Moulinette.loadModuleMacros();
-    //}
   }
 });
 
 /**
  * Controls: adds a new Moulinette control
  */
-Hooks.on('renderSceneControls', (controls, html) => { 
-  if (game.user.isGM) { 
-    Moulinette.addControls(controls, html) 
-  } 
-});
+Hooks.on('getSceneControlButtons', (buttons) => {
+
+  if(game.user.isGM) {
+    const moulinetteTool = {
+      activeTool: "select",
+      icon: "fas fa-hammer",
+      layer: "moulinette",
+      name: "moulinette",
+      title: game.i18n.localize("mtte.moulinette"),
+      tools: [{ name: "select", icon: "fas fa-expand", title: "Select" }],
+      visible: true
+    }
+    // patreon integration
+    moulinetteTool.tools.push({
+      name: "patreon",
+      icon: "fab fa-patreon",
+      title: game.i18n.localize("mtte.patreon"),
+      button: true,
+      onClick: () => { new MoulinettePatreon().render(true) }
+    })
+
+    // all moulinette modules
+    const modules = game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1)
+    for(const m of modules) {
+      moulinetteTool.tools.push({
+        name: m.id,
+        icon: m.icon,
+        title: `${game.i18n.localize("mtte.moulinette")} - ${m.name}`,
+        button: true,
+        onClick: () => {
+          const forgeClass = game.moulinette.modules.find(m => m.id == "forge").class
+          new forgeClass(m.id).render(true)
+        }
+      })
+
+      // additional specific controls
+      const shortcuts = []
+      if(m.shortcuts) {
+        for(const s of m.shortcuts) {
+          shortcuts.push({
+            name: s.id,
+            icon: s.icon,
+            title: `${game.i18n.localize("mtte.moulinette")} - ${s.name}`,
+            button: true,
+            onClick: () => { m.instance.onShortcut(s.id) }
+          })
+        }
+      }
+      moulinetteTool.tools.push.apply(moulinetteTool.tools, shortcuts)
+
+      // insert into existing control lists
+      if(m.layer) {
+        const button = buttons.find(b => b.name == m.layer)
+        if(button) {
+          button.tools.push({
+            name: m.id,
+            icon: "fas fa-hammer",
+            title: `${game.i18n.localize("mtte.moulinette")} - ${m.name}`,
+            button: true,
+            onClick: () => {
+              const forgeClass = game.moulinette.modules.find(m => m.id == "forge").class
+              new forgeClass(m.id).render(true)
+            }
+          })
+          button.tools.push.apply(button.tools, shortcuts)
+        }
+      }
+    }
+
+    buttons.push(moulinetteTool)
+  }
+})

@@ -413,7 +413,7 @@ export class MoulinetteFileUtil {
     // build tiles' index 
     let idx = 0;
     for(let URL of urlList) {
-      SceneNavigation._onLoadProgress(game.i18n.localize("mtte.indexingMoulinette"), Math.round((idx / urlList.length)*100));
+      SceneNavigation.displayProgressBar({label: game.i18n.localize("mtte.indexingMoulinette"), pct: Math.round((idx / urlList.length)*100)});
       
       // try to load from cache when exists
       let data;
@@ -526,7 +526,7 @@ export class MoulinetteFileUtil {
       }
     }
     
-    SceneNavigation._onLoadProgress(game.i18n.localize("mtte.indexingMoulinette"),100);  
+    SceneNavigation.displayProgressBar({label: game.i18n.localize("mtte.indexingMoulinette"), pct: 100});
     
     if(special) {
       for(const el of special) {
