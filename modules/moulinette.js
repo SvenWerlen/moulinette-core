@@ -26,6 +26,10 @@ export class Moulinette {
     
     // replace file separators
     text = text.replace(/[_-]/g, " ")
+
+    // add spaces before and after parenthesis
+    text = text.replace(/[^ ]\(/g, " (")
+    text = text.replace(/\)[^ ]/g, ") ")
     
     // adds a space between word and number (ex: Orks2 => Orks 2)
     text = text.replace( /(\d+)$/g, " $1");
