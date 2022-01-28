@@ -517,6 +517,10 @@ export class MoulinetteFileUtil {
                 }
                 assets.push(aData)
               }
+              // sounds from Moulinette Cloud
+              else if(asset.type == "snd") {
+                assets.push({ pack: idx, filename: asset.path, type: asset.type, duration: asset.duration, loop: asset.loop, title: asset.title })
+              }
               // complex type (ex: scene)
               else {
                 const path = asset['path']

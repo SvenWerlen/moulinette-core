@@ -28,11 +28,14 @@ export class Moulinette {
     text = text.replace(/[_-]/g, " ")
 
     // add spaces before and after parenthesis
-    text = text.replace(/[^ ]\(/g, " (")
-    text = text.replace(/\)[^ ]/g, ") ")
+    text = text.replace(/([^ ])\(/g, "$1 (")
+    text = text.replace(/\)([^ ])/g, ") $1")
     
     // adds a space between word and number (ex: Orks2 => Orks 2)
     text = text.replace( /(\d+)$/g, " $1");
+
+    // remove all multiple spaces
+    text = text.replace(/ +(?= )/g,'');
 
     return text;
   }

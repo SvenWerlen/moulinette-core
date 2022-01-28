@@ -215,6 +215,17 @@ Hooks.on('getSceneControlButtons', (buttons) => {
       button: true,
       onClick: () => { new MoulinettePatreon().render(true) }
     })
+    // refresh data
+    moulinetteTool.tools.push({
+      name: "refresh",
+      icon: "fas fa-sync",
+      title: game.i18n.localize("mtte.sync"),
+      button: true,
+      onClick: () => {
+        game.moulinette.cache.clear()
+        ui.notifications.info(game.i18n.localize("mtte.refreshed"))
+      }
+    })
 
     // all moulinette modules
     const modules = game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1)
