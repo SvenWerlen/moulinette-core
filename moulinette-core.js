@@ -7,6 +7,7 @@ import { MoulinetteFilePicker } from "./modules/moulinette-filepicker.js"
 import { MoulinetteClient } from "./modules/moulinette-client.js"
 import { MoulinetteForgeModule } from "./modules/moulinette-forge-module.js"
 import { MoulinettePatreon } from "./modules/moulinette-patreon.js"
+import { MoulinetteHelp } from "./modules/moulinette-help.js"
 
 /**
  * Init: define global game settings & helpers
@@ -274,6 +275,17 @@ Hooks.on('getSceneControlButtons', (buttons) => {
         }
       }
     }
+
+    // help
+    moulinetteTool.tools.push({
+      name: "help",
+      icon: "fas fa-question-circle",
+      title: game.i18n.localize("mtte.help"),
+      button: true,
+      onClick: () => {
+        new MoulinetteHelp().render(true)
+      }
+    })
 
     buttons.push(moulinetteTool)
   }

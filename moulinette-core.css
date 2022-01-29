@@ -178,3 +178,43 @@
 .mtte option.cloud {
   color: #f79007;
 }
+
+.mtte.help .descr {
+  font-style: italic;
+  border-top: 1px dashed #999;
+  border-bottom: 1px dashed #999;
+  padding: 6px;
+  color: #999;
+}
+
+.mtte.help .content a {
+  color: var(--color-text-hyperlink);
+}
+
+.mtte.help h1 {
+  margin-top: 20px;
+  cursor: pointer
+}
+
+.mtte.help .section, .mtte.help .copymsg {
+  display: none;
+}
+
+.mtte.help pre {
+  display: inline;
+}
+
+.mtte.help .control {
+  width: 24px;
+  height: 24px;
+  box-sizing: content-box;
+  font-size: 16px;
+  line-height: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 4px var(--color-shadow-dark);
+  color: var(--color-text-light-4);
+  text-align: center;
+  border: 1px solid var(--color-border-dark);
+  border-radius: 3px;
+  display: inline-block;
+}

@@ -1,0 +1,243 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  <div class="content">
+  <p><em>{{localize "mtte.moulinetteHelpMessage"}}</em> (<a class="refresh">refresh <i class="fas fa-sync"></i></a>)</p>
+
+  <!-- ================= PATREON ============== -->
+  <h1><i class="fas fa-question-circle"></i> Help references</h1>
+  <div class="section">
+  <ul>
+    <li>Moulinette <a href="https://github.com/SvenWerlen/moulinette-core" target="_blank">github.com/SvenWerlen/moulinette-core</a></li>
+    <li>Moulinette Cloud <a href="https://www.moulinette.cloud/" target="_blank">www.moulinette.cloud</a></li>
+    <li>Discover <a href="https://www.youtube.com/channel/UCfB4Jtg_WzWnAFGHN1oNrEQ" target="_blank">Moulinette on YouTube</a></li>
+    <li>Get help on <a href="https://discord.gg/xg3dcMQfP2" target="_blank">Moulinette Discord</a> </li>
+  </ul>
+  </div>
+
+  <!-- ================= PATREON ============== -->
+  <h1><i class="fas fa-hammer"></i> Moulinette Controls</h1>
+  <div class="section">
+  <ul>
+    <li><div class="control"><i class="fas fa-expand"></i></div> <em>No real use (required by FVTT layer)</em></li>
+    <li><div class="control"><i class="fab fa-patreon"></i></div> Patreon integration. Link your account and check your pledges. Only required in combination with Moulinette Cloud.</li>
+    <li><div class="control"><i class="fas fa-sync"></i></div> Clear local cache. Use it if you want to refresh your data (from Moulinette Cloud) without reloading the page.</li>
+    <li><div class="control"><i class="fas fa-icons"></i></div> Moulinette <b>Game Icons</b> module. Opens the UI.</li>
+    <li><div class="control"><i class="fas fa-search"></i></div> Moulinette <b>Image Search</b> module. Opens the UI.</li>
+    <li><div class="control"><i class="fas fa-clipboard"></i></div> Import an image from a URL. See <i class="fas fa-search"></i> Moulinette Image Search section below.</li>
+    <li><div class="control"><i class="fab fa-buffer"></i></div> Moulinette <b>Prefabs</b> (from Tiles module). Opens the UI.</li>
+    <li><div class="control"><i class="fas fa-map"></i></div> Moulinette <b>Scenes</b> module. Opens the UI.</li>
+    <li><div class="control"><i class="fas fa-file-audio"></i></div> Moulinette <b>SoundPads</b> (from Sounds module). Opens the UI.</li>
+    <li><div class="control"><i class="fas fa-keyboard"></i></div> Moulinette <b>SoundBoard</b> (from Sounds module). Opens the UI.</li>
+    <li><div class="control"><i class="fas fa-music"></i></div> Moulinette <b>Sounds</b> module. Opens the UI.</li>
+    <li><div class="control"><i class="fas fa-puzzle-piece"></i></div> Moulinette <b>Tiles</b> module. Opens the UI.</li>
+    <li><div class="control"><i class="fas fa-heart"></i></div> Moulinette <b>Favorites</b> (from Tiles module). Opens the UI.</li>
+    <li><div class="control"><i class="fas fa-search-plus"></i></div> Moulinette <b>Faceted Search</b> (from Tiles module). Opens the UI.</li>
+  </ul>
+  </div>
+
+
+  <!-- ================= CHECKS ============== -->
+  <h1><i class="fas fa-tasks"></i> Check your installation</h1>
+  <div class="section">
+  <ul>
+    {{#if latestVersion}}
+    <li><i class="fas fa-check-circle"></i> You're using FoundryVTT <b>V9</b> (recommended).</li>
+    {{/if}}
+    {{#unless latestVersion}}
+    <li class="red"><i class="fas fa-times-circle"></i> You're using an older version of FoundryVTT. Moulinette recommends <b>V9</b>.</li>
+    {{/unless}}
+    <li class="copymsg copySuccess"><i class="fas fa-check-circle"></i> Your browser supports <pre>clipboard.writeText()</pre>. Moulinette always copies paths to your clipboard such you can reuse them anywhere in FoundryVTT.</li>
+    <li class="copymsg copyFailed red"><i class="fas fa-times-circle"></i> Your browser doesn't support <pre>clipboard.writeText()</pre>. You won't be able to reuse assets' paths from Moulinette.</li>
+    {{#if hasModules}}
+    <li><i class="fas fa-check-circle"></i> You have <b>{{modulesCount}}</b> moulinette modules enabled.</li>
+    {{/if}}
+    {{#unless hasModules}}
+    <li class="red"><i class="fas fa-times-circle"></i> You don't have any moulinette module installed.</li>
+    {{/unless}}
+  </ul>
+  </div>
+
+
+
+  <!-- ================= PATREON ============== -->
+  <h1><i class="fab fa-patreon"></i> Patreon integration</h1>
+  <div class="section">
+  {{#if user.fullName}}
+  <p>You're linked to Patreon as: <b>{{user.fullName}}</b> (<a class="patreon">unlink</a>)</p>
+
+    <h2>Moulinette support</h2>
+    {{#if user.patron}}
+    <p>{{localize "mtte.patron"}} <i class="fas fa-heart red"></i> (Tier: <b>{{user.patron}}</b>)</p>
+    <p class="descr"><i class="far fa-question-circle"></i> As such, you automatically have access to free assets from creators available on <a href="https://www.moulinette.cloud/" target="_blank">Moulinette Cloud</a>.</p>
+
+      <h2>Pledges</h2>
+      {{#if user.pledges}}
+      <p>You're supporting <b>{{user.pledges.length}} creators</b> (<a class="patreon">see them</a>).</p>
+      <p class="descr"><i class="far fa-question-circle"></i> You have access to assets from the creators you're supporting, based on your pledges. Check <a href="https://www.moulinette.cloud/getting-started/use-moulinette-to-access-creators-assets/" target="_blank">available creators and minimum tiers</a>.</p>
+      {{/if}}
+    {{/if}}
+    {{#unless user.patron}}
+    <p>You're not supporting Moulinette <i class="far fa-frown"></i> (<a href="https://www.patreon.com/moulinette" target="_blank">Support Moulinette</a>)</p>
+    <p class="descr"><i class="far fa-question-circle"></i> You will only have acces to public and showcase assets from <a href="https://www.moulinette.cloud/" target="_blank">Moulinette Cloud</a> and all your indexed assets.</p>
+    {{/unless}}
+
+  {{/if}}
+  {{#unless user.fullName}}
+  <p>You're <b>NOT</b> linked to Patreon. (<a class="patreon">Link Moulinette to my Patreon <i class="fab fa-patreon"></i></a>)</p>
+  <p class="descr"><i class="far fa-question-circle"></i> As such, you will only have acces to public and showcase assets from <a href="https://www.moulinette.cloud/" target="_blank">Moulinette Cloud</a> and all your indexed assets.</p>
+  {{/unless}}
+  </div>
+
+
+
+
+
+  <!-- ================= GAME ICONS ============== -->
+  <h1><i class="fas fa-icons"></i> Moulinette Game Icons</h1>
+  <div class="section">
+  {{#if icons}}
+  <p>Moulinette Game Icons is installed and enabled. (<a class="gameicons">open UI</a>)</p>
+  <p class="descr"><i class="far fa-question-circle"></i> You can search, download and use icons from <a href="https://game-icons.net/" target="_blank">game-icons.net</a>.</p>
+  <h2>Did you know?</h2>
+  <ul>
+    <li>You can get transparent foreground or background by leaving the color field empty (clear the text)</li>
+    <li>The path of the last downloaded icon is copied into your clipboard. This is useful if you want to use that icon somewhere in FoundryVTT without having to browse files for it.</li>
+  </ul>
+  {{/if}}
+  {{#unless icons}}
+  <p>Moulinette Game Icons is <b>disabled</b> or not even installed.</p>
+  <p class="descr"><i class="far fa-question-circle"></i> By installing this module, you'll be able to search, download and use icons from <a href="https://game-icons.net/" target="_blank">game-icons.net</a>.</p>
+  {{/unless}}
+  </div>
+
+
+
+
+
+  <!-- ================= IMAGE SEARCH ============== -->
+  <h1><i class="fas fa-search"></i> Moulinette Image Search</h1>
+  <div class="section">
+  {{#if search}}
+  <p>Moulinette Image Search is installed and enabled. (<a class="search">open UI</a>)</p>
+  <p class="descr"><i class="far fa-question-circle"></i> You can search images on <a href="https://www.bing.com" target="_blank">Microsoft Bing</a> or <a href="https://oldsearch.creativecommons.org/" target="_blank">Creative Commons.</a> and use them as tile, journal note or even token.</p>
+  <h2>Did you know?</h2>
+  <ul>
+    <li>You need to configure your Bing API key in order to fully benefit from the image search. See <a href="https://github.com/SvenWerlen/moulinette-imagesearch#generate-your-own-api-key-for-bing-search" target="_blank">instructions</a>.</li>
+    <li>You can easily import an image from a website (ex: Google Image Search). Right-click on the image and choose "Copy link to image" in your web browser. Then use <div class="control"><i class="fas fa-clipboard"></i></div>.</li>
+  </ul>
+  {{/if}}
+  {{#unless search}}
+  <p>Moulinette Image Search is <b>disabled</b> or not even installed.</p>
+  <p class="descr"><i class="far fa-question-circle"></i> By installing this module, you'll be able to search images on <a href="https://www.bing.com" target="_blank">Microsoft Bing</a> or <a href="https://oldsearch.creativecommons.org/" target="_blank">Creative Commons</a> and use them as tile, journal note or even token.</p>
+  {{/unless}}
+  </div>
+
+
+
+
+  <!-- ================= SCENES ============== -->
+  <h1><i class="fas fa-map"></i> Moulinette Scenes</h1>
+  <div class="section">
+  {{#if scenes}}
+  <div>Moulinette Scenes is installed and enabled. (<a class="scenes">open UI</a>).<br/>
+  Scenes downloaded from Moulinette Cloud are stored into <pre>moulinette/cloud/[creator]/[pack]</pre>. (<a class="browseMtte" data-path="moulinette/cloud">browse files</a>)</div>
+  <p class="descr"><i class="far fa-question-circle"></i> You can index scenes from compendiums then search, browse and install scenes easily.
+  {{#if user.patron}}As moulinette supporter, you also have access to scenes from creators on <a href="https://www.moulinette.cloud/" target="_blank">Moulinette Cloud</a>.{{/if}}
+  </p>
+  {{/if}}
+  <h2>Did you know?</h2>
+  <ul>
+    <li>"Index scenes" scans all enabled modules and indexes scenes from their compendia. It <b>DOESN'T</b> index your images from <pre>moulinette/scenes/custom</pre> as some would expect.</li>
+    <li>If you support Moulinette with Blacksmith tier or above, you can export your scenes from FoundryVTT directly to Moulinette Cloud. They will be kept in your private storage and will show up like any other scenes. Manage your assets in <a href="https://assets.moulinette.cloud/byoa/manage-assets" target="_blank">your private storage on Moulinette Cloud</a>.</li>
+  </ul>
+  {{#unless scenes}}
+  <p>Moulinette Scenes is <b>disabled</b> or not even installed.</p>
+  <p class="descr"><i class="far fa-question-circle"></i> By installing this module, you'll be able to index scenes from compendiums then search, browse and install scenes easily.
+  {{#if user.patron}}As moulinette supporter, you would also have access to scenes from creators on <a href="https://www.moulinette.cloud/" target="_blank">Moulinette Cloud</a>.{{/if}}
+  </p>
+  {{/unless}}
+  </div>
+
+
+
+  <!-- ================= SOUNDS ============== -->
+  <h1><i class="fas fa-music"></i> Moulinette Sounds</h1>
+  <div class="section">
+  {{#if sounds}}
+  <div>Moulinette Sounds is installed and enabled. (<a class="sounds">open UI</a>).<br/>
+  Sounds/Music downloaded from Moulinette Cloud is stored into <pre>moulinette/sounds/[creator]/[pack]</pre>. (<a class="browseMtte" data-path="moulinette/sounds">browse files</a>)
+  </div>
+  <p class="descr"><i class="far fa-question-circle"></i> You can index sounds from your FVTT server then search, browse and play sounds easily. Help me <a class="checkIndex" data-path="moulinette/sounds/custom" data-type="sounds">Sounds</a>!
+  {{#if user.patron}}As moulinette supporter, you also have access to sounds from creators on <a href="https://www.moulinette.cloud/" target="_blank">Moulinette Cloud</a>.{{/if}}
+  </p>
+  <h2>Did you know?</h2>
+  <ul>
+    <li>If you support <a href="https://www.patreon.com/tabletopaudio" target="_blank">Tabletop Audio</a>, you can play sounds from the <a class="soundpad">SoundPad UI</a> <div class="control"><i class="fas fa-file-audio"></i></div> (keybinding also available)</li>
+    <li>You can build your own <a class="soundboard">SoundBoard</a> <div class="control"><i class="fas fa-keyboard"></i></div> by using the <i class="far fa-bookmark"></i> action.</li>
+    <li>If you support Moulinette with Blacksmith tier or above, you can upload your music/sounds to Moulinette Cloud. They will be kept in your private storage and will show up like any other asset. Manage your assets in <a href="https://assets.moulinette.cloud/byoa/manage-assets" target="_blank">your private storage on Moulinette Cloud</a>.</li>
+  </ul>
+  {{/if}}
+  {{#unless sounds}}
+  <p>Moulinette Scenes is <b>disabled</b> or not even installed.</p>
+  <p class="descr"><i class="far fa-question-circle"></i> By installing this module, you'll be able to index sounds from your FVTT server then search, browse and play sounds easily.
+  {{#if user.patron}}As moulinette supporter, you would also have access to sounds from creators on <a href="https://www.moulinette.cloud/" target="_blank">Moulinette Cloud</a>.{{/if}}
+  </p>
+  {{/unless}}
+  </div>
+
+
+
+  <!-- ================= TILES ============== -->
+  <h1><i class="fas fa-puzzle-piece"></i> Moulinette Tiles/Tokens</h1>
+  <div class="section">
+  {{#if tiles}}
+  <div>Moulinette Tiles is installed and enabled. (<a class="tiles">open UI</a>)<br/>
+  Images downloaded from Moulinette Cloud are stored into <pre>moulinette/tiles/[creator]/[pack]</pre>. (<a class="browseMtte" data-path="moulinette/tiles">browse files</a>)</div>
+  <p class="descr"><i class="far fa-question-circle"></i> You can index images from your FVTT server then search, browse and drop them on scenes as tiles, tokens or journal articles. Help me indexing <a class="checkIndex" data-path="moulinette/tiles/custom" data-type="tiles">Tiles</a> or <a class="checkIndex" data-path="moulinette/images/custom" data-type="images">Images</a>!
+  {{#if user.patron}}As moulinette supporter, you also have access to images from creators on <a href="https://www.moulinette.cloud/" target="_blank">Moulinette Cloud</a>.{{/if}}
+  </p>
+  <h2>Did you know?</h2>
+  <ul>
+    <li>Last used assets are kept in history in <a class="favorites">Moulinette Favorites</a> <div class="control"><i class="fas fa-heart"></i></div> (keybinding also available). Right click on an image to add it to the favorites.</li>
+    <li>The new <a class="faceted-search">faceted search UI</a> <div class="control"><i class="fas fa-search-plus"></i></div> offers an alternative way of browsing and searching assets. You should absolutely try it!</li>
+    <li>If you support Moulinette with Blacksmith tier or above, you can upload your images to Moulinette Cloud. They will be kept in your private storage and will show up like any other asset. Manage your assets in <a href="https://assets.moulinette.cloud/byoa/manage-assets" target="_blank">your private storage on Moulinette Cloud</a>.</li>
+  </ul>
+  {{/if}}
+  {{#unless sounds}}
+  <p>Moulinette Tiles is <b>disabled</b> or not even installed.</p>
+  <p class="descr"><i class="far fa-question-circle"></i> By installing this module, you'll be able to index images from your FVTT server then search, browse and drop them on scenes as tiles, tokens or journal articles.
+  {{#if user.patron}}As moulinette supporter, you would also have access to images from creators on <a href="https://www.moulinette.cloud/" target="_blank">Moulinette Cloud</a>.{{/if}}
+  </p>
+  {{/unless}}
+  </div>
+
+
+
+  <!-- ================= SERVER ============== -->
+  <h1><i class="fas fa-folder-open"></i> Storage configuration</h1>
+  <div class="section">
+  {{#if s3bucket}}
+  <p>Moulinette is configured to use S3 as storage (bucket : <b>{{s3bucket}}</b>)</p>
+  <ul>
+    <li>Assets downloaded from Moulinette Cloud will be stored into <pre>moulinette/</pre> (<a class="browseMtte">Browse files</a>) on your S3 storage.</li>
+  </ul>
+  {{/if}}
+  {{#unless s3bucket}}
+    {{#if theforge}}
+    <p>Moulinette is using your <b>Asset Library</b> storage on The Forge</p>
+    <ul>
+      <li>Assets downloaded from Moulinette Cloud will be stored into <pre>moulinette/</pre> (<a class="browseMtte">Browse files</a>)</li>
+    </ul>
+    {{/if}}
+    {{#unless theforge}}
+    <p>Moulinette is using the default local storage (<b>Data</b>)</p>
+    <ul>
+      <li>Assets downloaded from Moulinette Cloud will be stored into <pre>moulinette/</pre> (<a class="browseMtte">Browse files</a>)</li>
+    </ul>
+    {{/unless}}
+  {{/unless}}
+  </div>
+
+
+
+</div>
+</form>
