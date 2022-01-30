@@ -6,8 +6,9 @@ import { MoulinetteHelpIndexing } from "./moulinette-help-index.js"
 
 export class MoulinetteHelp extends FormApplication {
   
-  constructor() {
+  constructor(section = null) {
     super()
+    this.section = section
   }
   
   static get defaultOptions() {
@@ -61,6 +62,9 @@ export class MoulinetteHelp extends FormApplication {
       html.find(".copyFailed").show()
     });
 
+    if(this.section) {
+      html.find(`.section[data-id='${this.section}']`).show()
+    }
   }
 
   _onClick(event) {

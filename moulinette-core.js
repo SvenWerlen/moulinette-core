@@ -123,7 +123,8 @@ Hooks.once("init", async function () {
       MoulinetteClient,
       MoulinetteForgeModule,
       MoulinetteFileUtil,
-      MoulinetteFilePicker
+      MoulinetteFilePicker,
+      MoulinetteHelp
     },
     cache: new MoulinetteCache(),
     forge: [],

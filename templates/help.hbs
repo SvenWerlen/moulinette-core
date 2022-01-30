@@ -2,9 +2,9 @@
   <div class="content">
   <p><em>{{localize "mtte.moulinetteHelpMessage"}}</em> (<a class="refresh">refresh <i class="fas fa-sync"></i></a>)</p>
 
-  <!-- ================= PATREON ============== -->
+  <!-- ================= REFERENCES ============== -->
   <h1><i class="fas fa-question-circle"></i> Help references</h1>
-  <div class="section">
+  <div class="section" data-id="references">
   <ul>
     <li>Moulinette <a href="https://github.com/SvenWerlen/moulinette-core" target="_blank">github.com/SvenWerlen/moulinette-core</a></li>
     <li>Moulinette Cloud <a href="https://www.moulinette.cloud/" target="_blank">www.moulinette.cloud</a></li>
@@ -13,9 +13,9 @@
   </ul>
   </div>
 
-  <!-- ================= PATREON ============== -->
+  <!-- ================= CONTROLS ============== -->
   <h1><i class="fas fa-hammer"></i> Moulinette Controls</h1>
-  <div class="section">
+  <div class="section" data-id="controls">
   <ul>
     <li><div class="control"><i class="fas fa-expand"></i></div> <em>No real use (required by FVTT layer)</em></li>
     <li><div class="control"><i class="fab fa-patreon"></i></div> Patreon integration. Link your account and check your pledges. Only required in combination with Moulinette Cloud.</li>
@@ -37,7 +37,7 @@
 
   <!-- ================= CHECKS ============== -->
   <h1><i class="fas fa-tasks"></i> Check your installation</h1>
-  <div class="section">
+  <div class="section" data-id="checks">
   <ul>
     {{#if latestVersion}}
     <li><i class="fas fa-check-circle"></i> You're using FoundryVTT <b>V9</b> (recommended).</li>
@@ -60,7 +60,7 @@
 
   <!-- ================= PATREON ============== -->
   <h1><i class="fab fa-patreon"></i> Patreon integration</h1>
-  <div class="section">
+  <div class="section" data-id="patreon">
   {{#if user.fullName}}
   <p>You're linked to Patreon as: <b>{{user.fullName}}</b> (<a class="patreon">unlink</a>)</p>
 
@@ -93,7 +93,7 @@
 
   <!-- ================= GAME ICONS ============== -->
   <h1><i class="fas fa-icons"></i> Moulinette Game Icons</h1>
-  <div class="section">
+  <div class="section" data-id="icons">
   {{#if icons}}
   <p>Moulinette Game Icons is installed and enabled. (<a class="gameicons">open UI</a>)</p>
   <p class="descr"><i class="far fa-question-circle"></i> You can search, download and use icons from <a href="https://game-icons.net/" target="_blank">game-icons.net</a>.</p>
@@ -115,7 +115,7 @@
 
   <!-- ================= IMAGE SEARCH ============== -->
   <h1><i class="fas fa-search"></i> Moulinette Image Search</h1>
-  <div class="section">
+  <div class="section" data-id="search">
   {{#if search}}
   <p>Moulinette Image Search is installed and enabled. (<a class="search">open UI</a>)</p>
   <p class="descr"><i class="far fa-question-circle"></i> You can search images on <a href="https://www.bing.com" target="_blank">Microsoft Bing</a> or <a href="https://oldsearch.creativecommons.org/" target="_blank">Creative Commons.</a> and use them as tile, journal note or even token.</p>
@@ -136,7 +136,7 @@
 
   <!-- ================= SCENES ============== -->
   <h1><i class="fas fa-map"></i> Moulinette Scenes</h1>
-  <div class="section">
+  <div class="section" data-id="scenes">
   {{#if scenes}}
   <div>Moulinette Scenes is installed and enabled. (<a class="scenes">open UI</a>).<br/>
   Scenes downloaded from Moulinette Cloud are stored into <pre>moulinette/cloud/[creator]/[pack]</pre>. (<a class="browseMtte" data-path="moulinette/cloud">browse files</a>)</div>
@@ -161,7 +161,7 @@
 
   <!-- ================= SOUNDS ============== -->
   <h1><i class="fas fa-music"></i> Moulinette Sounds</h1>
-  <div class="section">
+  <div class="section" data-id="sounds">
   {{#if sounds}}
   <div>Moulinette Sounds is installed and enabled. (<a class="sounds">open UI</a>).<br/>
   Sounds/Music downloaded from Moulinette Cloud is stored into <pre>moulinette/sounds/[creator]/[pack]</pre>. (<a class="browseMtte" data-path="moulinette/sounds">browse files</a>)
@@ -171,6 +171,8 @@
   </p>
   <h2>Did you know?</h2>
   <ul>
+    <li>If you click on a sound, it gets highlighted. When you create a new ambient sound with FVTT, the path gets automatically filled with the selected sound.</li>
+    <li>If you right click on a sound, it gets selected. When you add all selected sounds to the soundboard, it create a new slot which will randomly play one of these sounds.</li>
     <li>If you support <a href="https://www.patreon.com/tabletopaudio" target="_blank">Tabletop Audio</a>, you can play sounds from the <a class="soundpad">SoundPad UI</a> <div class="control"><i class="fas fa-file-audio"></i></div> (keybinding also available)</li>
     <li>You can build your own <a class="soundboard">SoundBoard</a> <div class="control"><i class="fas fa-keyboard"></i></div> by using the <i class="far fa-bookmark"></i> action.</li>
     <li>If you support Moulinette with Blacksmith tier or above, you can upload your music/sounds to Moulinette Cloud. They will be kept in your private storage and will show up like any other asset. Manage your assets in <a href="https://assets.moulinette.cloud/byoa/manage-assets" target="_blank">your private storage on Moulinette Cloud</a>.</li>
@@ -188,7 +190,7 @@
 
   <!-- ================= TILES ============== -->
   <h1><i class="fas fa-puzzle-piece"></i> Moulinette Tiles/Tokens</h1>
-  <div class="section">
+  <div class="section" data-id="tiles">
   {{#if tiles}}
   <div>Moulinette Tiles is installed and enabled. (<a class="tiles">open UI</a>)<br/>
   Images downloaded from Moulinette Cloud are stored into <pre>moulinette/tiles/[creator]/[pack]</pre>. (<a class="browseMtte" data-path="moulinette/tiles">browse files</a>)</div>
@@ -212,9 +214,9 @@
 
 
 
-  <!-- ================= SERVER ============== -->
+  <!-- ================= STORAGE ============== -->
   <h1><i class="fas fa-folder-open"></i> Storage configuration</h1>
-  <div class="section">
+  <div class="section" data-id="storage">
   {{#if s3bucket}}
   <p>Moulinette is configured to use S3 as storage (bucket : <b>{{s3bucket}}</b>)</p>
   <ul>
