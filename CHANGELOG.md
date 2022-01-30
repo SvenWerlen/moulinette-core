@@ -12,10 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Keybind from FoundryVTT (doesn't require extra module anymore)
 
-## [4.0.2] - 2021-12-23
+## [4.0.3] - 2021-12-23
 ### Fixed
 - 4.0.1: Module version for 9.x release
 - 4.0.2: Remove support for FVTT 0.7 and 0.8
+- 4.0.3: TTA & Ivan Duch sounds not listed due to new structure
 ### Changed
 - First attempt to support 0.9.x version
 

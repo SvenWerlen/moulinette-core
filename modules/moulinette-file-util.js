@@ -89,6 +89,15 @@ export class MoulinetteFileUtil {
       }
     }
   }
+
+  /**
+   * Re-encode URL but leaving the "/" untouched
+   */
+  static encodeURL(url) {
+    const parts = url.split("/")
+    const encodedParts = parts.map(p => encodeURIComponent(p))
+    return encodedParts.join("/")
+  }
   
   /**
    * Checks if a file exists (based on its path)
@@ -413,7 +422,7 @@ export class MoulinetteFileUtil {
     // build tiles' index 
     let idx = 0;
     for(let URL of urlList) {
-      SceneNavigation._onLoadProgress(game.i18n.localize("mtte.indexingMoulinette"), Math.round((idx / urlList.length)*100));
+      SceneNavigation.displayProgressBar({label: game.i18n.localize("mtte.indexingMoulinette"), pct: Math.round((idx / urlList.length)*100)});
       
       // try to load from cache when exists
       let data;
@@ -496,14 +505,21 @@ export class MoulinetteFileUtil {
               deps: pack.deps, 
               sas: pack.sas
             })
-            for(const asset of pack.assets) {
+            for(let i = 0; i<pack.assets.length; i++) {
+              const asset = pack.assets[i]
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {
                 let type = pack.meta && pack.meta.type ? pack.meta.type : "img"
+                let aData = { pack: idx, filename: asset, type: type}
                 if(asset.endsWith(".ogg") || asset.endsWith(".mp3") || asset.endsWith(".wav") || asset.endsWith(".m4a")) {
-                  type = "snd"
+                  aData.type = "snd"
+                  aData.duration = pack.durations && pack.durations.length > i ? pack.durations[i] : 0
                 }
-                assets.push({ pack: idx, filename: asset, type: type})
+                assets.push(aData)
+              }
+              // sounds from Moulinette Cloud
+              else if(asset.type == "snd") {
+                assets.push({ pack: idx, filename: asset.path, type: asset.type, duration: asset.duration, loop: asset.loop, title: asset.title })
               }
               // sounds from Moulinette Cloud
               else if(asset.type == "snd") {
@@ -530,7 +546,7 @@ export class MoulinetteFileUtil {
       }
     }
     
-    SceneNavigation._onLoadProgress(game.i18n.localize("mtte.indexingMoulinette"),100);  
+    SceneNavigation.displayProgressBar({label: game.i18n.localize("mtte.indexingMoulinette"), pct: 100});
     
     if(special) {
       for(const el of special) {

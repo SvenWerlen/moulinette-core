@@ -1,0 +1,54 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  <div class="content">
+    <p><em>This page provides some useful information to help you index assets. Click on a section to expand.</em> (<a class="refresh">refresh <i class="fas fa-sync"></i></a>)</p>
+
+
+    <h1>Default path indexing</h1>
+    <div class="section">
+    <div><b>Path indexed</b>: <pre>{{defPath}}</pre></div>
+    <p><b>Source</b>: {{source}}</p>
+    {{#unless ok}}<p><i class="fas fa-exclamation-triangle red"></i> The folder doesn't contain any subfolder. Make sure to follow the <a href="https://github.com/SvenWerlen/moulinette-core/tree/main/docs" target="_blank">guidelines</a>.</p>{{/unless}}
+    {{#if ok}}
+      <ul>
+      {{#each creators as |c|}}
+        {{#if c.ok}}<li><i class="fas fa-check-circle"></i> {{c.name}} - {{c.count}} subfolders <i class="fas fa-list-alt" title="{{c.packs}}"></i></li>{{/if}}
+        {{#unless c.ok}}<li class="red"><i class="fas fa-times-circle"></i> {{c.name}} (no subfolder)</li>{{/unless}}
+      {{/each}}
+      </ul>
+    {{/if}}
+    </div>
+
+
+    <h1>Custom path indexing</h1>
+    <div class="section">
+    {{#unless custom}}<p><i class="fas fa-exclamation-triangle red"></i> You didn't configure a custom folder. But it is not required unless you don't want to put your assets into {{defPath}}</p>{{/unless}}
+    {{#if custom}}
+      <div><b>Path indexed</b>: <pre>{{customPath}}</pre></div>
+      <p><b>Source</b>: {{source}}</p>
+      {{#unless customOK}}<div><i class="fas fa-exclamation-triangle red"></i> No file with extension <pre>.mtte</pre> could be found. Make sure to follow the <a href="https://github.com/SvenWerlen/moulinette-core/tree/main/docs#use-advanced-configuration" target="_blank">guidelines</a>.</div>{{/unless}}
+      {{#if customOK}}
+        <ul>
+        {{#each customFolders as |f|}}
+          {{#if f.ok}}<li><i class="fas fa-check-circle"></i> {{f.path}} ({{configFile}}) - {{msg}}</li>{{/if}}
+          {{#unless f.ok}}<li class="red"><i class="fas fa-times-circle"></i> {{f.path}} ({{configFile}}) - {{msg}}</li>{{/unless}}
+        {{/each}}
+        </ul>
+      {{/if}}
+    {{/if}}
+    </div>
+
+
+    <h1>Other sources indexing</h1>
+    <div class="section">
+    {{#unless others}}<p><i class="fas fa-exclamation-triangle red"></i> No other source of type "{{type}}" configured.</p>{{/unless}}
+    {{#if others}}
+      <ul>
+      {{#each others as |o|}}
+        <li>{{o.publisher}} | {{o.pack}} - {{o.path}} ({{o.source}})</li>
+      {{/each}}
+      </ul>
+    {{/if}}
+    </div>
+
+  </div>
+</form>
