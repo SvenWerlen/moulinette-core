@@ -305,7 +305,7 @@ export class MoulinetteForge extends FormApplication {
     const regex = new RegExp(`data-path="[^"]*${folder.replace("(",'\\(').replace(")",'\\)')}[^"/]+"`, "g")
     let matchList = []
     for(const a of this.assets) {
-      if(a.match(regex)) {
+      if(decodeURIComponent(a).match(regex)) {
         matchList.push(a)
       }
     }
