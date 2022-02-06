@@ -511,7 +511,8 @@ export class MoulinetteFileUtil {
               if (typeof asset === 'string' || asset instanceof String) {
                 let type = pack.meta && pack.meta.type ? pack.meta.type : "img"
                 let aData = { pack: idx, filename: asset, type: type}
-                if(asset.endsWith(".ogg") || asset.endsWith(".mp3") || asset.endsWith(".wav") || asset.endsWith(".m4a")) {
+                const ext = asset.substr(asset.lastIndexOf('.') + 1)
+                if(["ogg", "mp3", "wav", "m4a", "flac", "webm"].includes(ext)) {
                   aData.type = "snd"
                   aData.duration = pack.durations && pack.durations.length > i ? pack.durations[i] : 0
                 }
@@ -525,7 +526,7 @@ export class MoulinetteFileUtil {
               else {
                 const path = asset['path']
                 delete asset['path']
-                assets.push({ pack: idx, filename: path, data: asset})
+                assets.push({ pack: idx, filename: path ? path : asset['name'], data: asset})
               }
             }
             idx++;

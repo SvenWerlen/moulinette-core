@@ -31,6 +31,12 @@ export class Moulinette {
     text = text.replace(/([^ ])\(/g, "$1 (")
     text = text.replace(/\)([^ ])/g, ") $1")
     
+    // remove extension (if any)
+    const idx = text.lastIndexOf('.')
+    if(idx > 0 && (text.length - idx) <= 5) {
+      text = text.substr(0, idx)
+    }
+
     // adds a space between word and number (ex: Orks2 => Orks 2)
     text = text.replace( /(\d+)$/g, " $1");
 
