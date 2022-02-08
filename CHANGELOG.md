@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.2.2] - 2022-02-05
+## [4.2.3] - 2022-02-07
 ### Fixed
 - 4.2.1: Tabletop Audio (and other) folders with space in their name cannot be expanded
 - 4.2.2: Small improvements and bug fixes for ScenePacker & prettifier
+- 4.2.3: WebM not indexed as image/tile any more
 ### Added
 - New control buttons for soundpad, soundboard, favorites and faceted search
 - Help interfaces
