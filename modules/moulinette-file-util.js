@@ -488,23 +488,23 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // add pack
-            assetsPacks.push({ 
-              idx: idx, 
+            const packData = {
+              idx: idx,
               packId: pack.id,
-              publisher: pub.publisher, 
-              pubWebsite: pub.website, 
-              name: pack.name, 
-              url: pack.url, 
-              license: pack.license, 
-              licenseUrl: pack.licenseUrl, 
-              path: pack.path, 
-              count: pack.assets.length, 
+              publisher: pub.publisher,
+              pubWebsite: pub.website,
+              name: pack.name,
+              url: pack.url,
+              license: pack.license,
+              licenseUrl: pack.licenseUrl,
+              path: pack.path,
+              count: pack.assets.length,
               isLocal: pack.isLocal,
-              isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3), 
+              isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3),
               isShowCase: pack.showCase,
-              deps: pack.deps, 
+              deps: pack.deps,
               sas: pack.sas
-            })
+            }
             for(let i = 0; i<pack.assets.length; i++) {
               const asset = pack.assets[i]
               // default (basic asset is only filepath)
@@ -513,14 +513,29 @@ export class MoulinetteFileUtil {
                 let aData = { pack: idx, filename: asset, type: type}
                 const ext = asset.substr(asset.lastIndexOf('.') + 1)
                 if(["ogg", "mp3", "wav", "m4a", "flac", "webm"].includes(ext)) {
+                  // WebM could be tiles, too (video) - unless they are from "sounds"
+                  if(!pack.isRemote && ext == "webm" && !pack.path.startsWith("moulinette/sounds/custom")) {
+                    assets.push(duplicate(aData)); packData.count++;
+                  }
+                  // WebM are considered sounds - unless they are from tiles or images
+                  if(!pack.isRemote && ext == "webm" && (pack.path.startsWith("moulinette/tiles/custom") || pack.path.startsWith("moulinette/images/custom"))) {
+                    packData.count--;
+                    continue;
+                  }
                   aData.type = "snd"
                   aData.duration = pack.durations && pack.durations.length > i ? pack.durations[i] : 0
                 }
                 assets.push(aData)
+
               }
               // sounds from Moulinette Cloud
               else if(asset.type == "snd") {
                 assets.push({ pack: idx, filename: asset.path, type: asset.type, duration: asset.duration, loop: asset.loop, title: asset.title })
+                // WebM could be tiles, too (video)
+                if(pack.isLocal && !pack.path.startsWith("moulinette/sounds/custom") && asset.path.substr(asset.path.lastIndexOf('.') + 1) == "webm") {
+                  assets.push({ pack: idx, filename: asset, type: pack.meta && pack.meta.type ? pack.meta.type : "img"})
+                  packData.count++;
+                }
               }
               // complex type (ex: scene)
               else {
@@ -529,6 +544,7 @@ export class MoulinetteFileUtil {
                 assets.push({ pack: idx, filename: path ? path : asset['name'], data: asset})
               }
             }
+            assetsPacks.push(packData)
             idx++;
           }
         }
