@@ -477,21 +477,21 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // add pack
-            assetsPacks.push({ 
-              idx: idx, 
+            assetsPacks.push({
+              idx: idx,
               packId: pack.id,
-              publisher: pub.publisher, 
-              pubWebsite: pub.website, 
-              name: pack.name, 
-              url: pack.url, 
-              license: pack.license, 
-              licenseUrl: pack.licenseUrl, 
-              path: pack.path, 
-              count: pack.assets.length, 
+              publisher: pub.publisher,
+              pubWebsite: pub.website,
+              name: pack.name,
+              url: pack.url,
+              license: pack.license,
+              licenseUrl: pack.licenseUrl,
+              path: pack.path,
+              count: pack.assets.length,
               isLocal: pack.isLocal,
-              isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3), 
+              isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3),
               isShowCase: pack.showCase,
-              deps: pack.deps, 
+              deps: pack.deps,
               sas: pack.sas
             })
             for(const asset of pack.assets) {
@@ -506,6 +506,7 @@ export class MoulinetteFileUtil {
               // complex type (ex: scene)
               else {
                 const path = asset['path']
+                if(!path) continue;
                 delete asset['path']
                 assets.push({ pack: idx, filename: path, data: asset})
               }
@@ -513,7 +514,7 @@ export class MoulinetteFileUtil {
             idx++;
           }
         }
-        
+
         if(minExpiration <= 0) {
           ui.notifications.error(game.i18n.localize("mtte.errorSASTokenExpired"));
         } else if(minExpiration <= 30) {
