@@ -56,6 +56,20 @@ export class MoulinetteForgeModule {
   onDragStart(event) {
     console.debug("Moulinette Forge Module | Default onDragStart() does nothing")
   }
+
+  /**
+   * Overwrite this function to implement onLeftClickGrid action (on Canvas)
+   */
+  async onLeftClickGrid(data) {
+    console.debug("Moulinette Forge Module | Default onLeftClickGrid() does nothing")
+  }
+
+  /**
+   * Overwrite this function to implement onRightClickGrid action (on Canvas)
+   */
+  async onRightClickGrid(data) {
+    console.debug("Moulinette Forge Module | Default onRightClickGrid() does nothing")
+  }
   
   /**
    * Overwrite this function to additional HTML at the bottom of the list

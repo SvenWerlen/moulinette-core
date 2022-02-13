@@ -517,8 +517,8 @@ export class MoulinetteFileUtil {
                   if(!pack.isRemote && ext == "webm" && !pack.path.startsWith("moulinette/sounds/custom")) {
                     assets.push(duplicate(aData)); packData.count++;
                   }
-                  // WebM are considered sounds - unless they are from tiles or images
-                  if(!pack.isRemote && ext == "webm" && (pack.path.startsWith("moulinette/tiles/custom") || pack.path.startsWith("moulinette/images/custom"))) {
+                  // WebM are considered sounds - unless they are from tiles or images or remote (creators don't use that format)
+                  if(ext == "webm" && (pack.isRemote || pack.path.startsWith("moulinette/tiles/custom") || pack.path.startsWith("moulinette/images/custom"))) {
                     packData.count--;
                     continue;
                   }

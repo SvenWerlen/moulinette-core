@@ -18,6 +18,8 @@
   "mtte.configFavoriteKeyHint": "Raccourci clavier pour ouvrir l'interface des favoris de Moulinette",
   "mtte.configFilepicker": "Moulinette FilePicker",
   "mtte.configFilepickerHint": "Utiliser le navigateur d'images de Moulinette (replace celui de Foundry)",
+  "mtte.configLayerKey": "Raccourci pour Moulinette",
+  "mtte.configLayerKeyHint": "Raccourci pour basculer sur la couche (layer) de Moulinette",
   "mtte.configS3": "Compartiment S3",
   "mtte.configS3Hint": "Si vous avez configuré du stockage S3 ET que vous souhaitez l'utiliser pour moulinette, spécifiez le nom du compartiment à utiliser. Laissez vide sinon",
   "mtte.configShowCase": "Contenu d'exemple",

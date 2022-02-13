@@ -18,6 +18,8 @@
   "mtte.configFavoriteKeyHint": "Keybind for opening Moulinette Favorites UI",
   "mtte.configFilepicker": "Moulinette FilePicker",
   "mtte.configFilepickerHint": "Use Moulinette FilePicker (replaces the built-in one)",
+  "mtte.configLayerKey": "Keybind for Moulinette Layer",
+  "mtte.configLayerKeyHint": "Keybind for switching back to Moulinette Layer",
   "mtte.configS3": "S3 bucket",
   "mtte.configS3Hint": "If you have properly configured S3 AND want to use it for moulinette, specify the name of the bucket. Leave blank otherwise",
   "mtte.configShowCase": "Showcase content",
