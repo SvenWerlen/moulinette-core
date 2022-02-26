@@ -541,7 +541,7 @@ export class MoulinetteFileUtil {
               else {
                 const path = asset['path']
                 delete asset['path']
-                assets.push({ pack: idx, filename: path ? path : asset['name'], data: asset})
+                assets.push({ pack: idx, filename: path ? path : asset['name'], data: asset, type: asset.type})
               }
             }
             assetsPacks.push(packData)
@@ -624,11 +624,11 @@ export class MoulinetteFileUtil {
    * - type  : type of asset (generally cloud)
    */
   static async downloadAssetDependencies(asset, pack, type) {
-    
+
     const path = MoulinetteFileUtil.getMoulinetteBasePath(type, pack.publisher, pack.name)
     
     // simple type => generate 1 dependency
-    if( !asset.data ) {
+    if( !asset.data || asset.type == "img" ) {
       asset = { data: { deps: [ asset.filename ], eDeps: {} }, sas: asset.sas }
     }
     
