@@ -63,7 +63,10 @@ export class Moulinette {
     // moulinette cloud is disabled
     if(!game.settings.get("moulinette-core", "enableMoulinetteCloud")) {
       console.log("Moulinette | Moulinette Cloud is disabled.")
-      game.moulinette.user = { id: game.settings.get("moulinette", "userId") }
+      game.moulinette.user = {
+        id: game.settings.get("moulinette", "userId"),
+        hasEarlyAccess: function() { return false }
+      }
       return game.moulinette.user
     }
     // default behaviour
