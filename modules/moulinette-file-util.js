@@ -778,6 +778,10 @@ export class MoulinetteFileUtil {
    * This function downloads a file into a specific folder
    */
   static async downloadFile(url, folder, filename) {
+    // fix for ScenePacker
+    folder = decodeURIComponent(folder)
+    filename = decodeURIComponent(filename)
+
     // check if file already downloaded
     await MoulinetteFileUtil.createFolderRecursive(folder)
     const browse = await FilePicker.browse(MoulinetteFileUtil.getSource(), folder);
