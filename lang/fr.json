@@ -24,6 +24,8 @@
   "mtte.configS3Hint": "Si vous avez configuré du stockage S3 ET que vous souhaitez l'utiliser pour moulinette, spécifiez le nom du compartiment à utiliser. Laissez vide sinon",
   "mtte.configShowCase": "Contenu d'exemple",
   "mtte.configShowCaseHint": "Certains packs présentent du contenu d'exemple (vitrine). Décocher pour les retirer de la liste des packs disponibles.",
+  "mtte.configSubControls": "Moulinette dans sous-menus",
+  "mtte.configSubControlsHint": "Si cette option est activée, des boutons de contrôle seront insérés dans les sous-menus de FoundryVTT (tokens, tuiles, sons). Sinon, les contrôles seront uniquement disponibles sous la section de Moulinette.",
   "mtte.configUIMode": "Interface",
   "mtte.configUIModeHint": "Lorsque vous choissez le mode \"compact\" les libellés seront cachés pour gagner de la place. Interéssant pour les MJs expérimentés qui veulent optimiser leur espace de travail.",
   "mtte.continue": "Le module attend que votre authentification soit complétée avec succès. Consultez votre navigateur pour terminer le processus. Si l'authentification échoue, fermer cette fenêtre et recommencer.",

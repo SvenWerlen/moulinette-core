@@ -24,6 +24,8 @@
   "mtte.configS3Hint": "If you have properly configured S3 AND want to use it for moulinette, specify the name of the bucket. Leave blank otherwise",
   "mtte.configShowCase": "Showcase content",
   "mtte.configShowCaseHint": "Some packs are providing showcase content. Uncheck to remove them from the available packs.",
+  "mtte.configSubControls": "Moulinette sub-controls",
+  "mtte.configSubControlsHint": "When this configuration is enabled, Moulinette will add Moulinette controls in existing sections (tokens, tiles, sounds). Otherwise, Moulinette controls will only be available in Moulinette layer.",
   "mtte.configUIMode": "Interface",
   "mtte.configUIModeHint": "When choosing \"compact\", labels will be removed to save space. Useful for advanced GMs that want to optimize their workspace.",
   "mtte.continue": "The module waits for the authentication to be successfully completed. Check your browser (new tab) to follow the process. If the authentication failed, close this window and try again!",

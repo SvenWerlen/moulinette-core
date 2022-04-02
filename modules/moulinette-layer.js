@@ -42,7 +42,6 @@ export class MoulinetteLayer extends PlaceablesLayer {
   }
 
   _onClickLeft(event) {
-    if(!game.moulinette.user.hasEarlyAccess()) return;
     const t = this.worldTransform;
     const tx = (event.data.originalEvent.clientX - t.tx) / canvas.stage.scale.x;
     const ty = (event.data.originalEvent.clientY - t.ty) / canvas.stage.scale.y;
@@ -60,7 +59,6 @@ export class MoulinetteLayer extends PlaceablesLayer {
   }
 
   _onClickRight(event) {
-    if(!game.moulinette.user.hasEarlyAccess()) return;
     const t = this.worldTransform;
     const tx = (event.data.originalEvent.clientX - t.tx) / canvas.stage.scale.x;
     const ty = (event.data.originalEvent.clientY - t.ty) / canvas.stage.scale.y;

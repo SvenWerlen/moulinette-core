@@ -98,6 +98,15 @@ Hooks.once("init", async function () {
     type: String
   });
 
+  game.settings.register("moulinette-core", "subControls", {
+    name: game.i18n.localize("mtte.configSubControls"),
+    hint: game.i18n.localize("mtte.configSubControlsHint"),
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean
+  });
+
   game.keybindings.register("moulinette-core", "favoriteKey", {
     name: game.i18n.localize("mtte.configFavoriteKey"),
     hint: game.i18n.localize("mtte.configFavoriteKeyHint"),
@@ -272,7 +281,7 @@ Hooks.on('getSceneControlButtons', (buttons) => {
       moulinetteTool.tools.push.apply(moulinetteTool.tools, shortcuts)
 
       // insert into existing control lists
-      if(m.layer) {
+      if(m.layer && game.settings.get("moulinette-core", "subControls")) {
         const button = buttons.find(b => b.name == m.layer)
         if(button) {
           button.tools.push({
