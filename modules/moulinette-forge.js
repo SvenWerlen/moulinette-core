@@ -69,6 +69,9 @@ export class MoulinetteForge extends FormApplication {
       this.activeModule.active = true
     }
     
+    // color
+    const cloudColor = game.settings.get("moulinette-core", "cloudColor")
+
     // fetch available packs & build publishers
     let publishers = {}
     let packs = await this.activeModule.instance.getPackList()
@@ -85,6 +88,10 @@ export class MoulinetteForge extends FormApplication {
       } else {
         publishers[p.publisher] = { name: p.publisher, count: p.count, isRemote: p.isRemote }
       }
+
+      // highlight cloud/remote assets based on configuration
+      if(p.isRemote && cloudColor == "def") p.class = "cloud"
+      if(p.isRemote && cloudColor == "contrast") p.class = "cloud contrast"
     })
     publishers = Object.values(publishers).filter(p => p.count > 0).sort((a,b) => a.name > b.name)   
     

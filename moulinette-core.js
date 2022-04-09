@@ -58,6 +58,18 @@ Hooks.once("init", async function () {
     type: Boolean,
     onChange: () => game.moulinette.user = {}
   });
+
+  game.settings.register("moulinette-core", "cloudColor", {
+    name: game.i18n.localize("mtte.configCloudColor"),
+    hint: game.i18n.localize("mtte.configCloudColorHint"),
+    scope: "world",
+    config: true,
+    default: "def",
+    choices: { none: game.i18n.localize("mtte.cloudColorNone"), def: game.i18n.localize("mtte.cloudColorDefault"), contrast: game.i18n.localize("mtte.cloudColorContrast") },
+    type: String,
+    onChange: () => game.moulinette.user = {}
+  });
+
   
   game.settings.register("moulinette-core", "s3Bucket", {
     name: game.i18n.localize("mtte.configS3"), 

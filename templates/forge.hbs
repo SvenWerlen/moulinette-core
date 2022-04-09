@@ -19,13 +19,13 @@
         {{#if packs}}
         <select class="plist">
           <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
-          {{#each packs as |p|}}<option value="{{p.idx}}" {{p.selected}} {{#if p.isRemote}}class="cloud"{{/if}}>{{pretty p.publisher}} | {{pretty p.cleanName}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
+          {{#each packs as |p|}}<option value="{{p.idx}}" {{p.selected}} {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.publisher}} | {{pretty p.cleanName}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
         </select>
         {{/if}}
         {{#if publishers}}
         <select class="plist">
           <option value="-1">{{localize "mtte.allPubs"}} ({{assetsCount}})</option>
-          {{#each publishers as |p|}}<option value="{{p.name}}" {{#if p.isRemote}}class="cloud"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
+          {{#each publishers as |p|}}<option value="{{p.name}}" {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
         </select>
         {{/if}}
         {{#if supportsModes}}
