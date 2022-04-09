@@ -281,7 +281,12 @@ export class MoulinetteFileUtil {
    * (files)
    */  
   static async scanAssetsInPackFolder(source, packPath, extensions, debug = false) {
-    let files = await MoulinetteFileUtil.scanFolder(source, packPath, extensions, debug)
+    let files = []
+    try {
+      files = await MoulinetteFileUtil.scanFolder(source, packPath, extensions, debug)
+    } catch(e) {
+      console.error(`MoulinetteFileUtil | Not able to scan assets in ${packPath}`, e)
+    }
     files = files.filter(f => f.indexOf("_thumb") < 0) // remove thumbnails
     if(debug) console.log(`Moulinette FileUtil | Pack: ${files.length} assets found.`)
     // special case for ForgeVTT => keep entire path
