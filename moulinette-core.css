@@ -1,3 +1,50 @@
+#moulinette.forge .body {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+#moulinette.forge .header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 75px;
+  overflow: hidden;
+  width: 100%;
+}
+
+#moulinette.forge .list {
+  height: auto;
+  position: absolute;
+  top: 75px;
+  bottom: 160px;
+  left: 0px;
+  overflow-y: auto;
+  width: 100%;
+  margin-bottom: 0px;
+}
+
+#moulinette.forge.compact .list {
+  bottom: 120px;
+}
+
+#moulinette.forge .footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  padding: 5px;
+  padding-right: 15px;
+}
+
+#moulinette.forge footer {
+  margin-bottom: 5px;
+}
+
+#moulinette.forge .plist {
+  max-width: 250px;
+}
+
 .mtte .main {
   margin-bottom: 20px;
 }
@@ -43,12 +90,6 @@
   opacity: 50%;
 }
 
-.mtte .list {
-  height: 600px;
-  overflow-y: scroll;
-  margin-top: 5px;
-}
-
 .mtte .logo {
   float: left;
   padding-right: 10px;
@@ -85,7 +126,7 @@
 
 .mtte .tabs {
   border-bottom: 1px solid #000;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
   font-size: large;
 }
 

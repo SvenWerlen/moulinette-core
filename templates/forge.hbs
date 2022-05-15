@@ -1,75 +1,80 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
-  {{#if error}}
-  <div class="error">{{error}}</div>
-  {{/if}}
-  {{#unless error}}
-  
-  <nav class="sheet-tabs tabs">
-    {{#each modules as |m|}}
-      <a class="item {{#if m.active}}active{{/if}}" data-tab="{{m.id}}"><i class="{{m.icon}}"></i>{{#unless ../compactUI}} {{m.name}}{{/unless}}</a>
-    {{/each}}
-  </nav>
 
-  <div class="main">
-    <p>
-      {{#unless compactUI}}<div class="description">{{{activeModule.description}}}</div>{{/unless}}
-      <div class="form-group search">
-        <input id="search" type="text" placeholder="{{localize "mtte.search"}}"></input>
-        <button class="search"><i class="fas fa-search"></i></button>
-        {{#if packs}}
-        <select class="plist">
-          <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
-          {{#each packs as |p|}}<option value="{{p.idx}}" {{p.selected}} {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.publisher}} | {{pretty p.cleanName}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
-        </select>
-        {{/if}}
-        {{#if publishers}}
-        <select class="plist">
-          <option value="-1">{{localize "mtte.allPubs"}} ({{assetsCount}})</option>
-          {{#each publishers as |p|}}<option value="{{p.name}}" {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
-        </select>
-        {{/if}}
-        {{#if supportsModes}}
-        <div class="filepicker"><div class="form-fields display-modes">
-            <a class="display-mode mode-browse" title="{{localize "FILES.DisplayModeList"}}">
-                <i class="fas fa-bars"></i>
-            </a>
-            <a class="display-mode mode-list" title="{{localize "FILES.DisplayModeThumbs"}}">
-                <i class="fas fa-th-list"></i>
-            </a>
-            <a class="display-mode mode-tiles" title="{{localize "FILES.DisplayModeTiles"}}">
-                <i class="fas fa-th-large"></i>
-            </a>
-        </div></div>
-        {{/if}}
-      </div>
-      <div class="list">
-        {{#each assets as |a|}}{{{a}}}{{/each}}
-      </div>
-    </p>
-    {{{footer}}}
-    <footer>
-      <div class="actions">
-        {{#each activeModule.actions as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
-      </div>
-      <div class="actions">
-        {{#each activeModule.actionsExt as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
-      </div>
-    </footer>
+<div class="body">
+  <div class="header">
+    {{#if error}}
+    <div class="error">{{error}}</div>
+    {{/if}}
+    {{#unless error}}
+    <!-- Moulinette navigation (tabs) -->
+    <nav class="sheet-tabs tabs">
+      {{#each modules as |m|}}
+        <a class="item {{#if m.active}}active{{/if}}" data-tab="{{m.id}}"><i class="{{m.icon}}"></i>{{#unless ../compactUI}} {{m.name}}{{/unless}}</a>
+      {{/each}}
+    </nav>
+    <!-- Search / pack list / modes -->
+    <div class="form-group search">
+      <input id="search" type="text" placeholder="{{localize "mtte.search"}}"></input>
+      <button class="search"><i class="fas fa-search"></i></button>
+      {{#if packs}}
+      <select class="plist">
+        <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
+        {{#each packs as |p|}}<option value="{{p.idx}}" {{p.selected}} {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.publisher}} | {{pretty p.cleanName}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
+      </select>
+      {{/if}}
+      {{#if publishers}}
+      <select class="plist">
+        <option value="-1">{{localize "mtte.allPubs"}} ({{assetsCount}})</option>
+        {{#each publishers as |p|}}<option value="{{p.name}}" {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
+      </select>
+      {{/if}}
+      {{#if supportsModes}}
+      <div class="filepicker"><div class="form-fields display-modes">
+          <a class="display-mode mode-browse" title="{{localize "FILES.DisplayModeList"}}">
+              <i class="fas fa-bars"></i>
+          </a>
+          <a class="display-mode mode-list" title="{{localize "FILES.DisplayModeThumbs"}}">
+              <i class="fas fa-th-list"></i>
+          </a>
+          <a class="display-mode mode-tiles" title="{{localize "FILES.DisplayModeTiles"}}">
+              <i class="fas fa-th-large"></i>
+          </a>
+      </div></div>
+      {{/if}}
+    </div>
+    {{/unless}}
+  </div>
+
+  {{#unless error}}
+  <div class="list">
+    {{#each assets as |a|}}{{{a}}}{{/each}}
   </div>
   
+  <div class="footer">
+    {{{footer}}}
+      <footer>
+        <div class="actions">
+          {{#each activeModule.actions as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
+        </div>
+        <div class="actions">
+          {{#each activeModule.actionsExt as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
+        </div>
+      </footer>
+    <img class="logo" src="modules/moulinette-core/img/moulinette.png" width="{{#if compactUI}}40{{/if}}{{#unless compactUI}}60{{/unless}}"/>
+    <p>
+      {{#unless user.patron}}
+      {{{localize "mtte.patreonSupportMe"}}}<br/>
+      {{/unless}}
+      {{#if user.patron}}
+      {{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}}). {{localize "mtte.patreonThanks"}}<br/>
+      {{/if}}
+      {{#unless compactUI}}
+      Join me on <a href="https://discord.gg/xg3dcMQfP2" target="_blank">Moulinette Discord</a> to follow development. <br/>
+      <a href="https://github.com/SvenWerlen/moulinette-core">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
+      {{/unless}}
+    </p>
+  </div>
   {{/unless}}
-  
-  <img class="logo" src="modules/moulinette-core/img/moulinette.png" width="{{#if compactUI}}40{{/if}}{{#unless compactUI}}60{{/unless}}"/>
-  <p>
-    {{#unless user.patron}}
-    {{{localize "mtte.patreonSupportMe"}}}<br/>
-    {{/unless}}
-    {{#if user.patron}}
-    {{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}}). {{localize "mtte.patreonThanks"}}<br/>
-    {{/if}}
-    {{#unless compactUI}}
-    Join me on <a href="https://discord.gg/xg3dcMQfP2" target="_blank">Moulinette Discord</a> to follow development. <br/>
-    <a href="https://github.com/SvenWerlen/moulinette-core">{{localize "mtte.seeDoc"}}</a> {{localize "mtte.learnMore"}}
-    {{/unless}}
-  </p>
+
+</div>
 </form>

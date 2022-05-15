@@ -76,7 +76,7 @@ export class MoulinetteHelpIndexing extends FormApplication {
     }
 
     // other sources
-    const sources = game.moulinette.sources.filter(s => s.type == this.type)
+    const sources = FILEUTIL.getMoulinetteSources().filter(s => s.type == this.type)
 
     return {
       type: this.type,

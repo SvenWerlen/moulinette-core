@@ -37,7 +37,7 @@ export class MoulinetteFileUtil {
   /**
    * Returns the base URL when available
    */
-  static getBaseURL() {
+  static async getBaseURL() {
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
     if(bucket.length > 0 && bucket != "null") {
       const e = game.data.files.s3.endpoint;
@@ -46,11 +46,10 @@ export class MoulinetteFileUtil {
 
     // #40 : Non-host GMs can't use Moulinette for games hosted on The Forge
     // https://github.com/SvenWerlen/moulinette-core/issues/40
-    /*
     if (typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge)  {
       const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
       return theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "";
-    }*/
+    }
 
     return "";
   }
@@ -131,10 +130,11 @@ export class MoulinetteFileUtil {
     MoulinetteFileUtil.createFolderIfMissing(folderSrc, folderPath)
     
     // check if file already exist
+    const baseURL = await MoulinetteFileUtil.getBaseURL();
     let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
     const path = `${folderPath}/${name}`
     let exist = base.files.filter(f =>  decodeURIComponent(f) == path)
-    if(exist.length > 0 && !overwrite) return {path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}`};
+    if(exist.length > 0 && !overwrite) return {path: `${baseURL}${folderPath}/${name}`};
     
     try {
       if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
@@ -157,9 +157,10 @@ export class MoulinetteFileUtil {
     await MoulinetteFileUtil.createFolderRecursive(folderPath)
     
     // check if file already exist
+    const baseURL = await MoulinetteFileUtil.getBaseURL();
     let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
     let exist = base.files.filter(f => decodeURIComponent(f) == `${folderPath}/${name}`)
-    if(exist.length > 0 && !overwrite) return { path: `${MoulinetteFileUtil.getBaseURL()}${folderPath}/${name}` };
+    if(exist.length > 0 && !overwrite) return { path: `${baseURL}${folderPath}/${name}` };
     
     try {
       if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
@@ -244,7 +245,6 @@ export class MoulinetteFileUtil {
     let publishersByName = {}
 
     const sources = MoulinetteFileUtil.getMoulinetteSources()
-    console.log(type, sources)
     for(const source of sources) {
       if(source.type == type) {
         // check data
@@ -351,7 +351,7 @@ export class MoulinetteFileUtil {
     if(sourcePath == ".") sourcePath = ""
     const debug = game.settings.get("moulinette-core", "debugScanAssets")
     let publishers = []
-    const baseURL = MoulinetteFileUtil.getBaseURL()
+    const baseURL = await MoulinetteFileUtil.getBaseURL()
     const source = MoulinetteFileUtil.getSource()
     if(debug) console.log(`Moulinette FileUtil | Scanning custom folder ${sourcePath} for .mtte files...`)
     let cfgFiles = await MoulinetteFileUtil.scanFolder(source, sourcePath, ".mtte");
@@ -484,7 +484,7 @@ export class MoulinetteFileUtil {
         // workaround for The Forge
         if(URL.endsWith("index.json")) {
           // prepare URL
-          const baseURL = MoulinetteFileUtil.getBaseURL()
+          const baseURL = await MoulinetteFileUtil.getBaseURL()
           if( baseURL.length > 0 && URL.startsWith(baseURL) ) {
             URL = URL.substring(baseURL.length)
           }
@@ -706,9 +706,10 @@ export class MoulinetteFileUtil {
     // 2 => #DEP1# (external dep #2)
     // ...
     let targetPaths = []    
-    targetPaths.push(MoulinetteFileUtil.getBaseURL() + path)
+    const baseURL = await MoulinetteFileUtil.getBaseURL();
+    targetPaths.push(baseURL + path)
     for(const dep of pack.deps) {
-      targetPaths.push(MoulinetteFileUtil.getBaseURL() + MoulinetteFileUtil.getMoulinetteBasePath(type, pack.publisher, dep))
+      targetPaths.push(baseURL + MoulinetteFileUtil.getMoulinetteBasePath(type, pack.publisher, dep))
     }
     
     return targetPaths;

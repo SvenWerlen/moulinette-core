@@ -22,13 +22,14 @@ export class MoulinetteForge extends FormApplication {
   
   static get defaultOptions() {
     const position = game.settings.get("moulinette", "winPosForge")
+    const uiMode = game.settings.get("moulinette-core", "uiMode")
     return mergeObject(super.defaultOptions, {
       id: "moulinette",
-      classes: ["mtte", "forge"],
+      classes: ["mtte", "forge", uiMode == "compact" ? "compact" : "normal"],
       title: game.i18n.localize("mtte.moulinetteForge"),
       template: "modules/moulinette-core/templates/forge.hbs",
       width: position ? position.width : 880,
-      height: "auto",
+      height: 800,
       left: position ? position.left : null,
       top: position ? position.top : null,
       resizable: true,
