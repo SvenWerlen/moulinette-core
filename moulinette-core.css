@@ -222,3 +222,80 @@
   border-radius: 3px;
   display: inline-block;
 }
+
+#moulinette-sources .body {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+#moulinette-sources .header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 55px;
+  overflow: hidden;
+  width: 100%;
+}
+
+#moulinette-sources .main {
+  display: flex;
+  height: auto;
+  position: absolute;
+  top: 55px;
+  bottom: 75px;
+  left: 0px;
+  overflow-y: auto;
+  width: 100%;
+  margin-bottom: 0px;
+}
+
+#moulinette-sources .footer {
+  position: absolute;
+  bottom: 0px;
+  height: 75px;
+  left: 0px;
+  width: 100%;
+  overflow: hidden;
+  padding: 5px;
+  padding-right: 15px;
+}
+
+.mtte .sources tr:hover {
+  background-color: darkgrey;
+}
+
+.mtte .sources td, .mtte .sources th  {
+  display: table-cell;
+  padding: 2px 5px;
+  text-align: left;
+}
+
+.mtte.sources .actions {
+  align-items: center;
+}
+
+.mtte.sources .update {
+  display: none
+}
+
+.mtte .actions label {
+  padding: 0px 3px 0px 10px;
+  font-weight: bold;
+}
+
+.mtte .actions button {
+  margin-left: 10px;
+}
+
+.mtte .actions button.browse {
+  width: 50px;
+}
+
+.mtte.sources .inactive {
+  color: darkred;
+}
+
+.mtte.sources .actions a {
+  margin-left: 3px;
+}

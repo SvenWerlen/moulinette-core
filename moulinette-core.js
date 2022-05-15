@@ -8,6 +8,7 @@ import { MoulinetteClient } from "./modules/moulinette-client.js"
 import { MoulinetteForgeModule } from "./modules/moulinette-forge-module.js"
 import { MoulinettePatreon } from "./modules/moulinette-patreon.js"
 import { MoulinetteHelp } from "./modules/moulinette-help.js"
+import { MoulinetteSources } from "./modules/moulinette-sources.js"
 
 /**
  * Init: define global game settings & helpers
@@ -21,6 +22,7 @@ Hooks.once("init", async function () {
   game.settings.register("moulinette", "winPosForge", { scope: "world", config: false, type: Object })
   game.settings.register("moulinette", "favorites", { scope: "world", config: false, type: Object, default: { default: { icon: "fas fa-heart", list: [] }} })
   game.settings.register("moulinette", "currentFav", { scope: "world", config: false, type: String, default: "history" })
+  game.settings.register("moulinette", "sources", { scope: "world", config: false, type: Object })
   
   game.settings.register("moulinette-core", "customPath", {
     name: game.i18n.localize("mtte.configCustomPath"), 
@@ -158,7 +160,8 @@ Hooks.once("init", async function () {
       MoulinetteForgeModule,
       MoulinetteFileUtil,
       MoulinetteFilePicker,
-      MoulinetteHelp
+      MoulinetteHelp,
+      MoulinetteSources
     },
     cache: new MoulinetteCache(),
     forge: [],

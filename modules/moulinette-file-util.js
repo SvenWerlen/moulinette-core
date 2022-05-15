@@ -202,13 +202,50 @@ export class MoulinetteFileUtil {
   }
   
   /**
+   * Prepares all moulinette sources, based on user configuration
+   * - All automatic sources (game.moulinette.sources) unless disabled by user
+   * - All custom sources from user
+   */
+  static getMoulinetteSources() {
+    // prepare sources
+    const sources = []
+    const settings = Array.isArray(game.settings.get("moulinette", "sources")) ? game.settings.get("moulinette", "sources") : []
+    for(const s of settings) {
+      if(!s.auto) sources.push({
+          type: s.type,
+          publisher: s.creator,
+          pack: s.pack,
+          source: s.source,
+          path: s.path
+        })
+    }
+
+    for(const s of game.moulinette.sources) {
+      const setting = settings.find(sett => sett.auto && sett.source == s.source && sett.path == s.path && sett.type == s.type)
+      if(!setting || setting.enabled) {
+        sources.push({
+          type: s.type,
+          publisher: setting && setting.creator ? setting.creator : s.publisher,
+          pack: setting && setting.pack ? setting.pack : s.pack,
+          source: s.source,
+          path: s.path
+        })
+      }
+    }
+    return sources
+  }
+
+  /**
    * Scans a source (core) for assets matching type
    */  
   static async scanSourceAssets(type, extensions) {
     const debug = game.settings.get("moulinette-core", "debugScanAssets")
     let publishers = []
     let publishersByName = {}
-    for(const source of game.moulinette.sources) {
+
+    const sources = MoulinetteFileUtil.getMoulinetteSources()
+    console.log(type, sources)
+    for(const source of sources) {
       if(source.type == type) {
         // check data
         if(!source.publisher || !source.pack || !source.path || !source.source) {
