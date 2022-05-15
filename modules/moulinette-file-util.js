@@ -46,10 +46,11 @@ export class MoulinetteFileUtil {
 
     // #40 : Non-host GMs can't use Moulinette for games hosted on The Forge
     // https://github.com/SvenWerlen/moulinette-core/issues/40
+    /*
     if (typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge)  {
       const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
       return theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "";
-    }
+    }*/
 
     return "";
   }

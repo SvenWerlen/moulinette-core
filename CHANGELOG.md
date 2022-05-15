@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - #36 Cannot figure how to add more images
 - 4.5.1: #40 Non-host GMs can't use Moulinette for games hosted on The Forge
+- 4.5.2: Rollback 4.5.1, causing issues
 ### Added
 - Configuration for highlighting Moulinette Cloud packs in dropdown lists
 
