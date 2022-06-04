@@ -21,7 +21,7 @@ export class MoulinetteForge extends FormApplication {
   }
   
   static get defaultOptions() {
-    const position = 0; //game.settings.get("moulinette", "winPosForge")
+    const position = game.settings.get("moulinette", "winPosForge")
     const uiMode = game.settings.get("moulinette-core", "uiMode")
     return mergeObject(super.defaultOptions, {
       id: "moulinette",
