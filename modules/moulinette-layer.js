@@ -4,7 +4,6 @@ export class MoulinetteLayer extends PlaceablesLayer {
     super(...args);
 
     this.documentName = "Scene"
-    this.active = false;
     this.isSetup = false;
   }
 
@@ -21,13 +20,11 @@ export class MoulinetteLayer extends PlaceablesLayer {
 
   activate() {
     super.activate();
-    this.active = true;
   }
 
   deactivate() {
     super.deactivate();
     this._clearChildren();
-    this.active = false;
   }
 
   render(...args) {
@@ -47,7 +44,7 @@ export class MoulinetteLayer extends PlaceablesLayer {
     const ty = (event.data.originalEvent.clientY - t.ty) / canvas.stage.scale.y;
     let coords = [tx, ty];
     coords = canvas.grid.getCenter(tx, ty);
-    if ( canvas.grid.hitArea.contains(coords[0], coords[1]) ) {
+    if ( canvas.dimensions.rect.contains(coords[0], coords[1]) ) {
       game.moulinette.forge.forEach(f => f.instance.onLeftClickGrid({
         x: coords[0],
         y: coords[1],
@@ -64,7 +61,7 @@ export class MoulinetteLayer extends PlaceablesLayer {
     const ty = (event.data.originalEvent.clientY - t.ty) / canvas.stage.scale.y;
     let coords = [tx, ty];
     coords = canvas.grid.getCenter(tx, ty);
-    if ( canvas.grid.hitArea.contains(coords[0], coords[1]) ) {
+    if ( canvas.dimensions.rect.contains(coords[0], coords[1]) ) {
       game.moulinette.forge.forEach(f => f.instance.onRightClickGrid({
         x: coords[0],
         y: coords[1],
