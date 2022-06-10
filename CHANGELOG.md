@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.6.0] - 2022-05-15
+## [4.6.1] - 2022-06-09
 ### Fixed
-- 4.5.1: #40 Non-host GMs can't use Moulinette for games hosted on The Forge
+- 4.6.1: Fix confusing Moulinette message when supporting platinum creators
 ### Changed
 - Moulinette UI vertically resizable
 - Manage sources (for indexing process)
