@@ -205,6 +205,12 @@
   margin-left: 5px;
 }
 
+.mtte .thumbsizes {
+  max-width: 44px;
+  margin-left: 12px;
+  font-size: 18px;
+}
+
 .moulinette-options .active {
   color: #FFF;
   border: 1px solid red;

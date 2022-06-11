@@ -41,6 +41,16 @@
           </a>
       </div></div>
       {{/if}}
+      {{#if supportsThumbSizes}}
+      <div class="thumbsizes"><div class="form-fields thumbsize">
+          <a class="thumbsize minus" title="{{localize "mtte.thumbsSmaller"}}">
+              <i class="fas fa-search-minus"></i>
+          </a>
+          <a class="thumbsize plus" title="{{localize "mtte.thumbsLarger"}}">
+              <i class="fas fa-search-plus"></i>
+          </a>
+      </div></div>
+      {{/if}}
     </div>
     {{/unless}}
   </div>

@@ -124,6 +124,7 @@ export class MoulinetteForge extends FormApplication {
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
       supportsModes: this.activeModule.instance.supportsModes(),
+      supportsThumbSizes: this.activeModule.instance.supportsThumbSizes(),
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: assets,
       footer: await this.activeModule.instance.getFooter(),
@@ -156,6 +157,9 @@ export class MoulinetteForge extends FormApplication {
    
     // display mode
     html.find(".display-modes a").click(this._onChangeDisplayMode.bind(this))
+
+    // thumb sizes
+    html.find(".thumbsizes a").click(this._onChangeThumbsizes.bind(this))
     
     // highlight current displayMode
     const dMode = game.settings.get("moulinette", "displayMode")
@@ -367,6 +371,15 @@ export class MoulinetteForge extends FormApplication {
     this.html.find(".display-modes a").removeClass("active")
     this.html.find(`.display-modes a.mode-${mode}`).removeClass("active")
     this._searchAssets()
+  }
+
+  /**
+   * User chose display mode
+   */
+  async _onChangeThumbsizes(event) {
+    event.preventDefault();
+    const source = event.currentTarget
+    this.activeModule.instance.onChangeThumbsSize(source.classList.contains("plus"))
   }
   
 }
