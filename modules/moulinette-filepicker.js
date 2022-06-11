@@ -8,11 +8,12 @@ export class MoulinetteFilePicker extends FilePicker {
 
   async browse(target, options={}) {
     if ( game.world && !game.user.can("FILES_BROWSE") ) return;
-    
-    console.log(`Moulinette FilePicker | Type = ${this.type}`)
-    
+
+    // moulinette API sometimes requires to have default FilePicker
+    const forceDefault = this.options && this.options.forceDefault
+
     // force retrieve user
-    if(["image", "imagevideo"].includes(this.type) && !this.default) {
+    if(!forceDefault && ["image", "imagevideo"].includes(this.type) && !this.default) {
       const module = game.moulinette.forge.filter(f => f.id == "tiles")
       if(module && module.length == 1) {
         this.picker = new MoulinetteFilePickerUI(module[0], { type: this.type, callbackSelect: this._onSelect.bind(this), callbackDefault: this._onDefault.bind(this, target) })
@@ -52,26 +53,28 @@ export class MoulinetteFilePicker extends FilePicker {
 }
 
 
-class MoulinetteFilePickerUI extends FormApplication {
+export class MoulinetteFilePickerUI extends FormApplication {
   
   static MAX_ASSETS = 100
   
-  constructor(module, options) {
+  constructor(module, options = {}) {
     super();
+    this.assetInc = 0
     this.module = module
     this.type = options.type
+    this.search = options.search
     this.callback = options.callbackSelect
     this.defaultUI = options.callbackDefault
   }
   
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      id: "moulinette-picker",
+      id: "moulinette",
       classes: ["mtte", "forge"],
       title: game.i18n.localize("mtte.moulinetteFilePicker"),
       template: "modules/moulinette-core/templates/filepicker.hbs",
       width: 880,
-      height: "auto",
+      height: 800,
       resizable: true,
       closeOnSubmit: false,
       submitOnClose: false,
@@ -105,26 +108,40 @@ class MoulinetteFilePickerUI extends FormApplication {
       p["cleanName"] = p["name"].startsWith(p["publisher"]) ? p["name"].substring(p["publisher"].length).trim() : p["name"]
     }
     
+    // autoselect matchiing pack (if call by searchAPI)
+    let publisher = null
+    let packIdx = -1
+    let matchingPack = null
+    if(this.search && this.search.pack) {
+      matchingPack = packs.find(p => p.name.startsWith(this.search.pack));
+      if(matchingPack) {
+        packIdx = matchingPack.idx
+        matchingPack.selected = "selected"
+      }
+    }
+
     // fetch initial asset list
-    const assets = await this.module.instance.getAssetList()
-      
+    const terms = this.search && this.search.terms ? this.search.terms : ""
+    this.assets = await this.module.instance.getAssetList(terms, packIdx, publisher)
+
     const data = { 
+      terms: terms,
       user: await game.moulinette.applications.Moulinette.getUser(),
       supportsModes: this.module.instance.supportsModes(),
+      supportsThumbSizes: this.module.instance.supportsThumbSizes(),
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
-      assets: assets
+      assets: this.assets.slice(0, MoulinetteFilePickerUI.MAX_ASSETS),
     }
-    
-    // 
+
     const browseMode = game.settings.get("moulinette-core", "browseMode")
     if(browseMode == "byPub") {
       data.publishers = publishers
     } else {
-      if(browseMode == "byPub") {
-        console.warn("Moulinette Core | This feature (browse by creator) is available to early access members only. Requires tier 'Dwarf blacksmith' or more.")
-      }
       data.packs = packs
     }
+
+    // reset initial search
+    this.search = null
       
     return data;
   }
@@ -145,6 +162,9 @@ class MoulinetteFilePickerUI extends FormApplication {
     // display mode
     html.find(".display-modes a").click(this._onChangeDisplayMode.bind(this))
     
+    // thumb sizes
+    html.find(".thumbsizes a").click(this._onChangeThumbsizes.bind(this))
+
     // highlight current displayMode
     const dMode = game.settings.get("moulinette", "displayMode")
     html.find(`.display-modes .mode-${dMode}`).addClass("active")
@@ -161,6 +181,9 @@ class MoulinetteFilePickerUI extends FormApplication {
     // autoload on scroll
     html.find(".list").on('scroll', this._onScroll.bind(this))
     
+    // adapt footer height to fit
+    html.find(".list").css('bottom', "80px")
+
     this.html = html
   }
   
@@ -309,5 +332,12 @@ class MoulinetteFilePickerUI extends FormApplication {
     this._searchAssets()
   }
 
-  
+  /**
+   * User chose thumbsizes
+   */
+  async _onChangeThumbsizes(event) {
+    event.preventDefault();
+    const source = event.currentTarget
+    this.module.instance.onChangeThumbsSize(source.classList.contains("plus"))
+  }
 }

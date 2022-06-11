@@ -9,6 +9,7 @@ import { MoulinetteForgeModule } from "./modules/moulinette-forge-module.js"
 import { MoulinettePatreon } from "./modules/moulinette-patreon.js"
 import { MoulinetteHelp } from "./modules/moulinette-help.js"
 import { MoulinetteSources } from "./modules/moulinette-sources.js"
+import { MoulinetteAPI } from "./modules/moulinette-api.js"
 
 /**
  * Init: define global game settings & helpers
@@ -161,7 +162,8 @@ Hooks.once("init", async function () {
       MoulinetteFileUtil,
       MoulinetteFilePicker,
       MoulinetteHelp,
-      MoulinetteSources
+      MoulinetteSources,
+      MoulinetteAPI
     },
     cache: new MoulinetteCache(),
     forge: [],

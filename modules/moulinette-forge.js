@@ -9,10 +9,12 @@ export class MoulinetteForge extends FormApplication {
   
   static get TABS() { return game.moulinette.forge.map( f => f.id ) }
   
-  constructor(tab) {
+  constructor(tab, search) {
     super()
     const curTab = tab ? tab : game.settings.get("moulinette", "currentTab")
+    this.assetInc = 0
     this.tab = MoulinetteForge.TABS.includes(curTab) ? curTab : null
+    this.search = search
     
     // clear all caches
     for(const f of game.moulinette.forge) {
@@ -106,19 +108,25 @@ export class MoulinetteForge extends FormApplication {
     const browseMode = game.settings.get("moulinette-core", "browseMode")
 
     // autoselect matching pack (if any)
+    // autoselect matchiing pack (if call by searchAPI)
     let publisher = null
-    let packIdx = null
+    let packIdx = -1
+    let matchingPack = null
     if(browseMode == "byPack" && this.curPack) {
-      const matchingPack = packs.find(p => p.path == this.curPack);
-      if(matchingPack) {
-        packIdx = matchingPack.idx
-        matchingPack.selected = "selected"
-      }
+      matchingPack = packs.find(p => p.path == this.curPack);
+    }
+    if(this.search && this.search.pack) {
+      matchingPack = packs.find(p => p.name.startsWith(this.search.pack));
+    }
+    if(matchingPack) {
+      packIdx = matchingPack.idx
+      matchingPack.selected = "selected"
     }
 
     // fetch initial asset list
-    const assets = await this.activeModule.instance.getAssetList("", packIdx, publisher)
-      
+    const terms = this.search && this.search.terms ? this.search.terms : ""
+    this.assets = await this.activeModule.instance.getAssetList(terms, packIdx, publisher)
+
     const data = { 
       user: await game.moulinette.applications.Moulinette.getUser(),
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
@@ -126,8 +134,9 @@ export class MoulinetteForge extends FormApplication {
       supportsModes: this.activeModule.instance.supportsModes(),
       supportsThumbSizes: this.activeModule.instance.supportsThumbSizes(),
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
-      assets: assets,
+      assets: this.assets.slice(0, MoulinetteForge.MAX_ASSETS),
       footer: await this.activeModule.instance.getFooter(),
+      terms: terms,
       compactUI: uiMode == "compact"
     }
     
@@ -136,6 +145,9 @@ export class MoulinetteForge extends FormApplication {
     } else {
       data.packs = packs
     }
+
+    // reset initial search
+    this.search = null
       
     return data;
   }
@@ -374,7 +386,7 @@ export class MoulinetteForge extends FormApplication {
   }
 
   /**
-   * User chose display mode
+   * User chose thumbsizes
    */
   async _onChangeThumbsizes(event) {
     event.preventDefault();
