@@ -28,7 +28,6 @@
   "mtte.configUIModeHint": "\"すっきり\"ではアイコンからラベルを消して空間をスッキリさせます。作業環境を最適化したい上級ユーザのGMにお勧めです。",
   "mtte.continue": "認証が完了するまで待機します。新たに開いたブラウザ（またはタブ）を確認して認証手続きを進めてください。認証が失敗した場合、このウィンドウを閉じてもう一度お試しください。",
   "mtte.days": "日",
-  "mtte.defaultPicker": "従来ファイル選択UI",
   "mtte.defaultPickerHint": "オンセ工房 Foundry VTTの従来のファイル選択UIを開きます。",
   "mtte.disconnect": "Patreon連動解除",
   "mtte.errorBrowseUpdateModule": "この表示モードを使用するにはModをアップデートする必要があります。",

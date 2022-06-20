@@ -137,12 +137,17 @@ export class MoulinetteFileUtil {
     if(exist.length > 0 && !overwrite) return {path: `${baseURL}${folderPath}/${name}`};
     
     try {
+      /*
       if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
         console.log("MoulinetteFileUtil | Uploading with The Forge")
         return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
       } else {
-        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+        const timeout = game.settings.get("moulinette-core", "filepickerTimeout")
+        return await game.moulinette.applications.MoulinetteFilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), { notify: false, timeoutMs: timeout * 1000, onTimeout: function(msg) { console.error(`Moulinette FileUtil | Upload failed due to timeout with your server. Try increasing the timeout in Moulinette configuration. Currently ${timeout} seconds.`);} });
       }
+      */
+      const timeout = game.settings.get("moulinette-core", "filepickerTimeout")
+      return await game.moulinette.applications.MoulinetteFilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), { notify: false, timeoutMs: timeout * 1000, onTimeout: function(msg) { console.error(`Moulinette FileUtil | Upload failed due to timeout with your server. Try increasing the timeout in Moulinette configuration. Currently ${timeout} seconds.`);} });
     } catch (e) {
       console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
       console.log(e)
@@ -163,12 +168,17 @@ export class MoulinetteFileUtil {
     if(exist.length > 0 && !overwrite) return { path: `${baseURL}${folderPath}/${name}` };
     
     try {
+      /*
       if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
         console.log("MoulinetteFileUtil | Uploading with The Forge")
         return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
       } else {
-        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+        const timeout = game.settings.get("moulinette-core", "filepickerTimeout")
+        return await game.moulinette.applications.MoulinetteFilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), { notify: false, timeoutMs: timeout * 1000, onTimeout: function(msg) { console.error(`Moulinette FileUtil | Upload failed due to timeout with your server. Try increasing the timeout in Moulinette configuration. Currently ${timeout} seconds.`);} });
       }
+      */
+      const timeout = game.settings.get("moulinette-core", "filepickerTimeout")
+      return await game.moulinette.applications.MoulinetteFilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), { notify: false, timeoutMs: timeout * 1000, onTimeout: function(msg) { console.error(`Moulinette FileUtil | Upload failed due to timeout with your server. Try increasing the timeout in Moulinette configuration. Currently ${timeout} seconds.`);} });
     } catch (e) {
       console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
       console.log(e)

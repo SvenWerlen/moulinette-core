@@ -102,6 +102,15 @@ Hooks.once("init", async function () {
     type: Boolean,
     onChange: () => window.location.reload()
   });
+
+  game.settings.register("moulinette-core", "filepickerTimeout", {
+    name: game.i18n.localize("mtte.configFilepickerTimeout"),
+    hint: game.i18n.localize("mtte.configFilepickerTimeoutHint"),
+    scope: "world",
+    config: true,
+    default: 30,
+    type: Number
+  });
   
   game.settings.register("moulinette-core", "uiMode", {
     name: game.i18n.localize("mtte.configUIMode"), 

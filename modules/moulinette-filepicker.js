@@ -50,6 +50,68 @@ export class MoulinetteFilePicker extends FilePicker {
     this.default = true
     return super.browse(target)
   }
+
+  /**
+   * SOURCE : FoundryVTT core code
+   * -----------------------------
+   * Dispatch a POST request to the server containing a directory path and a file to upload
+   * @param {string} source   The data source to which the file should be uploaded
+   * @param {string} path     The destination path
+   * @param {File} file       The File object to upload
+   * @param {object} [body={}]  Additional file upload options sent in the POST body
+   * @param {object} [options]  Additional options to configure how the method behaves
+   * @param {boolean} [options.notify=true] Display a UI notification when the upload is processed
+   * @return {Promise<Object>}  The response object
+   */
+  static async upload(source, path, file, body={}, {notify=true, timeoutMs=30000, onTimeout = () => {}}={}) {
+
+    // Create the form data to post
+    const fd = new FormData();
+    fd.set("source", source);
+    fd.set("target", path);
+    fd.set("upload", file);
+    Object.entries(body).forEach(o => fd.set(...o));
+
+    const notifications = Object.fromEntries(["ErrorSomethingWrong", "WarnUploadModules", "ErrorTooLarge"].map(key => {
+      const i18n = `FILES.${key}`;
+      return [key, game.i18n.localize(i18n)];
+    }));
+
+    // Dispatch the request
+    try {
+      const response = await fetchJsonWithTimeout(this.uploadURL, {method: "POST", body: fd}, {timeoutMs: timeoutMs, onTimeout: onTimeout} );
+
+      // Attempt to obtain the response
+      if ( response.error ) {
+        ui.notifications.error(response.error);
+        return false;
+      } else if ( !response.path ) {
+        console.error(notifications["ErrorSomethingWrong"]);
+        if ( notify ) ui.notifications.error(notifications["ErrorSomethingWrong"]);
+        return false;
+      }
+
+      // Display additional response messages
+      if ( response.message ) {
+        if ( /^(modules|systems)/.test(response.path) ) {
+          console.warn(notifications["WarnUploadModules"]);
+          if ( notify ) ui.notifications.warn(notifications["WarnUploadModules"]);
+        }
+        console.info(response.message);
+        if ( notify ) ui.notifications.info(response.message);
+      }
+      return response;
+    }
+    catch (e) {
+      if ( (e instanceof HttpError) && (e.code === 413) ) {
+        console.error(notifications["ErrorTooLarge"]);
+        if ( notify ) ui.notifications.error(notifications["ErrorTooLarge"]);
+        return false;
+      }
+      return false;
+    }
+  }
+
 }
 
 
