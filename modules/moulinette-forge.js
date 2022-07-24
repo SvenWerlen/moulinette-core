@@ -111,16 +111,22 @@ export class MoulinetteForge extends FormApplication {
     // autoselect matchiing pack (if call by searchAPI)
     let publisher = this.search && this.search.creator ? this.search.creator : null
     let packIdx = -1
-    let matchingPack = null
     if(browseMode == "byPack" && this.curPack) {
       matchingPack = packs.find(p => p.path == this.curPack);
     }
-    if(this.search && this.search.pack) {
-      matchingPack = packs.find(p => p.name.startsWith(this.search.pack));
+    if(this.search && this.search.creator) {
+      const matchingCreator = publishers.find(p => p.name == this.search.creator);
+      console.log(matchingCreator)
+      if(matchingCreator) {
+        matchingCreator.selected = "selected"
+      }
     }
-    if(matchingPack) {
-      packIdx = matchingPack.idx
-      matchingPack.selected = "selected"
+    if(this.search && this.search.pack) {
+      const matchingPack = packs.find(p => p.name.toLowerCase().startsWith(this.search.pack.toLowerCase()));
+      if(matchingPack) {
+        packIdx = matchingPack.idx
+        matchingPack.selected = "selected"
+      }
     }
 
     // fetch initial asset list
