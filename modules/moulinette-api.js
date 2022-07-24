@@ -18,8 +18,8 @@ export class MoulinetteAPI {
    */
   static searchUI(module, search = {} ) {
     const forgeClass = game.moulinette.modules.find(m => m.id == "forge").class
-    if(!search || !search.terms) {
-      return console.error("Moulinette API | You need to specify 'terms' when calling searchUI")
+    if(!forgeClass) {
+      return console.error("Moulinette API | You need to specify a valid (and enabled moulinette module) when calling searchUI. Try 'tiles' or 'scenes'")
     }
     new forgeClass(module, search).render(true)
   }

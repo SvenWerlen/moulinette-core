@@ -116,7 +116,6 @@ export class MoulinetteForge extends FormApplication {
     }
     if(this.search && this.search.creator) {
       const matchingCreator = publishers.find(p => p.name == this.search.creator);
-      console.log(matchingCreator)
       if(matchingCreator) {
         matchingCreator.selected = "selected"
       }

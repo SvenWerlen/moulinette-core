@@ -351,3 +351,7 @@
 .mtte.sources .actions a {
   margin-left: 3px;
 }
+
+.mtte .showcase {
+  background: url(../../ui/parchment.jpg) repeat;
+}
