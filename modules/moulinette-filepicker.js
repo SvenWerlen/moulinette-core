@@ -91,7 +91,7 @@ export class MoulinetteFilePickerUI extends FormApplication {
     packs.forEach(p => { 
       if(p.special) special = true
       else assetsCount += p.count
-        
+
       if(p.publisher in publishers) {
         publishers[p.publisher].count += p.count
         if(p.isRemote) publishers[p.publisher].isRemote = true
@@ -99,21 +99,26 @@ export class MoulinetteFilePickerUI extends FormApplication {
         publishers[p.publisher] = { name: p.publisher, count: p.count, isRemote: p.isRemote }
       }
     })
-    publishers = Object.values(publishers).filter(p => p.count > 0).sort((a,b) => a.name > b.name)   
+    publishers = Object.values(publishers).filter(p => p.count > 0 && !(this.search && this.search.creator && p.name != this.search.creator)).sort((a,b) => a.name > b.name)
     
     // prepare packs 
     // - cleans packname by removing publisher from pack name to avoid redundancy
-    packs = duplicate(packs.filter(p => p.count > 0 || p.special))
+    packs = duplicate(packs.filter(p => (p.count > 0 && !(this.search && this.search.creator && p.publisher != this.search.creator)) || p.special))
     for(const p of packs) {
       p["cleanName"] = p["name"].startsWith(p["publisher"]) ? p["name"].substring(p["publisher"].length).trim() : p["name"]
     }
     
-    // autoselect matchiing pack (if call by searchAPI)
-    let publisher = null
+    // autoselect matching creator (if called by searchAPI)
+    if(this.search && this.search.creator) {
+      const matchingCreator = publishers.find(p => p.name == this.search.creator)
+      matchingCreator.selected = "selected"
+    }
+    // autoselect matching pack (if called by searchAPI)
+    let publisher = this.search && this.search.creator ? this.search.creator : null
     let packIdx = -1
     let matchingPack = null
     if(this.search && this.search.pack) {
-      matchingPack = packs.find(p => p.name.startsWith(this.search.pack));
+      matchingPack = packs.find(p => p.name.toLowerCase().startsWith(this.search.pack.toLowerCase()));
       if(matchingPack) {
         packIdx = matchingPack.idx
         matchingPack.selected = "selected"

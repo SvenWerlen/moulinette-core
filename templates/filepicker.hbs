@@ -20,7 +20,7 @@
       {{#if publishers}}
       <select class="plist">
         <option value="-1">{{localize "mtte.allPubs"}} ({{assetsCount}})</option>
-        {{#each publishers as |p|}}<option value="{{p.name}}" {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
+        {{#each publishers as |p|}}<option value="{{p.name}}" {{p.selected}} {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
       </select>
       {{/if}}
       {{#if supportsModes}}

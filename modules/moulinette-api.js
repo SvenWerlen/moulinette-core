@@ -10,19 +10,16 @@ export class MoulinetteAPI {
   
   /**
    * Open Moulinette UI and triggers a search
-   * - terms : search terms
    * - module : which module to trigger (tiles, scenes, etc.)
-   * - options:
-   *    - packName : filter the pack list based on the pack name (partial name (prefix) works too)
+   * - search:
+   *    - terms : search terms (filter)
+   *    - creator : filter the pack list based on the creator name (must exactly match)
+   *    - pack : filter the pack list based on the pack name (partial name (prefix) works too)
    */
-  static searchUI(terms, module, options = {} ) {
+  static searchUI(module, search = {} ) {
     const forgeClass = game.moulinette.modules.find(m => m.id == "forge").class
-    if(!terms) {
+    if(!search || !search.terms) {
       return console.error("Moulinette API | You need to specify 'terms' when calling searchUI")
-    }
-    const search = { terms: terms }
-    if(options && options.packName) {
-      search.pack = options.packName
     }
     new forgeClass(module, search).render(true)
   }
@@ -30,9 +27,11 @@ export class MoulinetteAPI {
   /**
    * Open Moulinette Filepicker
    * Returns the path of the asset the user selected
+   * - callback: the function to call with the path of the selected asset
    * - search:
    *    - terms: search terms (filter)
-   *    - pack: filter the pack list based on the pack name (partial name (prefix) works too)
+   *    - creator : filter the results for a specific creator name (must exactly match)
+   *    - pack: filter the results for a specific pack name (partial name (prefix) works too)
    */
   static async assetPickerBrowse(callback, search = {}) {
     const module = game.moulinette.forge.find(f => f.id == "tiles")

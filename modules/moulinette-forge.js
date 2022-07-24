@@ -15,7 +15,7 @@ export class MoulinetteForge extends FormApplication {
     this.assetInc = 0
     this.tab = MoulinetteForge.TABS.includes(curTab) ? curTab : null
     this.search = search
-    
+
     // clear all caches
     for(const f of game.moulinette.forge) {
       f.instance.clearCache()
@@ -96,11 +96,11 @@ export class MoulinetteForge extends FormApplication {
       if(p.isRemote && cloudColor == "def") p.class = "cloud"
       if(p.isRemote && cloudColor == "contrast") p.class = "cloud contrast"
     })
-    publishers = Object.values(publishers).filter(p => p.count > 0).sort((a,b) => a.name > b.name)   
+    publishers = Object.values(publishers).filter(p => p.count > 0 && !(this.search && this.search.creator && p.name != this.search.creator)).sort((a,b) => a.name > b.name)
     
     // prepare packs 
     // - cleans packname by removing publisher from pack name to avoid redundancy
-    packs = duplicate(packs.filter(p => p.count > 0 || p.special))
+    packs = duplicate(packs.filter(p => p.count > 0 && !(this.search && this.search.creator && p.publisher != this.search.creator) || p.special))
     for(const p of packs) {
       p["cleanName"] = p["name"].startsWith(p["publisher"]) ? p["name"].substring(p["publisher"].length).trim() : p["name"]
     }
@@ -109,7 +109,7 @@ export class MoulinetteForge extends FormApplication {
 
     // autoselect matching pack (if any)
     // autoselect matchiing pack (if call by searchAPI)
-    let publisher = null
+    let publisher = this.search && this.search.creator ? this.search.creator : null
     let packIdx = -1
     let matchingPack = null
     if(browseMode == "byPack" && this.curPack) {
