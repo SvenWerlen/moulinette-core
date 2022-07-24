@@ -33,7 +33,7 @@ export class MoulinetteAPI {
    *    - creator : filter the results for a specific creator name (must exactly match)
    *    - pack: filter the results for a specific pack name (partial name (prefix) works too)
    */
-  static async assetPickerBrowse(callback, search = {}) {
+  static async assetPicker(callback, search = {}) {
     const module = game.moulinette.forge.find(f => f.id == "tiles")
     if(!module ) {
       return console.error("Moulinette API | Moulinette Tiles is required. Please install and enable it!")
