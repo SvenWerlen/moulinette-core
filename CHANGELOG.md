@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [4.8.0] - 2022-07-24
+### Fixed
+- 4.8.1 : fix packaging
+- 4.8.2 : fix prefabs tab not working any more
 ### Added
 - Moulinette API (searchUI & assetPicker)
 

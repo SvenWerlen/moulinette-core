@@ -108,11 +108,15 @@ export class MoulinetteForge extends FormApplication {
     const browseMode = game.settings.get("moulinette-core", "browseMode")
 
     // autoselect matching pack (if any)
-    // autoselect matchiing pack (if call by searchAPI)
+    // autoselect matching pack (if call by searchAPI)
     let publisher = this.search && this.search.creator ? this.search.creator : null
     let packIdx = -1
     if(browseMode == "byPack" && this.curPack) {
-      matchingPack = packs.find(p => p.path == this.curPack);
+      const matchingPack = packs.find(p => p.path == this.curPack);
+      if(matchingPack) {
+        packIdx = matchingPack.idx
+        matchingPack.selected = "selected"
+      }
     }
     if(this.search && this.search.creator) {
       const matchingCreator = publishers.find(p => p.name == this.search.creator);
