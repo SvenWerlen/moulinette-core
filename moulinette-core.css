@@ -205,6 +205,11 @@
   color: red;
 }
 
+.mtte .shortcuts {
+  max-width: 18px;
+  margin-left: 5px;
+}
+
 .mtte .filepicker {
   max-width: 90px;
   margin-left: 5px;
@@ -354,4 +359,10 @@
 
 .mtte .showcase {
   background: url(../../ui/parchment.jpg) repeat;
+}
+
+.mtte .dragMacro {
+  border: 0;
+  cursor: grab;
+  margin: 0px 5px;
 }

@@ -28,6 +28,13 @@
         {{#each publishers as |p|}}<option value="{{p.name}}" {{p.selected}} {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
       </select>
       {{/if}}
+      {{#if supportsShortcuts}}
+      <div class="shortcuts"><div class="form-fields shortcuts">
+          <a class="shortcut" title="{{localize "mtte.generateShortcut"}}">
+              <i class="fas fa-bookmark"></i>
+          </a>
+      </div></div>
+      {{/if}}
       {{#if supportsModes}}
       <div class="filepicker"><div class="form-fields display-modes">
           <a class="display-mode mode-browse" title="{{localize "FILES.DisplayModeList"}}">

@@ -1,4 +1,6 @@
+import { MoulinettePatreon } from "./moulinette-patreon.js"
 import { MoulinetteForgeModule } from "./moulinette-forge-module.js"
+import { MoulinetteShortcuts } from "./moulinette-shortcuts.js"
 
 /*************************
  * Moulinette Forge
@@ -136,12 +138,13 @@ export class MoulinetteForge extends FormApplication {
     const terms = this.search && this.search.terms ? this.search.terms : ""
     this.assets = await this.activeModule.instance.getAssetList(terms, packIdx, publisher)
 
-    const data = { 
+    const data = {
       user: await game.moulinette.applications.Moulinette.getUser(),
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
       supportsModes: this.activeModule.instance.supportsModes(),
       supportsThumbSizes: this.activeModule.instance.supportsThumbSizes(),
+      supportsShortcuts: ["tiles", "sounds", "scenes", "prefabs"].includes(this.activeModule.id),
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: this.assets.slice(0, MoulinetteForge.MAX_ASSETS),
       footer: await this.activeModule.instance.getFooter(),
@@ -176,6 +179,9 @@ export class MoulinetteForge extends FormApplication {
     // buttons
     html.find("button").click(this._onClickButton.bind(this))
    
+    // shortcuts
+    html.find(".shortcuts a").click(this._onGenerateShortcuts.bind(this))
+
     // display mode
     html.find(".display-modes a").click(this._onChangeDisplayMode.bind(this))
 
@@ -403,4 +409,30 @@ export class MoulinetteForge extends FormApplication {
     this.activeModule.instance.onChangeThumbsSize(source.classList.contains("plus"))
   }
   
+  /**
+   * User chose thumbsizes
+   */
+  async _onGenerateShortcuts(event) {
+    event.preventDefault();
+    const source = event.currentTarget
+    const moduleId = this.activeModule.id
+    const filters = {
+      terms: this.html.find("#search").val().toLowerCase()
+    }
+    const browseMode = game.settings.get("moulinette-core", "browseMode")
+    const filterId = this.html.find(".plist option:selected").val()
+    if(filterId && filterId != "-1") {
+      if(browseMode == "byPack") {
+        let packs = await this.activeModule.instance.getPackList()
+        if(filterId in packs) {
+          filters.creator = packs[filterId].publisher
+          filters.pack = packs[filterId].name
+        }
+      } else {
+        filters.creator = filterId
+      }
+    }
+    new MoulinetteShortcuts(moduleId, filters).render(true)
+  }
+
 }
