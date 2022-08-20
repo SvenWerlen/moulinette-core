@@ -36,6 +36,8 @@
   "mtte.configS3Hint": "Si vous avez configuré du stockage S3 ET que vous souhaitez l'utiliser pour moulinette, spécifiez le nom du compartiment à utiliser. Laissez vide sinon",
   "mtte.configShowCase": "Contenu d'exemple",
   "mtte.configShowCaseHint": "Certains packs présentent du contenu d'exemple (vitrine). Décocher pour les retirer de la liste des packs disponibles.",
+  "mtte.configShowCloudContent": "Afficher les correspondance (Cloud)",
+  "mtte.configShowCloudContentHint": "Lorsque vous recherchez du contenu, Moulinette affiche le nombre de correspondance sur Moulinette Cloud. Décochez cette option pour désactiver la boîte d'information.",
   "mtte.configSubControls": "Moulinette dans sous-menus",
   "mtte.configSubControlsHint": "Si cette option est activée, des boutons de contrôle seront insérés dans les sous-menus de FoundryVTT (tokens, tuiles, sons). Sinon, les contrôles seront uniquement disponibles sous la section de Moulinette.",
   "mtte.configUIMode": "Interface",

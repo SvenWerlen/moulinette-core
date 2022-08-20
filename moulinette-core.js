@@ -51,7 +51,7 @@ Hooks.once("init", async function () {
     default: true,
     type: Boolean
   });
-  
+
   game.settings.register("moulinette-core", "enableMoulinetteCloud", {
     name: game.i18n.localize("mtte.configEnableMoulinetteCloud"), 
     hint: game.i18n.localize("mtte.configEnableMoulinetteCloudHint"), 
@@ -60,6 +60,15 @@ Hooks.once("init", async function () {
     default: true,
     type: Boolean,
     onChange: () => game.moulinette.user = {}
+  });
+
+  game.settings.register("moulinette-core", "showCloudContent", {
+    name: game.i18n.localize("mtte.configShowCloudContent"),
+    hint: game.i18n.localize("mtte.configShowCloudContentHint"),
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean
   });
 
   game.settings.register("moulinette-core", "cloudColor", {

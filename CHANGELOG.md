@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Moulinette Shortcuts (presets)
 
+## [4.9.0] - 2022-08-20
+### Added
+- Configuration to enable/disable available content from Moulinette Cloud
+
 ## [4.8.0] - 2022-07-24
 ### Fixed
 - 4.8.1 : fix packaging
