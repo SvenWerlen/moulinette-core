@@ -1,40 +1,58 @@
 {
-  "name": "moulinette-core",
   "title": "Moulinette Core",
-  "description": "Moulinette provides multiple tools and assets for DMs (dungeon masters) to help them prepare their games. ",
-  "version": "4.10.0",
-  "author": "Sven Werlen",
-  "scripts": ["iconpicker/iconpicker-1.5.0.js"],
-  "esmodules": ["moulinette-core.js"],
-  "styles": ["moulinette-core.css", "iconpicker/iconpicker-1.5.0.css"],
+  "description": "Moulinette provides multiple tools and assets for DMs (dungeon masters) to help them prepare their games.",
+  "version": "10.0.0",
+  "scripts": [
+    "iconpicker/iconpicker-1.5.0.js"
+  ],
+  "esmodules": [
+    "moulinette-core.js"
+  ],
+  "styles": [
+    "moulinette-core.css",
+    "iconpicker/iconpicker-1.5.0.css"
+  ],
   "languages": [
     {
       "lang": "en",
       "name": "English",
-      "path": "lang/en.json"
+      "path": "lang/en.json",
+      "flags": {}
     },
     {
       "lang": "fr",
       "name": "French",
-      "path": "lang/fr.json"
+      "path": "lang/fr.json",
+      "flags": {}
     },
     {
       "lang": "ja",
       "name": "日本語",
-      "path": "lang/ja.json"
+      "path": "lang/ja.json",
+      "flags": {}
     }
   ],
   "packs": [
     {
       "name": "moulinette-macros",
       "label": "Moulinette Macros",
-      "path": "./packs/moulinette-macros.db",
-      "entity": "Macro"
+      "path": "packs/moulinette-macros.db",
+      "type": "Macro",
+      "private": false,
+      "flags": {}
     }
   ],
   "url": "https://github.com/SvenWerlen/moulinette-core",
   "download": "https://github.com/SvenWerlen/moulinette-core/archive/v-4.10.0.zip",
   "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-core/main/module.json",
-  "minimumCoreVersion": "9",
-  "compatibleCoreVersion": "9"
+  "id": "moulinette-core",
+  "authors": [
+    {
+      "name": "Sven Werlen",
+      "flags": {}
+    }
+  ],
+  "compatibility": {
+    "minimum": "10"
+  }
 }
