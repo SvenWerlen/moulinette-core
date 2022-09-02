@@ -9,6 +9,7 @@ import { MoulinetteForgeModule } from "./modules/moulinette-forge-module.js"
 import { MoulinettePatreon } from "./modules/moulinette-patreon.js"
 import { MoulinetteHelp } from "./modules/moulinette-help.js"
 import { MoulinetteSources } from "./modules/moulinette-sources.js"
+import { MoulinetteAPI } from "./modules/moulinette-api.js"
 
 /**
  * Init: define global game settings & helpers
@@ -50,7 +51,7 @@ Hooks.once("init", async function () {
     default: true,
     type: Boolean
   });
-  
+
   game.settings.register("moulinette-core", "enableMoulinetteCloud", {
     name: game.i18n.localize("mtte.configEnableMoulinetteCloud"), 
     hint: game.i18n.localize("mtte.configEnableMoulinetteCloudHint"), 
@@ -59,6 +60,15 @@ Hooks.once("init", async function () {
     default: true,
     type: Boolean,
     onChange: () => game.moulinette.user = {}
+  });
+
+  game.settings.register("moulinette-core", "showCloudContent", {
+    name: game.i18n.localize("mtte.configShowCloudContent"),
+    hint: game.i18n.localize("mtte.configShowCloudContentHint"),
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean
   });
 
   game.settings.register("moulinette-core", "cloudColor", {
@@ -161,7 +171,8 @@ Hooks.once("init", async function () {
       MoulinetteFileUtil,
       MoulinetteFilePicker,
       MoulinetteHelp,
-      MoulinetteSources
+      MoulinetteSources,
+      MoulinetteAPI
     },
     cache: new MoulinetteCache(),
     forge: [],

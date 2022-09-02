@@ -1,0 +1,25 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  <div class="content">
+  <h1>Macro</h1>
+  <p><em>{{localize "mtte.moulinetteShortcutsMacro"}}</em></p>
+  <textarea id="codeMacro" rows="6" cols="80">{{macroCode}}</textarea>
+  <footer>
+    <div class="actions">
+      <button class="clipboardMacro" title="Copy to clipboard"><i class="fa fa-clipboard"></i> {{localize "mtte.copyCode"}}</button>
+      <button class="createMacro"><i class="fa fa-cogs"></i> {{localize "mtte.createMacro"}}</button>
+      <img class="dragMacro draggable" src="modules/moulinette-core/img/moulinette.png" width="32" height="32" title="{{localize "mtte.moulinetteShortcutsDragToolTip"}}" />
+    </div>
+  </footer><br/>
+
+  <h1>Macro in Journal Entry</h1>
+  <p><em>{{localize "mtte.moulinetteShortcutsMacroJournal"}}</em></p>
+  <textarea id="codeJournal" rows="1" cols="80">{{macroJournalCode}}</textarea>
+  <footer>
+    <div class="actions">
+      <button class="clipboardJournal" title="Copy to clipboard"><i class="fa fa-clipboard"></i> {{localize "mtte.copyCode"}}</button>
+      <button class="createJournal"><i class="fa fa-cogs"></i> {{localize "mtte.createJournalArticle"}}</button>
+    </div>
+  </footer>
+
+  </div>
+</form>

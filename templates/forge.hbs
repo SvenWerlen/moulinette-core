@@ -14,7 +14,7 @@
     </nav>
     <!-- Search / pack list / modes -->
     <div class="form-group search">
-      <input id="search" type="text" placeholder="{{localize "mtte.search"}}"></input>
+      <input id="search" type="text" placeholder="{{localize "mtte.search"}}" value="{{terms}}"></input>
       <button class="search"><i class="fas fa-search"></i></button>
       {{#if packs}}
       <select class="plist">
@@ -25,8 +25,15 @@
       {{#if publishers}}
       <select class="plist">
         <option value="-1">{{localize "mtte.allPubs"}} ({{assetsCount}})</option>
-        {{#each publishers as |p|}}<option value="{{p.name}}" {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
+        {{#each publishers as |p|}}<option value="{{p.name}}" {{p.selected}} {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
       </select>
+      {{/if}}
+      {{#if supportsShortcuts}}
+      <div class="shortcuts"><div class="form-fields shortcuts">
+          <a class="shortcut" title="{{localize "mtte.generateShortcut"}}">
+              <i class="fas fa-bookmark"></i>
+          </a>
+      </div></div>
       {{/if}}
       {{#if supportsModes}}
       <div class="filepicker"><div class="form-fields display-modes">
@@ -38,6 +45,16 @@
           </a>
           <a class="display-mode mode-tiles" title="{{localize "FILES.DisplayModeTiles"}}">
               <i class="fas fa-th-large"></i>
+          </a>
+      </div></div>
+      {{/if}}
+      {{#if supportsThumbSizes}}
+      <div class="thumbsizes"><div class="form-fields thumbsize">
+          <a class="thumbsize minus" title="{{localize "mtte.thumbsSmaller"}}">
+              <i class="fas fa-search-minus"></i>
+          </a>
+          <a class="thumbsize plus" title="{{localize "mtte.thumbsLarger"}}">
+              <i class="fas fa-search-plus"></i>
           </a>
       </div></div>
       {{/if}}

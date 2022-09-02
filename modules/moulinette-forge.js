@@ -1,4 +1,6 @@
+import { MoulinettePatreon } from "./moulinette-patreon.js"
 import { MoulinetteForgeModule } from "./moulinette-forge-module.js"
+import { MoulinetteShortcuts } from "./moulinette-shortcuts.js"
 
 /*************************
  * Moulinette Forge
@@ -9,11 +11,13 @@ export class MoulinetteForge extends FormApplication {
   
   static get TABS() { return game.moulinette.forge.map( f => f.id ) }
   
-  constructor(tab) {
+  constructor(tab, search) {
     super()
     const curTab = tab ? tab : game.settings.get("moulinette", "currentTab")
+    this.assetInc = 0
     this.tab = MoulinetteForge.TABS.includes(curTab) ? curTab : null
-    
+    this.search = search
+
     // clear all caches
     for(const f of game.moulinette.forge) {
       f.instance.clearCache()
@@ -94,11 +98,11 @@ export class MoulinetteForge extends FormApplication {
       if(p.isRemote && cloudColor == "def") p.class = "cloud"
       if(p.isRemote && cloudColor == "contrast") p.class = "cloud contrast"
     })
-    publishers = Object.values(publishers).filter(p => p.count > 0).sort((a,b) => a.name > b.name)   
+    publishers = Object.values(publishers).filter(p => p.count > 0 && !(this.search && this.search.creator && p.name != this.search.creator)).sort((a,b) => a.name > b.name)
     
     // prepare packs 
     // - cleans packname by removing publisher from pack name to avoid redundancy
-    packs = duplicate(packs.filter(p => p.count > 0 || p.special))
+    packs = duplicate(packs.filter(p => p.count > 0 && !(this.search && this.search.creator && p.publisher != this.search.creator) || p.special))
     for(const p of packs) {
       p["cleanName"] = p["name"].startsWith(p["publisher"]) ? p["name"].substring(p["publisher"].length).trim() : p["name"]
     }
@@ -106,8 +110,9 @@ export class MoulinetteForge extends FormApplication {
     const browseMode = game.settings.get("moulinette-core", "browseMode")
 
     // autoselect matching pack (if any)
-    let publisher = null
-    let packIdx = null
+    // autoselect matching pack (if call by searchAPI)
+    let publisher = this.search && this.search.creator ? this.search.creator : null
+    let packIdx = -1
     if(browseMode == "byPack" && this.curPack) {
       const matchingPack = packs.find(p => p.path == this.curPack);
       if(matchingPack) {
@@ -115,18 +120,35 @@ export class MoulinetteForge extends FormApplication {
         matchingPack.selected = "selected"
       }
     }
+    if(this.search && this.search.creator) {
+      const matchingCreator = publishers.find(p => p.name == this.search.creator);
+      if(matchingCreator) {
+        matchingCreator.selected = "selected"
+      }
+    }
+    if(this.search && this.search.pack) {
+      const matchingPack = packs.find(p => p.name.toLowerCase().startsWith(this.search.pack.toLowerCase()));
+      if(matchingPack) {
+        packIdx = matchingPack.idx
+        matchingPack.selected = "selected"
+      }
+    }
 
     // fetch initial asset list
-    const assets = await this.activeModule.instance.getAssetList("", packIdx, publisher)
-      
-    const data = { 
+    const terms = this.search && this.search.terms ? this.search.terms : ""
+    this.assets = await this.activeModule.instance.getAssetList(terms, packIdx, publisher)
+
+    const data = {
       user: await game.moulinette.applications.Moulinette.getUser(),
       modules: game.moulinette.forge.sort((a,b) => a.name < b.name ? -1 : 1), 
       activeModule: this.activeModule,
       supportsModes: this.activeModule.instance.supportsModes(),
+      supportsThumbSizes: this.activeModule.instance.supportsThumbSizes(),
+      supportsShortcuts: ["tiles", "sounds", "scenes", "prefabs"].includes(this.activeModule.id),
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
-      assets: assets,
+      assets: this.assets.slice(0, MoulinetteForge.MAX_ASSETS),
       footer: await this.activeModule.instance.getFooter(),
+      terms: terms,
       compactUI: uiMode == "compact"
     }
     
@@ -135,6 +157,9 @@ export class MoulinetteForge extends FormApplication {
     } else {
       data.packs = packs
     }
+
+    // reset initial search
+    this.search = null
       
     return data;
   }
@@ -154,8 +179,14 @@ export class MoulinetteForge extends FormApplication {
     // buttons
     html.find("button").click(this._onClickButton.bind(this))
    
+    // shortcuts
+    html.find(".shortcuts a").click(this._onGenerateShortcuts.bind(this))
+
     // display mode
     html.find(".display-modes a").click(this._onChangeDisplayMode.bind(this))
+
+    // thumb sizes
+    html.find(".thumbsizes a").click(this._onChangeThumbsizes.bind(this))
     
     // highlight current displayMode
     const dMode = game.settings.get("moulinette", "displayMode")
@@ -368,5 +399,40 @@ export class MoulinetteForge extends FormApplication {
     this.html.find(`.display-modes a.mode-${mode}`).removeClass("active")
     this._searchAssets()
   }
+
+  /**
+   * User chose thumbsizes
+   */
+  async _onChangeThumbsizes(event) {
+    event.preventDefault();
+    const source = event.currentTarget
+    this.activeModule.instance.onChangeThumbsSize(source.classList.contains("plus"))
+  }
   
+  /**
+   * User chose thumbsizes
+   */
+  async _onGenerateShortcuts(event) {
+    event.preventDefault();
+    const source = event.currentTarget
+    const moduleId = this.activeModule.id
+    const filters = {
+      terms: this.html.find("#search").val().toLowerCase()
+    }
+    const browseMode = game.settings.get("moulinette-core", "browseMode")
+    const filterId = this.html.find(".plist option:selected").val()
+    if(filterId && filterId != "-1") {
+      if(browseMode == "byPack") {
+        let packs = await this.activeModule.instance.getPackList()
+        if(filterId in packs) {
+          filters.creator = packs[filterId].publisher
+          filters.pack = packs[filterId].name
+        }
+      } else {
+        filters.creator = filterId
+      }
+    }
+    new MoulinetteShortcuts(moduleId, filters).render(true)
+  }
+
 }

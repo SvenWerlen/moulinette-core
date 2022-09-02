@@ -33,7 +33,12 @@
       <li>{{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}})</li>
       {{/if}}
       {{#unless user.patron}}
-      <li class="error">{{localize "mtte.notPatron"}}</li>
+        {{#if user.platinum}}
+        <li>{{localize "mtte.platinumpatron"}} <i class="fas fa-heart red"></i></li>
+        {{/if}}
+        {{#unless user.platinum}}
+        <li class="error">{{localize "mtte.notPatron"}}</li>
+        {{/unless}}
       {{/unless}}
       {{#if user.pledges}}
         </ul>

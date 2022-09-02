@@ -776,6 +776,11 @@ export class MoulinetteFileUtil {
   static async getAvailableMatches(searchTerms, type, ignorePacks = []) {
     const available = await MoulinetteFileUtil.getAvailableAssets(type)
     const list = []
+
+    // check if user disabled that feature
+    const cloudEnabled = game.settings.get("moulinette-core", "enableMoulinetteCloud")
+    const cloudContent = game.settings.get("moulinette-core", "showCloudContent")
+    if(!cloudEnabled || !cloudContent) return list;
     
     if(searchTerms.trim().length == 0) return list;
     

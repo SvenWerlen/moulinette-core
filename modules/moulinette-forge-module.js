@@ -13,11 +13,26 @@ export class MoulinetteForgeModule {
   }
   
   /**
-   * Overwrite this function to indicate if the module supports multiple modes
+   * Overwrite this function to indicate if the module supports multiple modes (default : yes)
    */
   supportsModes() {
     console.debug("Moulinette Forge Module | Default supportsMode() not implemented")
     return true
+  }
+
+  /**
+   * Overwrite this function to indicate if the module supports thumb sizes
+   */
+  supportsThumbSizes() {
+    console.debug("Moulinette Forge Module | Default supportsThumbSizes() not implemented")
+    return false
+  }
+
+  /**
+   * Overwrite this function to implement thumb sizes
+   */
+  async onChangeThumbsSize(increase) {
+    console.debug("Moulinette Forge Module | Default onChangeThumbsSize() does nothing")
   }
   
   /**
