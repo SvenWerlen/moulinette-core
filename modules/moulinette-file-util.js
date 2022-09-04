@@ -658,6 +658,50 @@ export class MoulinetteFileUtil {
     
     return folders;
   }
+
+  /**
+   * Generates a folder structure based on the index
+   */
+  static foldersFromIndexImproved(files, packs) {
+    // sanity check
+    if(files.length == 0) return {}
+
+    let folders = {}
+    let id = 0;
+
+    let base = "";
+    // get base path for all files
+    for(const f of files) {
+      const basePath = packs[f.pack].path + f.filename
+      if(base.length == 0) {
+        base = basePath
+      } else {
+        for(let idx = 0; idx<basePath.length; idx++) {
+          if(idx >= base.length || base[idx] != basePath[idx]) {
+            base = basePath.substring(0, idx)
+            break;
+          }
+        }
+      }
+    }
+
+    // sort all files back into their folders
+    for(const f of files) {
+      id++;
+      const idx = f.filename.lastIndexOf('/')
+      const baseFolder = packs[f.pack].path.substring(base.length)
+      const parent = baseFolder + (idx < 0 ? "" : "/" + f.filename.substring(0, idx))
+      f.idx = id
+
+      if(folders.hasOwnProperty(parent)) {
+        folders[parent].push(f)
+      } else {
+        folders[parent] = [f]
+      }
+    }
+
+    return folders;
+  }
   
   /**
    * Generates the base path for moulinette
