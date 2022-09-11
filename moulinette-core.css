@@ -135,9 +135,11 @@
   margin-left: 5px;
 }
 
-.mtte button.fvtt-picker {
+.mtte .fvtt-picker {
   max-width: 30px;
   margin-right: 5px;
+  font-size: 18px;
+  cursor: pointer;
 }
 
 .mtte .searchinput {
