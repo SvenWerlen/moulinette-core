@@ -164,14 +164,16 @@ export class MoulinetteForge extends FormApplication {
     return data;
   }
 
-  activateListeners(html) {
+  activateListeners(html, focus = true) {
     super.activateListeners(html);
     
     // make sure window is on top of others
     this.bringToTop()
     
     // give focus to input text
-    html.find("#search").focus();
+    if(focus) {
+      html.find("#search").focus();
+    }
     
     // module navigation
     html.find(".tabs a").click(this._onNavigate.bind(this));
@@ -238,7 +240,6 @@ export class MoulinetteForge extends FormApplication {
    * User selected a pack
    */
   async _onPackOrPubSelected(event) {
-    this.html.find("#search").val("")
     await this._searchAssets()
   }
   
@@ -393,7 +394,7 @@ export class MoulinetteForge extends FormApplication {
   // re-enable listeners
   _reEnableListeners() {
     this.html.find("*").off()
-    this.activateListeners(this.html)
+    this.activateListeners(this.html, false)
     this._activateCoreListeners(this.html)
   }
   
