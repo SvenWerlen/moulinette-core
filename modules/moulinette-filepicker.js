@@ -163,6 +163,7 @@ export class MoulinetteFilePickerUI extends FormApplication {
     
     // buttons
     html.find("button").click(this._onClickButton.bind(this))
+    html.find(".fvtt-picker").click(this._onClickButton.bind(this))
     
     // display mode
     html.find(".display-modes a").click(this._onChangeDisplayMode.bind(this))
