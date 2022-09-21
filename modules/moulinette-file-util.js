@@ -18,7 +18,7 @@ export class MoulinetteFileUtil {
       source = "forgevtt";
     }
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
-    if(bucket.length > 0 && bucket != "null") {
+    if(bucket && bucket.length > 0 && bucket != "null") {
       source = "s3"
     }
     

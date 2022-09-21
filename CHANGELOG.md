@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 10.0.2: folder view doesn't list subfolders systematically
 - 10.0.3: focus should not go back to search field when selecting a new creator/pack
 - 10.0.3: #49 : Pressing ENTER brings up default picker instead of searching
+- 10.0.4: fix for null while getting S3 source
 ### Changed
 - Compatibility with V10
 - Major version based on FVTT
