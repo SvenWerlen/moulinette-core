@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - 4.9.1: folder view doesn't list subfolders systematically
 - 4.9.2: #49 Pressing ENTER brings up default picker instead of searching
+- 4.9.3: #39 FileExists check fails when game hosted on The Forge
 ### Added
 - Moulinette Shortcuts (presets)
 
