@@ -4,13 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [10.0.3] - 2022-09-04
+## [10.0.5] - 2022-09-04
 ### Fixed
 - 10.0.1: fix v10 packaging issues
 - 10.0.2: folder view doesn't list subfolders systematically
 - 10.0.3: focus should not go back to search field when selecting a new creator/pack
 - 10.0.3: #49 : Pressing ENTER brings up default picker instead of searching
 - 10.0.4: fix for null while getting S3 source
+- 10.0.5: FileExists check fails when game hosted on The Forge #39
 ### Changed
 - Compatibility with V10
 - Major version based on FVTT
