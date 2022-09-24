@@ -114,7 +114,14 @@ export class MoulinetteFileUtil {
     try {
       const parentFolder = await FilePicker.browse(MoulinetteFileUtil.getSource(), path.substring(0, path.lastIndexOf('/')), MoulinetteFileUtil.getOptions());
       const decodedPaths = parentFolder.files.map(f => decodeURIComponent(f))
-      return parentFolder.files.includes(path) || decodedPaths.includes(path)
+
+      // ForgeVTT FilePicker returns files with path inclusive of basePath, which is the current user's asset library
+      if (typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge) {
+          const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
+          path = (theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "") + path;
+      }
+
+      return parentFolder.files.includes(path) || decodedPaths.includes(path);
     } catch(exc) {
       console.log(exc)
       return false
