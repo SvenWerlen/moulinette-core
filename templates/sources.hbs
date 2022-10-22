@@ -46,17 +46,17 @@
     <div class="add">
       <h3>{{localize "mtte.addSource"}}</h3>
       <div class="actions">
+        <button class="browse"><i class="fas fa-folder-open"></i> {{localize "mtte.pickFolder"}}</button>
         <label for="type">{{localize "mtte.type"}}:</label>
         <select name="type">
-          <option value="images">images</option>
-          <option value="tiles">tiles</option>
-          <option value="sounds">sounds</option>
+          {{#each types as |t|}}
+            <option value="{{t}}">{{t}}</option>
+          {{/each}}
         </select>
         <label for="creator">{{localize "mtte.publisher"}}:</label>
         <input type="text" id="creator" name="creator" minlength="3" maxlength="20">
         <label for="pack">{{localize "mtte.pack"}}:</label>
         <input type="text" id="pack" name="pack" minlength="3" maxlength="20">
-        <button class="browse"><i class="fas fa-folder-open"></i></button>
         <button class="add"><i class="fas fa-plus-circle"></i> {{localize "mtte.actionSourceAdd"}}</button>
       </div>
     </div>

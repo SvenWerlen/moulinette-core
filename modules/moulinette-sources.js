@@ -3,8 +3,9 @@
  *************************/
 export class MoulinetteSources extends FormApplication {
   
-  constructor() {
+  constructor(filters = []) {
     super()
+    this.filters = filters
   }
   
   static get defaultOptions() {
@@ -13,7 +14,7 @@ export class MoulinetteSources extends FormApplication {
       classes: ["mtte", "sources"],
       title: game.i18n.localize("mtte.moulinetteSources"),
       template: "modules/moulinette-core/templates/sources.hbs",
-      width: 800,
+      width: 1000,
       height: 500,
       resizable: true,
       closeOnSubmit: false,
@@ -24,7 +25,8 @@ export class MoulinetteSources extends FormApplication {
   async getData() {
 
     // prepare list
-    const sources = []
+    let sources = []
+    let types = ["images", "tiles", "scenes", "sounds"]
     const settings = Array.isArray(game.settings.get("moulinette", "sources")) ? game.settings.get("moulinette", "sources") : []
     for(const s of settings) {
       if(!s.auto) sources.push(s)
@@ -44,8 +46,13 @@ export class MoulinetteSources extends FormApplication {
       })
     }
 
+    if(this.filters.length > 0) {
+      sources = sources.filter(s => this.filters.includes(s.type))
+      types = types.filter(t => this.filters.includes(t))
+    }
+
     this.sources = sources
-    return { sources: this.sources }
+    return { sources: this.sources, types: types }
   }
 
   activateListeners(html) {

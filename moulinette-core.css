@@ -299,7 +299,6 @@
 
 #moulinette-sources .main {
   display: flex;
-  height: auto;
   position: absolute;
   top: 55px;
   bottom: 75px;
@@ -307,6 +306,10 @@
   overflow-y: auto;
   width: 100%;
   margin-bottom: 0px;
+}
+
+#moulinette-sources .main table {
+  height: fit-content;
 }
 
 #moulinette-sources .footer {
@@ -348,7 +351,7 @@
 }
 
 .mtte .actions button.browse {
-  width: 50px;
+  width: 520px;
 }
 
 .mtte.sources .inactive {
