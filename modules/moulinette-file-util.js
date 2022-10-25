@@ -28,7 +28,7 @@ export class MoulinetteFileUtil {
   static getOptions() {
     let options = {}
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
-    if(bucket.length > 0 && bucket != "null") {
+    if(bucket && bucket.length > 0 && bucket != "null") {
       options.bucket = bucket
     }
     return options;
@@ -39,7 +39,7 @@ export class MoulinetteFileUtil {
    */
   static async getBaseURL() {
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
-    if(bucket.length > 0 && bucket != "null") {
+    if(bucket && bucket.length > 0 && bucket != "null") {
       const e = game.data.files.s3.endpoint;
       return `${e.protocol}//${bucket}.${e.host}/`
     } 
