@@ -570,7 +570,7 @@ export class MoulinetteFileUtil {
                 let type = pack.meta && pack.meta.type ? pack.meta.type : "img"
                 let aData = { pack: idx, filename: asset, type: type}
                 const ext = asset.substr(asset.lastIndexOf('.') + 1)
-                if(URL.startsWith("moulinette/scenes/custom")) {
+                if(URL.indexOf("moulinette/scenes/custom") >= 0) {
                   aData.type = "scene"
                 }
                 else if(["ogg", "mp3", "wav", "m4a", "flac", "webm"].includes(ext)) {

@@ -139,4 +139,15 @@ export class Moulinette {
 
   }
 
+
+  /**
+   * Apply CSS & HTML changes on button to indicate inprogress
+   */
+  static inprogress(button) {
+    if(!button) return
+    button.prop("disabled", true);
+    button.addClass("inprogress")
+    button.append(`<img class="mttespinner" src="modules/moulinette-core/img/spinner.gif"/>`)
+  }
+
 };

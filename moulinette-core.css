@@ -371,3 +371,13 @@
   cursor: grab;
   margin: 0px 5px;
 }
+
+.mtte .inprogress {
+  border: 3px dashed darkred;
+  color: darkred;
+}
+
+.mtte img.mttespinner {
+  height: 32px;
+  border: 0px;
+}
