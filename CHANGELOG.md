@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - 10.2.1: folder expand not working in Moulinette FilePicker
 - 10.2.2: sound indexing doesn't work on The Forge
+- 10.2.3: fix for 10.2.2 which breaks local hosting (not on the Forge)
 ### Added
 - Configure sources for scenes (compatibility with The Forge)
 - Improved UI for "in progress" indexing
