@@ -343,7 +343,7 @@ export class MoulinetteFileUtil {
     files = files.filter(f => f.indexOf("_thumb") < 0) // remove thumbnails
     if(debug) console.log(`Moulinette FileUtil | Pack: ${files.length} assets found.`)
     // special case for ForgeVTT => keep entire path
-    if(source == "forge-bazaar" && ForgeVTT.usingTheForge) {
+    if(ForgeVTT.usingTheForge && source != "public") {
       return files.map( (path) => { return decodeURIComponent(path) } )
     } else {
       return files.map( (path) => { return decodeURIComponent(path).split(decodeURIComponent(packPath))[1].substr(1) } ) // remove front /
