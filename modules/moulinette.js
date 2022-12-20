@@ -52,6 +52,22 @@ export class Moulinette {
   static prettyNumber(num) {
     return num.toLocaleString()
   }
+
+  /**
+   * Converts breakcrumb into nice HTML
+   *  Ex: Tom Cartos##Thieves Guild##path (3)
+   */
+  static prettyBreadcrumb(bc) {
+    const parts = bc.split("##")
+    // check syntax
+    if(parts.length != 3) {
+      return bc
+    }
+    const creatorHTML = parts[0].length > 0 ? `<div class="bc creator"><i class="fas fa-palette"></i> ${parts[0]}</div>` : ""
+    const packHTML = parts[1].length > 0 ? `<div class="bc pack"><i class="fas fa-box"></i> ${parts[1]}</div>` : ""
+    const pathHTML = parts[2].length > 0 ? `<div class="bc path"><i class="fas fa-folder"></i> ${parts[2]}</div>` : ""
+    return creatorHTML + packHTML + pathHTML;
+  }
   
   /**
    * Retrieves linked user if any
@@ -148,6 +164,30 @@ export class Moulinette {
     button.prop("disabled", true);
     button.addClass("inprogress")
     button.append(`<img class="mttespinner" src="modules/moulinette-core/img/spinner.gif"/>`)
+  }
+
+  /**
+   * Optimize packs by combining multiple into one
+   */
+  static optimizePacks(packs) {
+    const newPacks = {}
+    for(const p of packs) {
+      let name = p.name.trim()
+      // remove HD / 4K in names
+      if(name.endsWith("HD") || name.endsWith("4K")) {
+        name = name.slice(0, -2).trim()
+      }
+      // remove (...) if any
+      name = name.replace(/\([^\)]+\)/g, '').trim();
+      // add to list
+      if(name in newPacks) {
+        newPacks[name].push(p)
+      }
+      else {
+        newPacks[name] = [p]
+      }
+    }
+    return newPacks
   }
 
 };

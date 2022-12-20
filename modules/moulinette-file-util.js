@@ -679,34 +679,26 @@ export class MoulinetteFileUtil {
     let folders = {}
     let id = 0;
 
-    let base = "";
-    // get base path for all files
-    for(const f of files) {
-      const basePath = packs[f.pack].path + f.filename
-      if(base.length == 0) {
-        base = basePath
-      } else {
-        for(let idx = 0; idx<basePath.length; idx++) {
-          if(idx >= base.length || base[idx] != basePath[idx]) {
-            base = basePath.substring(0, idx)
-            break;
-          }
-        }
-      }
-    }
+    // fetch all creators and packs
+    const uniqCreators = files.reduce((list, f) => list.add(packs[f.pack].publisher), new Set())
+    const uniqPacks = files.reduce((list, f) => list.add(f.pack), new Set())
 
     // sort all files back into their folders
     for(const f of files) {
       id++;
-      const idx = f.filename.lastIndexOf('/')
-      const baseFolder = packs[f.pack].path.substring(base.length)
-      const parent = baseFolder + (idx < 0 ? "" : "/" + f.filename.substring(0, idx))
-      f.idx = id
+      //const baseFolder = packs[f.pack].path.substring(base.length)
+      const creator = uniqCreators.size > 1? packs[f.pack].publisher : ""
+      const pack = uniqPacks.size > 1? packs[f.pack].name : ""
+      const filePath = f.filename.replace(/json\/[^/]+\//g, '')
+      const idx = filePath.lastIndexOf('/')
+      const path = idx < 0 ? "" : "/" + filePath.substring(0, idx)
 
-      if(folders.hasOwnProperty(parent)) {
-        folders[parent].push(f)
+      const breadcrumb = `${creator}##${pack}##${path}`
+      f.idx = id
+      if(folders.hasOwnProperty(breadcrumb)) {
+        folders[breadcrumb].push(f)
       } else {
-        folders[parent] = [f]
+        folders[breadcrumb] = [f]
       }
     }
 

@@ -152,14 +152,13 @@ export class MoulinetteForge extends FormApplication {
       compactUI: uiMode == "compact"
     }
     
-    if(browseMode == "byPub") {
-      data.publishers = publishers
-    } else {
-      data.packs = packs
-    }
+    data.publishers = publishers
+    data.packs = []
 
     // reset initial search
     this.search = null
+    this.selCreator = null
+    this.selPack = -1
       
     return data;
   }
@@ -193,10 +192,56 @@ export class MoulinetteForge extends FormApplication {
     // highlight current displayMode
     const dMode = game.settings.get("moulinette", "displayMode")
     html.find(`.display-modes .mode-${dMode}`).addClass("active")
-    
+
+    // asset search (filter on creator)
+    const parent = this
+    html.find(".filterList.creators a").click(async function(ev) {
+      event.preventDefault();
+      const Moulinette = game.moulinette.applications.Moulinette
+      const source = event.currentTarget;
+      const dropDownList = $(source).closest(".top")
+      const id = $(source).closest("li").data("id")
+      parent.selCreator = id && id != "-1" ? id : null
+      parent.selPack = "-1"
+      html.find("#creatorName").text(parent.selCreator ? id : game.i18n.localize("mtte.chooseCreator"))
+      dropDownList.height(dropDownList.data("origHeight"))
+      // refresh pack list
+      html.find("#packName").text(game.i18n.localize("mtte.choosePack"))
+      let packs = await parent.activeModule.instance.getPackList()
+      const assetsCount = packs.reduce((acc, p) => acc + p.count, 0);
+      if(parent.selCreator) {
+        packs = Moulinette.optimizePacks(packs.filter(p => p.publisher == id))
+      }
+      let packList = `<li data-id="-1" class="all"><a>${game.i18n.localize("mtte.allPacks")} (${Moulinette.prettyNumber(assetsCount)})</a></li>`
+      if(parent.selCreator) {
+        const packNames = Object.keys(packs).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+        for(const p of packNames) {
+          const count = packs[p].reduce((acc, p) => acc + p.count, 0);
+          const ids = packs[p].reduce((acc, p) => acc + (acc.length > 0 ? "," : "") + p.idx, "");
+          packList += `<li data-id="${ids}"><a>${Moulinette.prettyText(p)} (${Moulinette.prettyNumber(count)})</a></li>`
+        }
+      }
+      packList += `<li class="filler"></li>`
+      html.find(".filterList.packs .sub_menu").html(packList)
+
+      await parent._searchAssets()
+    });
+
     // asset search (filter on pack)
-    html.find("select.plist").on('change', this._onPackOrPubSelected.bind(this));
-    
+    html.find(".filterList.packs a").click(async function(ev) {
+      event.preventDefault();
+      const Moulinette = game.moulinette.applications.Moulinette
+      const source = event.currentTarget;
+      const dropDownList = $(source).closest(".top")
+      parent.selPack = $(source).closest("li").data("id")
+      if(parent.selPack) {
+        const name = $(source).closest("li").text()
+        html.find("#packName").text(parent.selCreator ? name : game.i18n.localize("mtte.choosePack"))
+        dropDownList.height(dropDownList.data("origHeight"))
+        await parent._searchAssets()
+      }
+    });
+
     // delegate activation to module
     if(this.activeModule) {
       this.activeModule.instance.activateListeners(html)
@@ -207,6 +252,51 @@ export class MoulinetteForge extends FormApplication {
     
     // autoload on scroll
     html.find(".list").on('scroll', this._onScroll.bind(this))
+
+    const maxHeight = 400
+
+    $(".filterList > li").hover(function() {
+      const $container = $(this),
+          $list = $container.find("ul"),
+          $anchor = $container.find("a"),
+          height = $list.height() * 1.0,   // make sure there is enough room at the bottom
+          multiplier = height / maxHeight; // needs to move faster if list is taller
+
+      // need to save height here so it can revert on mouseout
+      $container.data("origHeight", $container.height());
+
+      // so it can retain it's rollover color all the while the dropdown is open
+      $anchor.addClass("hover");
+
+      // make sure dropdown appears directly below parent list item
+      $list.show().css({ paddingTop: $container.data("origHeight")});
+
+      // don't do any animation if list shorter than max
+      if (multiplier > 1) {
+        $container
+          .css({ height: maxHeight, overflow: "hidden" })
+          .mousemove(function(e) {
+              var offset = $container.offset();
+              var relativeY = ((e.pageY - offset.top) * multiplier) - ($container.data("origHeight") * multiplier);
+              if (relativeY > $container.data("origHeight")) {
+                  $list.css("top", -relativeY + $container.data("origHeight"));
+              };
+          });
+      }
+
+    }, function() {
+      var $el = $(this);
+      // put things back to normal
+      $el
+        .height($(this).data("origHeight"))
+        .find("ul")
+        .css({ top: 0 })
+        .hide()
+        .end()
+        .find("a")
+        .removeClass("hover");
+
+    });
 
     this.html = html
   }
@@ -234,13 +324,6 @@ export class MoulinetteForge extends FormApplication {
       game.settings.set("moulinette", "currentTab", tab)
       this.render();
     }
-  }
-  
-  /**
-   * User selected a pack
-   */
-  async _onPackOrPubSelected(event) {
-    await this._searchAssets()
   }
   
   /**
@@ -272,15 +355,8 @@ export class MoulinetteForge extends FormApplication {
    */
   async _searchAssets() {
     const searchTerms = this.html.find("#search").val().toLowerCase()
-    const selectedValue = this.html.find(".plist").children("option:selected").val()
-    
-    const browseMode = game.settings.get("moulinette-core", "browseMode")
-    if(browseMode == "byPub") {
-      this.assets = await this.activeModule.instance.getAssetList(searchTerms, -1, selectedValue == -1 ? undefined : selectedValue)
-    } else {
-      this.assets = await this.activeModule.instance.getAssetList(searchTerms, selectedValue)
-    }
-    
+
+    this.assets = await this.activeModule.instance.getAssetList(searchTerms, this.selPack, this.selCreator)
     const supportsModes = this.activeModule.instance.supportsModes()
     
     this.expand = true // flag to disable expand/collapse
@@ -339,7 +415,7 @@ export class MoulinetteForge extends FormApplication {
     const folder = folderEl.data('path')
     const folderIdx = folderEl.data("idx")
     if(!this.expand || folderEl.hasClass("expanded")) {
-      folderEl.find("div").toggle()
+      folderEl.find("div:not(.bc)").toggle()
       return
     }
     
@@ -348,7 +424,6 @@ export class MoulinetteForge extends FormApplication {
     // new optimized way
     if(folderIdx) {
       const key = `data-folder="${folderIdx}"`
-      console.log(key)
       for(const a of this.assets) {
         if(a.indexOf(key) > 0) {
           matchList.push(a)

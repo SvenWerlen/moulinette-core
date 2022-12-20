@@ -4,12 +4,28 @@
   overflow: hidden;
 }
 
+#moulinette.forge .list .creator {
+  display: inline;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+#moulinette.forge .list .pack {
+  display: inline;
+  margin-right: 10px;
+  font-size: smaller;
+}
+
+#moulinette.forge .list .path {
+  display: inline;
+  font-size: x-small;
+}
+
 #moulinette.forge .header {
   position: absolute;
   top: 0px;
   left: 0px;
   height: 75px;
-  overflow: hidden;
   width: 100%;
 }
 
@@ -131,8 +147,10 @@
 }
 
 .mtte button.search {
-  max-width: 30px;
+  max-width: 27px;
+  max-height: 27px;
   margin-left: 5px;
+  font-size: 12px;
 }
 
 .mtte .fvtt-picker {
@@ -381,3 +399,29 @@
   height: 32px;
   border: 0px;
 }
+
+#moulinette .search {
+  align-items: start;
+}
+
+/** Inspired by: https://css-tricks.com/examples/LongDropdowns/# **/
+/*
+	LEVEL ONE
+*/
+ul.filterList             { list-style: none; position: relative; width: 100%; margin: 0; padding: 1px 3px; max-width: 255px; background: #D6D4C8; }
+ul.filterList li          { float: left; width: 250px; position: relative; }
+ul.filterList li.top      { border: 1px solid var(--color-border-light-tertiary); border-radius: 3px; background: rgba(0, 0, 0, 0.02); }
+ul.filterList a:hover     { color: #000; }
+ul.filterList li a        { text-decoration: none; display: block; padding: 2px 8px; position: relative; z-index: 2000; }
+ul.filterList li a:hover,
+ul.filterList li a.hover  { background: #F3D673; position: relative; }
+
+/*
+	LEVEL TWO
+*/
+ul.filterList ul            { list-style: none; display: none; position: absolute; top: 0; left: 0; width: 250px; z-index: 1000; padding: 0px; margin: 0px; }
+ul.filterList ul li         { color: #000; border-bottom: 1px solid #ccc; }
+ul.filterList ul li a       { display: block; padding: 20px 8px; background: #D6D4C8 !important; }
+ul.filterList ul li a:hover { display: block; background: #F3D673 !important; }
+ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
+
