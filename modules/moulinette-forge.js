@@ -155,6 +155,9 @@ export class MoulinetteForge extends FormApplication {
     data.publishers = publishers
     data.packs = []
 
+    // keep publisher names for up/down key events
+    this.publishers = publishers.map(p => p.name)
+
     // reset initial search
     this.search = null
     this.selCreator = null
@@ -197,34 +200,8 @@ export class MoulinetteForge extends FormApplication {
     const parent = this
     html.find(".filterList.creators a").click(async function(ev) {
       event.preventDefault();
-      const Moulinette = game.moulinette.applications.Moulinette
       const source = event.currentTarget;
-      const dropDownList = $(source).closest(".top")
-      const id = $(source).closest("li").data("id")
-      parent.selCreator = id && id != "-1" ? id : null
-      parent.selPack = "-1"
-      html.find("#creatorName").text(parent.selCreator ? id : game.i18n.localize("mtte.chooseCreator"))
-      dropDownList.height(dropDownList.data("origHeight"))
-      // refresh pack list
-      html.find("#packName").text(game.i18n.localize("mtte.choosePack"))
-      let packs = await parent.activeModule.instance.getPackList()
-      const assetsCount = packs.reduce((acc, p) => acc + p.count, 0);
-      if(parent.selCreator) {
-        packs = Moulinette.optimizePacks(packs.filter(p => p.publisher == id))
-      }
-      let packList = `<li data-id="-1" class="all"><a>${game.i18n.localize("mtte.allPacks")} (${Moulinette.prettyNumber(assetsCount)})</a></li>`
-      if(parent.selCreator) {
-        const packNames = Object.keys(packs).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-        for(const p of packNames) {
-          const count = packs[p].reduce((acc, p) => acc + p.count, 0);
-          const ids = packs[p].reduce((acc, p) => acc + (acc.length > 0 ? "," : "") + p.idx, "");
-          packList += `<li data-id="${ids}"><a>${Moulinette.prettyText(p)} (${Moulinette.prettyNumber(count)})</a></li>`
-        }
-      }
-      packList += `<li class="filler"></li>`
-      html.find(".filterList.packs .sub_menu").html(packList)
-
-      await parent._searchAssets()
+      parent._onCreatorSelected($(source).closest("li").data("id"), $(source).closest(".top"))
     });
 
     // asset search (filter on pack)
@@ -232,15 +209,36 @@ export class MoulinetteForge extends FormApplication {
       event.preventDefault();
       const Moulinette = game.moulinette.applications.Moulinette
       const source = event.currentTarget;
-      const dropDownList = $(source).closest(".top")
-      parent.selPack = $(source).closest("li").data("id")
-      if(parent.selPack) {
-        const name = $(source).closest("li").text()
-        html.find("#packName").text(parent.selCreator ? name : game.i18n.localize("mtte.choosePack"))
-        dropDownList.height(dropDownList.data("origHeight"))
-        await parent._searchAssets()
-      }
+      parent._onPackSelected($(source).closest("li").data("id"), $(source).closest(".top"));
     });
+
+    // up / down => select next entry
+    html.find(".filterList.creators").keydown(function(ev) {
+      const kEv = ev.originalEvent
+      if(ev.key == "Tab") {
+        event.preventDefault();
+        html.find(ev.shiftKey ? "#search" : ".filterList.packs").focus()
+      } else if(ev.key == "ArrowDown" || ev.key == "ArrowUp") {
+        event.preventDefault();
+        // index can only be [0..pub.lenth]
+        const idx = Math.max(-1, parent.publishers.indexOf(parent.selCreator))
+        const newIdx = Math.min(Math.max(-1, idx + (ev.key == "ArrowDown" ? 1 : -1)), parent.publishers.length -1)
+        parent._onCreatorSelected(newIdx < 0 ? "-1" : parent.publishers[newIdx], $(event.currentTarget).closest(".top"));
+      }
+    })
+    html.find(".filterList.packs").keydown(function(ev) {
+      const kEv = ev.originalEvent
+      if(ev.key == "Tab") {
+        event.preventDefault();
+        html.find(ev.shiftKey ? ".filterList.creators" : "#search").focus()
+      } else if(ev.key == "ArrowDown" || ev.key == "ArrowUp") {
+        event.preventDefault();
+        // index can only be [0..pack.lenth]
+        const idx = Math.max(-1, parent.packs.findIndex(p => p.id == parent.selPack))
+        const newIdx = Math.min(Math.max(-1, idx + (ev.key == "ArrowDown" ? 1 : -1)), parent.packs.length -1)
+        parent._onPackSelected(newIdx < 0 ? "-1" : parent.packs[newIdx].id, $(event.currentTarget).closest(".top"));
+      }
+    })
 
     // delegate activation to module
     if(this.activeModule) {
@@ -299,6 +297,56 @@ export class MoulinetteForge extends FormApplication {
     });
 
     this.html = html
+  }
+
+  /**
+   * User selects a creator in the list
+   */
+  async _onCreatorSelected(id, dropDownList) {
+    const Moulinette = game.moulinette.applications.Moulinette
+    this.selCreator = id && id != "-1" ? id : null
+    this.selPack = "-1"
+    this.html.find("#creatorName").text(this.selCreator ? id : game.i18n.localize("mtte.chooseCreator"))
+    dropDownList.height(dropDownList.data("origHeight"))
+    // refresh pack list
+    this.html.find("#packName").text(game.i18n.localize("mtte.choosePack"))
+    let packs = await this.activeModule.instance.getPackList()
+    packs = packs.filter(p => p.count > 0)
+    const assetsCount = packs.reduce((acc, p) => acc + p.count, 0); // count number of assets
+    if(this.selCreator) {
+      packs = Moulinette.optimizePacks(packs.filter(p => p.publisher == id))
+    }
+    this.packs = []
+    let packList = `<li data-id="-1" class="all"><a>${game.i18n.localize("mtte.allPacks")} (${Moulinette.prettyNumber(assetsCount)})</a></li>`
+    if(this.selCreator) {
+      const packNames = Object.keys(packs).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+      for(const p of packNames) {
+        const count = packs[p].reduce((acc, p) => acc + p.count, 0);
+        const ids = packs[p].reduce((acc, p) => acc + (acc.length > 0 ? "," : "") + p.idx, "");
+        const packName = Moulinette.prettyText(p)
+        packList += `<li data-id="${ids}"><a>${packName} (${Moulinette.prettyNumber(count)})</a></li>`
+        // keep pack ids for up/down key event
+        this.packs.push({ id: ids, name: packName})
+      }
+    }
+    packList += `<li class="filler"></li>`
+    this.html.find(".filterList.packs .sub_menu").html(packList)
+
+    await this._searchAssets()
+    this.html.find(".filterList.creators").focus()
+  }
+
+  /**
+   * User selects a pack in the list
+   */
+  async _onPackSelected(id, dropDownList) {
+    this.selPack = id
+    if(this.selPack) {
+      this.html.find("#packName").text(this.selPack != "-1" ? this.packs.find(p => p.id == id).name : game.i18n.localize("mtte.choosePack"))
+      dropDownList.height(dropDownList.data("origHeight"))
+      await this._searchAssets()
+      this.html.find(".filterList.packs").focus()
+    }
   }
   
   /**
