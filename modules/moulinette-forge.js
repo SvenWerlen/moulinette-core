@@ -98,7 +98,7 @@ export class MoulinetteForge extends FormApplication {
       if(p.isRemote && cloudColor == "def") p.class = "cloud"
       if(p.isRemote && cloudColor == "contrast") p.class = "cloud contrast"
     })
-    publishers = Object.values(publishers).filter(p => p.count > 0 && !(this.search && this.search.creator && p.name != this.search.creator)).sort((a,b) => a.name > b.name)
+    publishers = Object.values(publishers).filter(p => p.count > 0).sort((a,b) => a.name > b.name)
     
     // prepare packs 
     // - cleans packname by removing publisher from pack name to avoid redundancy
@@ -106,37 +106,10 @@ export class MoulinetteForge extends FormApplication {
     for(const p of packs) {
       p["cleanName"] = p["name"].startsWith(p["publisher"]) ? p["name"].substring(p["publisher"].length).trim() : p["name"]
     }
-    
-    const browseMode = game.settings.get("moulinette-core", "browseMode")
-
-    // autoselect matching pack (if any)
-    // autoselect matching pack (if call by searchAPI)
-    let publisher = this.search && this.search.creator ? this.search.creator : null
-    let packIdx = -1
-    if(browseMode == "byPack" && this.curPack) {
-      const matchingPack = packs.find(p => p.path == this.curPack);
-      if(matchingPack) {
-        packIdx = matchingPack.idx
-        matchingPack.selected = "selected"
-      }
-    }
-    if(this.search && this.search.creator) {
-      const matchingCreator = publishers.find(p => p.name == this.search.creator);
-      if(matchingCreator) {
-        matchingCreator.selected = "selected"
-      }
-    }
-    if(this.search && this.search.pack) {
-      const matchingPack = packs.find(p => p.name.toLowerCase().startsWith(this.search.pack.toLowerCase()));
-      if(matchingPack) {
-        packIdx = matchingPack.idx
-        matchingPack.selected = "selected"
-      }
-    }
 
     // fetch initial asset list
     const terms = this.search && this.search.terms ? this.search.terms : ""
-    this.assets = await this.activeModule.instance.getAssetList(terms, packIdx, publisher)
+    this.assets = await this.activeModule.instance.getAssetList(terms, -1, null)
 
     const data = {
       user: await game.moulinette.applications.Moulinette.getUser(),
@@ -159,7 +132,6 @@ export class MoulinetteForge extends FormApplication {
     this.publishers = publishers.map(p => p.name)
 
     // reset initial search
-    this.search = null
     this.selCreator = null
     this.selPack = -1
       
@@ -297,6 +269,20 @@ export class MoulinetteForge extends FormApplication {
     });
 
     this.html = html
+
+    // initialize search
+    if(this.search && this.search.creator) {
+      const creator = this.search.creator
+      this.search.creator = null
+      this._onCreatorSelected(creator, html.find(".filterList.creators .top"))
+    }
+    else if(this.search && this.search.pack) {
+      const match = this.packs.find(p => p.name == this.search.pack)
+      this.search.pack = null
+      if(match) {
+        this._onPackSelected(match.id, html.find(".filterList.packs .top"))
+      }
+    }
   }
 
   /**
@@ -342,7 +328,8 @@ export class MoulinetteForge extends FormApplication {
   async _onPackSelected(id, dropDownList) {
     this.selPack = id
     if(this.selPack) {
-      this.html.find("#packName").text(this.selPack != "-1" ? this.packs.find(p => p.id == id).name : game.i18n.localize("mtte.choosePack"))
+      const match = this.packs.find(p => p.id == id)
+      this.html.find("#packName").text(match ? match.name : game.i18n.localize("mtte.choosePack"))
       dropDownList.height(dropDownList.data("origHeight"))
       await this._searchAssets()
       this.html.find(".filterList.packs").focus()
@@ -559,17 +546,14 @@ export class MoulinetteForge extends FormApplication {
     const filters = {
       terms: this.html.find("#search").val().toLowerCase()
     }
-    const browseMode = game.settings.get("moulinette-core", "browseMode")
-    const filterId = this.html.find(".plist option:selected").val()
-    if(filterId && filterId != "-1") {
-      if(browseMode == "byPack") {
-        let packs = await this.activeModule.instance.getPackList()
-        if(filterId in packs) {
-          filters.creator = packs[filterId].publisher
-          filters.pack = packs[filterId].name
-        }
-      } else {
-        filters.creator = filterId
+
+    if(this.selCreator) {
+      filters.creator = this.selCreator
+    }
+    if(this.selPack != "-1") {
+      const entry = this.packs.find(p => p.id == this.selPack)
+      if(entry) {
+        filters.pack = entry.name
       }
     }
     new MoulinetteShortcuts(moduleId, filters).render(true)
