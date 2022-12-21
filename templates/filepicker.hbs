@@ -10,19 +10,40 @@
     <div class="form-group search">
       <span class="fvtt-picker" title="{{localize "mtte.defaultPickerHint"}}"><i class="fas fa-folder-open"></i> </span>
       <input id="search" type="text" placeholder="{{localize "mtte.search"}}" value="{{terms}}"></input>
+      {{#if supportsWholeWordSearch}}
+      <div class="sOptions"><div class="form-fields sOptions">
+          <a class="wholeWord" title="{{localize "mtte.wholeWord"}}">
+              <i class="fas fa-not-equal"></i>
+          </a>
+      </div></div>
+      {{/if}}
       <button class="search"><i class="fas fa-search"></i></button>
-      {{#if packs}}
-      <select class="plist">
-        <option value="-1">{{localize "mtte.allPacks"}} ({{assetsCount}})</option>
-        {{#each packs as |p|}}<option value="{{p.idx}}" {{p.selected}} {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.publisher}} | {{pretty p.cleanName}} {{#unless p.special}}({{pretty p.count}}){{/unless}}</option>{{/each}}
-      </select>
-      {{/if}}
       {{#if publishers}}
-      <select class="plist">
-        <option value="-1">{{localize "mtte.allPubs"}} ({{assetsCount}})</option>
-        {{#each publishers as |p|}}<option value="{{p.name}}" {{p.selected}} {{#if p.class}}class="{{p.class}}"{{/if}}>{{pretty p.name}}{{#unless p.special}} ({{pretty p.count}}){{/unless}}</option>{{/each}}
-      </select>
+      <ul class="filterList creators" tabindex="0">
+        <li class="top"><a><i class="fas fa-palette"></i> <span id="creatorName">{{localize "mtte.chooseCreator"}}</span></a>
+          <ul class="sub_menu">
+            <li data-id="-1"><a>{{localize "mtte.allPubs"}} ({{assetsCount}})</a></li>
+            {{#each publishers as |p|}}<li data-id="{{p.name}}" class="{{p.class}}"><a>
+              <i class="fas fa-{{#if p.isRemote}}cloud{{/if}}{{#unless p.isRemote}}desktop{{/unless}}"></i>
+              {{pretty p.name}} {{#unless p.special}}({{pretty p.count}}){{/unless}} </li></a>
+            {{/each}}
+            <li class="filler"></li>
+          </ul>
+        </li>
+      </ul>
+      {{#unless hidePacks}}
+      <ul class="filterList packs" tabindex="0">
+        <li class="top"><a><i class="fas fa-box"></i> <span id="packName">{{localize "mtte.choosePack"}}</span></a>
+          <ul class="sub_menu">
+            <li data-id="-1"><a>{{localize "mtte.allPacks"}} ({{assetsCount}})</a></li>
+            {{#each packs as |p|}}<li data-id="{{p.idx}}"><a>{{pretty p.name}} ({{pretty p.count}})</a></li>{{/each}}
+            <li class="filler"></li>
+          </ul>
+        </li>
+      </ul>
+      {{/unless}}
       {{/if}}
+
       {{#if supportsModes}}
       <div class="filepicker"><div class="form-fields display-modes">
           <a class="display-mode mode-browse" title="{{localize "FILES.DisplayModeList"}}">
