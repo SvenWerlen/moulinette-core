@@ -23,7 +23,7 @@
   "mtte.configCloudColor": "Moulinette Cloud Color",
   "mtte.configCloudColorHint": "Packs from Moulinette Cloud can be highlighted in dropdown lists from other local assets. Doesn't work with all webbrowsers.",
   "mtte.configCustomPath": "Assets custom path",
-  "mtte.configCustomPathHint": "Specify a custom path (in addition to /moulinette) where moulinette must search for assets (during indexing)",
+  "mtte.configCustomPathHint": "DEPRECATED! DO NOT USE (rather use \"Configure sources\" for each type of asset). Specify a custom path (in addition to /moulinette) where moulinette must search for assets (during indexing)",
   "mtte.configDebugScanAssets": "Debug indexing process",
   "mtte.configDebugScanAssetsHint": "When enabled, moulinette adds messages into the console log to let you debug the process of indexing assets.",
   "mtte.configEnableMoulinetteCloud": "Enable Moulinette Cloud",
