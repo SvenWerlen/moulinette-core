@@ -197,4 +197,33 @@ export class Moulinette {
     return text.replace(/[-_]/g, " ").toLowerCase()
   }
 
+  /**
+   * Generates moulinette folders
+   */
+  static async getOrCreateFolder(publisher, pack, folderType) {
+    let moulinetteFolder = game.folders.filter( f => f.name == "Moulinette" && f.type == folderType )
+
+    // main
+    if( moulinetteFolder.length == 0 ) {
+      moulinetteFolder = await Folder.create({name:"Moulinette", type: folderType, parent: null})
+    } else {
+      moulinetteFolder = moulinetteFolder[0]
+    }
+    // publisher level
+    let publisherFolder = moulinetteFolder.children ? moulinetteFolder.children.filter( c => c.folder.name == publisher ) : []
+    if( publisherFolder.length == 0 ) {
+      publisherFolder = await Folder.create({name: publisher, type: folderType, parent: moulinetteFolder.id })
+    } else {
+      publisherFolder = publisherFolder[0].folder
+    }
+    // pack level
+    let packFolder = publisherFolder.children ? publisherFolder.children.filter( c => c.folder.name == pack ) : []
+    if( packFolder.length == 0 ) {
+      packFolder = await Folder.create({name: pack, type: folderType, parent: publisherFolder.id })
+    } else {
+      packFolder = packFolder[0].folder
+    }
+    return packFolder
+  }
+
 };
