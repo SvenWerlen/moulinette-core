@@ -268,14 +268,6 @@
   cursor: pointer;
 }
 
-.mtte option.cloud {
-  color: #f79007;
-}
-
-.mtte option.cloud.contrast {
-  color: brown;
-}
-
 .mtte.help .descr {
   font-style: italic;
   border-top: 1px dashed #999;
@@ -441,3 +433,5 @@ ul.filterList ul li a       { display: block; padding: 20px 8px; background: #D6
 ul.filterList ul li a:hover { display: block; background: #F3D673 !important; }
 ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 
+ul.sub_menu li.cloud          { color: #f79007; }
+ul.sub_menu li.cloud.contrast { color: brown; }

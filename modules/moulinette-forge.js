@@ -89,15 +89,20 @@ export class MoulinetteForge extends FormApplication {
         
       if(p.publisher in publishers) {
         publishers[p.publisher].count += p.count
-        if(p.isRemote) publishers[p.publisher].isRemote = true
+        if(p.isRemote) {
+          publishers[p.publisher].isRemote = true
+        }
       } else {
         publishers[p.publisher] = { name: p.publisher, count: p.count, isRemote: p.isRemote }
       }
-
-      // highlight cloud/remote assets based on configuration
+    })
+    // highlight cloud/remote creators based on configuration
+    Object.keys(publishers).forEach(k => {
+      const p = publishers[k]
       if(p.isRemote && cloudColor == "def") p.class = "cloud"
       if(p.isRemote && cloudColor == "contrast") p.class = "cloud contrast"
     })
+
     publishers = Object.values(publishers).filter(p => p.count > 0).sort((a,b) => a.name > b.name)
     
     // prepare packs 
@@ -310,6 +315,10 @@ export class MoulinetteForge extends FormApplication {
     if(this.selCreator) {
       packs = Moulinette.optimizePacks(packs.filter(p => p.publisher == id))
     }
+
+    // color
+    const cloudColor = game.settings.get("moulinette-core", "cloudColor")
+
     this.packs = []
     let packList = `<li data-id="-1" class="all"><a>${game.i18n.localize("mtte.allPacks")} (${Moulinette.prettyNumber(assetsCount)})</a></li>`
     if(this.selCreator) {
@@ -317,8 +326,15 @@ export class MoulinetteForge extends FormApplication {
       for(const p of packNames) {
         const count = packs[p].reduce((acc, p) => acc + p.count, 0);
         const ids = packs[p].reduce((acc, p) => acc + (acc.length > 0 ? "," : "") + p.idx, "");
+        const isRemote = packs[p].reduce((remote, p) => remote && p.isRemote, true);
+
+        // highlight cloud/remote assets based on configuration
+        let packClass = ""
+        if(isRemote && cloudColor == "def") packClass = "cloud"
+        if(isRemote && cloudColor == "contrast") packClass = "cloud contrast"
+
         const packName = Moulinette.prettyText(p)
-        packList += `<li data-id="${ids}"><a>${packName} (${Moulinette.prettyNumber(count)})</a></li>`
+        packList += `<li data-id="${ids}" class="${packClass}"><a><i class="fas fa-${isRemote ? "cloud" : "desktop"}"></i> ${Moulinette.prettyText(packName)} (${Moulinette.prettyNumber(count)})</a></li>`
         // keep pack ids for up/down key event
         this.packs.push({ id: ids, name: packName})
       }
