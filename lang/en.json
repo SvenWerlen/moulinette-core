@@ -120,5 +120,8 @@
   "mtte.uiModeCompact": "Compact",
   "mtte.uiModeDefault": "Default",
   "mtte.unknown": "Unknown",
-  "mtte.updateSource": "Update existing source"
+  "mtte.updateSource": "Update existing source",
+  "mtte.wholeWord": "Toggle \"whole word\" search. Partial matches will be filtered out.",
+  "mtte.wholeWordDisabled": "Whole word search disabled!",
+  "mtte.wholeWordEnabled": "Whole word search enabled!"
 }

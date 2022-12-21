@@ -225,9 +225,25 @@
   color: red;
 }
 
+.mtte .sOptions {
+  max-width: 18px;
+  margin-left: 2px;
+  margin-top: 2px;
+}
+
+.mtte .sOptions a {
+  margin: 0 3px;
+  border-radius: 5px;
+}
+
+.mtte .sOptions a.active {
+  text-shadow: 0 0 6px red;
+}
+
 .mtte .shortcuts {
   max-width: 18px;
   margin-left: 5px;
+  margin-top: 2px;
 }
 
 .mtte .filepicker {

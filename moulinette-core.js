@@ -24,6 +24,7 @@ Hooks.once("init", async function () {
   game.settings.register("moulinette", "favorites", { scope: "world", config: false, type: Object, default: { default: { icon: "fas fa-heart", list: [] }} })
   game.settings.register("moulinette", "currentFav", { scope: "world", config: false, type: String, default: "history" })
   game.settings.register("moulinette", "sources", { scope: "world", config: false, type: Object, default: [] })
+  game.settings.register("moulinette", "wholeWordSearch", { scope: "world", config: false, type: Boolean, default: false })
   
   game.settings.register("moulinette-core", "customPath", {
     name: game.i18n.localize("mtte.configCustomPath"), 
@@ -44,8 +45,8 @@ Hooks.once("init", async function () {
   });
   
   game.settings.register("moulinette-core", "showCaseContent", {
-    name: game.i18n.localize("mtte.configShowCase"), 
-    hint: game.i18n.localize("mtte.configShowCaseHint"), 
+    name: game.i18n.localize("mtte.configShowCase"),
+    hint: game.i18n.localize("mtte.configShowCaseHint"),
     scope: "world",
     config: true,
     default: true,

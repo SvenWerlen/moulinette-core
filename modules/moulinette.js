@@ -190,4 +190,11 @@ export class Moulinette {
     return newPacks
   }
 
+  /**
+   * Cleans the text for better search results
+   */
+  static cleanForSearch(text) {
+    return text.replace(/[-_]/g, " ").toLowerCase()
+  }
+
 };

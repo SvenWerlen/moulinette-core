@@ -120,5 +120,8 @@
   "mtte.uiModeCompact": "Compact",
   "mtte.uiModeDefault": "Par défaut",
   "mtte.unknown": "Inconnu",
-  "mtte.updateSource": "Mettre à jour une source"
+  "mtte.updateSource": "Mettre à jour une source",
+  "mtte.wholeWord": "Activer/désactiver la recherche \"mot complet\". Les résultats partiels seront ignorés.",
+  "mtte.wholeWordDisabled": "Recherche \"mot complet\" désactivée!",
+  "mtte.wholeWordEnabled": "Recherche \"mot complet\" activée!"
 }

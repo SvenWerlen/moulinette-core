@@ -151,10 +151,18 @@ export class MoulinetteForge extends FormApplication {
     
     // module navigation
     html.find(".tabs a").click(this._onNavigate.bind(this));
-    
+
+    // search options
+    html.find(".sOptions a").click(this._onSearchOptions.bind(this))
+
+    // initialize
+    if(game.settings.get("moulinette", "wholeWordSearch")) {
+      html.find(".sOptions a.wholeWord").addClass("active")
+    }
+
     // buttons
     html.find("button").click(this._onClickButton.bind(this))
-   
+
     // shortcuts
     html.find(".shortcuts a").click(this._onGenerateShortcuts.bind(this))
 
@@ -360,7 +368,24 @@ export class MoulinetteForge extends FormApplication {
       this.render();
     }
   }
-  
+
+  /**
+   * User clicked on search option
+   */
+  async _onSearchOptions(event) {
+    event.preventDefault();
+
+    const source = event.currentTarget;
+    if(source.classList.contains("wholeWord")) {
+      $(source).toggleClass("active")
+      // store in settings
+      const wholeWord = $(source).hasClass("active")
+      await game.settings.set("moulinette", "wholeWordSearch", wholeWord)
+      ui.notifications.info(game.i18n.localize(wholeWord ? "mtte.wholeWordEnabled" : "mtte.wholeWordDisabled"));
+      this._searchAssets()
+    }
+  }
+
   /**
    * User clicked on button (or ENTER on search)
    */
