@@ -44,7 +44,7 @@
   ],
   "url": "https://github.com/SvenWerlen/moulinette-core",
   "download": "https://github.com/SvenWerlen/moulinette-core/archive/v-10.2.3.zip",
-  "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-core/main/module.json",
+  "manifest": "https://raw.githubusercontent.com/SvenWerlen/moulinette-core/Feature/NewInterface/module.json",
   "id": "moulinette-core",
   "authors": [
     {
