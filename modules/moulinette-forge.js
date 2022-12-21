@@ -93,7 +93,7 @@ export class MoulinetteForge extends FormApplication {
           publishers[p.publisher].isRemote = true
         }
       } else {
-        publishers[p.publisher] = { name: p.publisher, count: p.count, isRemote: p.isRemote }
+        publishers[p.publisher] = { name: p.publisher, count: p.count, isRemote: p.isRemote, special: p.special }
       }
     })
     // highlight cloud/remote creators based on configuration
@@ -103,7 +103,7 @@ export class MoulinetteForge extends FormApplication {
       if(p.isRemote && cloudColor == "contrast") p.class = "cloud contrast"
     })
 
-    publishers = Object.values(publishers).filter(p => p.count > 0).sort((a,b) => a.name > b.name)
+    publishers = Object.values(publishers).filter(p => !p.count || p.count > 0).sort((a,b) => a.name > b.name)
     
     // prepare packs 
     // - cleans packname by removing publisher from pack name to avoid redundancy

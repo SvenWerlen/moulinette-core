@@ -28,7 +28,7 @@
             <li data-id="-1"><a>{{localize "mtte.allPubs"}} ({{assetsCount}})</a></li>
             {{#each publishers as |p|}}<li data-id="{{p.name}}" class="{{p.class}}"><a>
               <i class="fas fa-{{#if p.isRemote}}cloud{{/if}}{{#unless p.isRemote}}desktop{{/unless}}"></i>
-              {{pretty p.name}} ({{pretty p.count}}) </li></a>
+              {{pretty p.name}} {{#unless p.special}}({{pretty p.count}}){{/unless}} </li></a>
             {{/each}}
             <li class="filler"></li>
           </ul>
