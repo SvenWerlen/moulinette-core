@@ -575,11 +575,11 @@ export class MoulinetteFileUtil {
                 }
                 else if(["ogg", "mp3", "wav", "m4a", "flac", "webm"].includes(ext)) {
                   // WebM could be tiles, too (video) - unless they are from "sounds"
-                  if(!pack.isRemote && ext == "webm" && !pack.path.startsWith("moulinette/sounds/custom")) {
+                  if(!packData.isRemote && ext == "webm" && !pack.path.startsWith("moulinette/sounds/custom")) {
                     assets.push(duplicate(aData)); packData.count++;
                   }
                   // WebM are considered sounds - unless they are from tiles or images or remote (creators don't use that format)
-                  if(ext == "webm" && (pack.isRemote || pack.path.startsWith("moulinette/tiles/custom") || pack.path.startsWith("moulinette/images/custom"))) {
+                  if(ext == "webm" && (packData.isRemote || pack.path.startsWith("moulinette/tiles/custom") || pack.path.startsWith("moulinette/images/custom"))) {
                     packData.count--;
                     continue;
                   }
