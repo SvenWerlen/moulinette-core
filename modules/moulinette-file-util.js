@@ -769,6 +769,7 @@ export class MoulinetteFileUtil {
    * - destPath : target destinatin (in FoundryVTT)
    */
   static async downloadDependencies(depList, packURL, sas, destPath) {
+    let results = []
     // download direct dependencies
     for(const dep of depList) {
       const filepath = destPath + dep
@@ -786,9 +787,10 @@ export class MoulinetteFileUtil {
         if(!res) return ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
     
         const blob = await res.blob()
-        await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, false)
+        results.push(await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, false))
       }
     }
+    return results;
   }
   
   
