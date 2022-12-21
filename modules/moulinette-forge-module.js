@@ -29,6 +29,14 @@ export class MoulinetteForgeModule {
   }
 
   /**
+   * Overwrite this function to indicate if the module supports whole word search
+   */
+  supportsWholeWordSearch() {
+    console.debug("Moulinette Forge Module | Default supportsWholeWordSearch() not implemented")
+    return false
+  }
+
+  /**
    * Overwrite this function to implement thumb sizes
    */
   async onChangeThumbsSize(increase) {

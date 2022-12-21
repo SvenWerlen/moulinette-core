@@ -15,11 +15,13 @@
     <!-- Search / pack list / modes -->
     <div class="form-group search">
       <input id="search" type="text" placeholder="{{localize "mtte.search"}}" value="{{terms}}"></input>
+      {{#if supportsWholeWordSearch}}
       <div class="sOptions"><div class="form-fields sOptions">
           <a class="wholeWord" title="{{localize "mtte.wholeWord"}}">
               <i class="fas fa-not-equal"></i>
           </a>
       </div></div>
+      {{/if}}
       <button class="search"><i class="fas fa-search"></i></button>
       {{#if publishers}}
       <ul class="filterList creators" tabindex="0">
@@ -34,6 +36,7 @@
           </ul>
         </li>
       </ul>
+      {{#unless hidePacks}}
       <ul class="filterList packs" tabindex="0">
         <li class="top"><a><i class="fas fa-box"></i> <span id="packName">{{localize "mtte.choosePack"}}</span></a>
           <ul class="sub_menu">
@@ -43,6 +46,7 @@
           </ul>
         </li>
       </ul>
+      {{/unless}}
       {{/if}}
 
       {{#if supportsShortcuts}}
