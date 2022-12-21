@@ -88,16 +88,21 @@
     {{#each assets as |a|}}{{{a}}}{{/each}}
   </div>
   
-  <div class="footer">
+  <div class="footerToggle"><a><i class="fas fa-gear"></i></a></div>
+  <div class="showcase"></div>
+  <div class="modulefooter">
     {{{footer}}}
-      <footer>
-        <div class="actions">
-          {{#each activeModule.actions as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
-        </div>
-        <div class="actions">
-          {{#each activeModule.actionsExt as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
-        </div>
-      </footer>
+  </div>
+  <div class="footer">
+    <footer>
+      <div class="actions">
+        <button class="hidefooter" title="{{localize "mtte.hideFooter"}}"><i class="fas fa-chevrons-down"></i></button>
+        {{#each activeModule.actions as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
+      </div>
+      <div class="actions">
+        {{#each activeModule.actionsExt as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
+      </div>
+    </footer>
     <img class="logo" src="modules/moulinette-core/img/moulinette.png" width="{{#if compactUI}}40{{/if}}{{#unless compactUI}}60{{/unless}}"/>
     <p>
       {{#unless user.patron}}

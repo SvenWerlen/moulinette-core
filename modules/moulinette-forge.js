@@ -178,6 +178,9 @@ export class MoulinetteForge extends FormApplication {
 
     // thumb sizes
     html.find(".thumbsizes a").click(this._onChangeThumbsizes.bind(this))
+
+    // footer toggle
+    html.find(".footerToggle a").click(ev => html.find(".footer").show())
     
     // highlight current displayMode
     const dMode = game.settings.get("moulinette", "displayMode")
@@ -418,6 +421,10 @@ export class MoulinetteForge extends FormApplication {
       if(source.classList.contains("search")) {
         await this._searchAssets()
       } 
+      // search
+      else if(source.classList.contains("hidefooter")) {
+        this.html.find(".footer").hide()
+      }
       // any other action
       else {
         const refresh = await this.activeModule.instance.onAction(source.classList)
@@ -504,15 +511,6 @@ export class MoulinetteForge extends FormApplication {
       const key = `data-folder="${folderIdx}"`
       for(const a of this.assets) {
         if(a.indexOf(key) > 0) {
-          matchList.push(a)
-        }
-      }
-    }
-    // old way
-    else {
-      const regex = new RegExp(`data-path="[^"]*${folder.replace("(",'\\(').replace(")",'\\)')}[^"/]+"`, "g")
-      for(const a of this.assets) {
-        if(decodeURIComponent(a).match(regex)) {
           matchList.push(a)
         }
       }

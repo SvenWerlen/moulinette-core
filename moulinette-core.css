@@ -33,7 +33,7 @@
   height: auto;
   position: absolute;
   top: 75px;
-  bottom: 160px;
+  bottom: 35px;
   left: 0px;
   overflow-y: auto;
   width: 100%;
@@ -51,6 +51,24 @@
   width: 100%;
   padding: 5px;
   padding-right: 15px;
+  background: url(../../ui/parchment.jpg) repeat;
+  display: none;
+}
+
+#moulinette.forge .modulefooter {
+  position: absolute;
+  bottom: 0px;
+  left: 28px;
+  width: 100%;
+  padding: 5px 45px 0px 5px;
+  border-top: 1px solid var(--color-border-light-tertiary);
+}
+
+#moulinette.forge .footerToggle {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  font-size: 22px;
 }
 
 #moulinette.forge footer {
@@ -151,6 +169,10 @@
   max-height: 27px;
   margin-left: 5px;
   font-size: 12px;
+}
+
+.mtte button.hidefooter {
+  max-width: 30px;
 }
 
 .mtte .fvtt-picker {
@@ -389,7 +411,19 @@
 }
 
 .mtte .showcase {
+  display: none;
   background: url(../../ui/parchment.jpg) repeat;
+  font-style: italic;
+  font-size: small;
+  padding: 5px;
+  border: 4px solid darkred;
+  position: absolute;
+  bottom: 32px;
+  width: 100%;
+}
+
+.showcase.clickable {
+  cursor: pointer;
 }
 
 .mtte .dragMacro {
