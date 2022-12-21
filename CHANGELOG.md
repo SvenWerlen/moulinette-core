@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.3.0] - 2022-12-21
 ### Changed
 - New interface (auto-scroll lists, breadcrumbs, actions)
-- Whole word search & regex search
 - New interface for FilePicker
 - Improved footer
+### Added
+- Whole word search & regex search
 
 ## [10.2.2] - 2022-11-13
 ### Fixed
