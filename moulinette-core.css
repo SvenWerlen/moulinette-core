@@ -1,3 +1,8 @@
+/* Fix for module Ernie's modern UI */
+#moulinette .window-content {
+  display: flex;
+}
+
 #moulinette.forge .body {
   position: relative;
   height: 100%;
