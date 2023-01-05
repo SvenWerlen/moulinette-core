@@ -1,6 +1,6 @@
 /* Fix for module Ernie's modern UI */
-#moulinette .window-content {
-  display: flex;
+.mtte .window-content {
+  display: flex !important;
 }
 
 #moulinette.forge .body {
