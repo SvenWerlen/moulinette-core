@@ -8,7 +8,7 @@
 
 See [www.moulinette.cloud](https://www.moulinette.cloud) website.
 
-[Moulinette](https://github.com/SvenWerlen/moulinette) is a set of tools for importing packs of scenes, images, playlists prepared by the community.
+Moulinette is a set of tools for importing packs of scenes, images, playlists prepared by the community.
 
 :warning: the core only provides the Moulinette's foundations. You'll have to install additional modules to bring features.
 
