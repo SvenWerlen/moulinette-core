@@ -140,7 +140,7 @@ export class MoulinettePatreonGift extends FormApplication {
     const gift = this.html.find("#coupon").val()
     // check guid
     const client = new game.moulinette.applications.MoulinetteClient()
-    const result = await client.get(`/manage-gifts/claim/${game.moulinette.user.id}/${gift}`)
+    const result = await client.get(`/creators/gifts/claim/${game.moulinette.user.id}/${gift}`)
     if(!result || result.status != 200) {
       ui.notifications.error(game.i18n.localize("mtte.errorInvalidGift"))
       console.error(`Moulinette Patreon | Invalid gift '${gift}'`)

@@ -720,7 +720,7 @@ export class MoulinetteFileUtil {
    * - pack  : asset's pack
    * - type  : type of asset (generally cloud)
    */
-  static async downloadAssetDependencies(asset, pack, type) {
+  static async downloadAssetDependencies(asset, pack, type, force=false) {
 
     const path = MoulinetteFileUtil.getMoulinetteBasePath(type, pack.publisher, pack.name)
     
@@ -730,7 +730,7 @@ export class MoulinetteFileUtil {
     }
     
     // download direct dependencies
-    await MoulinetteFileUtil.downloadDependencies(asset.data.deps, pack.path, asset.sas, path)
+    await MoulinetteFileUtil.downloadDependencies(asset.data.deps, pack.path, asset.sas, path, force)
     
     // download all external dependencies
     if(asset.data.eDeps) {
@@ -739,7 +739,7 @@ export class MoulinetteFileUtil {
         if( i >= 0 && i < pack.depsPath.length ) {
           const ePack = pack.depsPath[i]
           const ePath = MoulinetteFileUtil.getMoulinetteBasePath(type, ePack.publisher, ePack.name)
-          await MoulinetteFileUtil.downloadDependencies(deps, ePack.path, asset.sas, ePath)
+          await MoulinetteFileUtil.downloadDependencies(deps, ePack.path, asset.sas, ePath, force)
         } else {
           console.error("Moulinette FileUtil | Invalid external dependency " + i)
         }
@@ -768,7 +768,7 @@ export class MoulinetteFileUtil {
    * - sas      : Azure Blob SAS
    * - destPath : target destinatin (in FoundryVTT)
    */
-  static async downloadDependencies(depList, packURL, sas, destPath) {
+  static async downloadDependencies(depList, packURL, sas, destPath, force=false) {
     let results = []
     // download direct dependencies
     for(const dep of depList) {
@@ -777,7 +777,7 @@ export class MoulinetteFileUtil {
       const filename = decodeURIComponent(dep.split('/').pop())
       const srcURL = packURL + "/" + dep + sas
       
-      if(!await MoulinetteFileUtil.fileExists(filepath)) {
+      if(force || !await MoulinetteFileUtil.fileExists(filepath)) {
         // create target folder
         await MoulinetteFileUtil.createFolderRecursive(folder)
         // download file
@@ -787,7 +787,7 @@ export class MoulinetteFileUtil {
         if(!res) return ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
     
         const blob = await res.blob()
-        results.push(await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, false))
+        results.push(await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, force))
       }
     }
     return results;
