@@ -147,7 +147,7 @@ There are 3 different ways to open the user intervace:
 
 If you like my work and want to support me, consider subscribing to Moulinette!
 
-* Recommended : [https://assets.moulinette.cloud/pricing](Moulinette on Stripe, requires Patreon authentication)
-* Or : [https://www.patreon.com/moulinette](Moulinette on Patreon)
+* Recommended: [Moulinette on Stripe](https://assets.moulinette.cloud/pricing) (requires Patreon authentication)
+* Or: [Moulinette on Patreon](https://www.patreon.com/moulinette)
 
 You can also join [Moulinette Discord](https://discord.gg/xg3dcMQfP2)
