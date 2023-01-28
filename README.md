@@ -145,8 +145,9 @@ There are 3 different ways to open the user intervace:
 
 ## <a name="support"/>Support me on Patreon
 
-If you like my work and want to support me, consider becoming a patreon!
+If you like my work and want to support me, consider subscribing to Moulinette!
 
-[https://www.patreon.com/moulinette](https://www.patreon.com/moulinette)
+* Recommended : [https://assets.moulinette.cloud/pricing](Moulinette on Stripe, requires Patreon authentication)
+* Or : [https://www.patreon.com/moulinette](Moulinette on Patreon)
 
 You can also join [Moulinette Discord](https://discord.gg/xg3dcMQfP2)
