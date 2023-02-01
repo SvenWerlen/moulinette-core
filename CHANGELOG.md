@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [10.6.0] - Not released yet
+### Added
+- #56 Feature: Add hotkey to choose image browser 
+
 ## [10.5.0] - 2023-01-31
 ### Fixed
 - 10.5.0: #59 After update, file picker no longer works 

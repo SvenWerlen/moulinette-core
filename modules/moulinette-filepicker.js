@@ -12,7 +12,8 @@ export class MoulinetteFilePicker extends FilePicker {
     if ( game.world && !game.user.can("FILES_BROWSE") ) return;
 
     // moulinette API sometimes requires to have default FilePicker
-    const forceDefault = this.options && this.options.forceDefault
+    const shiftKeyDown = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.SHIFT)
+    const forceDefault = (this.options && this.options.forceDefault) || shiftKeyDown
 
     // force retrieve user
     if(!forceDefault && ["image", "imagevideo"].includes(this.type) && !this.default) {
