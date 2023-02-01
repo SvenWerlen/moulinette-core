@@ -2,6 +2,8 @@
 
 export class MoulinetteFilePicker extends FilePicker {
   
+  static MAX_ASSETS = 100
+
   constructor(options={}) {
     super(options);
   }
@@ -150,6 +152,7 @@ export class MoulinetteFilePickerUI extends FormApplication {
       hidePacks: assetsCount == 0,
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: this.assets.slice(0, MoulinetteFilePickerUI.MAX_ASSETS),
+      dropdownModeAuto: game.settings.get("moulinette-core", "dropdownMode") == "auto"
     }
 
     data.publishers = publishers
@@ -201,44 +204,54 @@ export class MoulinetteFilePickerUI extends FormApplication {
     // asset search (filter on creator)
     const parent = this
     html.find(".filterList.creators a").click(async function(ev) {
-      event.preventDefault();
-      const source = event.currentTarget;
+      ev.preventDefault();
+      const source = ev.currentTarget;
       parent._onCreatorSelected($(source).closest("li").data("id"), $(source).closest(".top"))
+    });
+    html.find(".filterCombo.creators").change(function(ev) {
+      ev.preventDefault();
+      const id = $(this).find(":selected").val()
+      parent._onCreatorSelectedDropDown(id)
     });
 
     // asset search (filter on pack)
     html.find(".filterList.packs a").click(async function(ev) {
-      event.preventDefault();
+      ev.preventDefault();
       const Moulinette = game.moulinette.applications.Moulinette
-      const source = event.currentTarget;
+      const source = ev.currentTarget;
       parent._onPackSelected($(source).closest("li").data("id"), $(source).closest(".top"));
+    });
+    html.find(".filterCombo.packs").change(async function(ev) {
+      ev.preventDefault();
+      parent.selPack = $(this).find(":selected").val()
+      await parent._searchAssets()
     });
 
     // up / down => select next entry
     html.find(".filterList.creators").keydown(function(ev) {
       const kEv = ev.originalEvent
       if(ev.key == "Tab") {
-        event.preventDefault();
+        ev.preventDefault();
         html.find(ev.shiftKey ? "#search" : ".filterList.packs").focus()
       } else if(ev.key == "ArrowDown" || ev.key == "ArrowUp") {
-        event.preventDefault();
+        ev.preventDefault();
         // index can only be [0..pub.lenth]
         const idx = Math.max(-1, parent.publishers.indexOf(parent.selCreator))
         const newIdx = Math.min(Math.max(-1, idx + (ev.key == "ArrowDown" ? 1 : -1)), parent.publishers.length -1)
-        parent._onCreatorSelected(newIdx < 0 ? "-1" : parent.publishers[newIdx], $(event.currentTarget).closest(".top"));
+        parent._onCreatorSelected(newIdx < 0 ? "-1" : parent.publishers[newIdx], $(ev.currentTarget).closest(".top"));
       }
     })
     html.find(".filterList.packs").keydown(function(ev) {
       const kEv = ev.originalEvent
       if(ev.key == "Tab") {
-        event.preventDefault();
+        ev.preventDefault();
         html.find(ev.shiftKey ? ".filterList.creators" : "#search").focus()
       } else if(ev.key == "ArrowDown" || ev.key == "ArrowUp") {
-        event.preventDefault();
+        ev.preventDefault();
         // index can only be [0..pack.lenth]
         const idx = Math.max(-1, parent.packs.findIndex(p => p.id == parent.selPack))
         const newIdx = Math.min(Math.max(-1, idx + (ev.key == "ArrowDown" ? 1 : -1)), parent.packs.length -1)
-        parent._onPackSelected(newIdx < 0 ? "-1" : parent.packs[newIdx].id, $(event.currentTarget).closest(".top"));
+        parent._onPackSelected(newIdx < 0 ? "-1" : parent.packs[newIdx].id, $(ev.currentTarget).closest(".top"));
       }
     })
     
@@ -300,6 +313,49 @@ export class MoulinetteFilePickerUI extends FormApplication {
     });
 
     this.html = html
+  }
+  
+  /**
+   * User selects a creator in the list (default HTML implementation)
+   */
+  async _onCreatorSelectedDropDown(id) {
+    const Moulinette = game.moulinette.applications.Moulinette
+    this.selCreator = id && id != "-1" ? id : null
+    this.selPack = "-1"
+    // refresh pack list
+    let packs = await this.activeModule.instance.getPackList()
+    packs = packs.filter(p => p.count > 0)
+    const assetsCount = packs.reduce((acc, p) => acc + p.count, 0); // count number of assets
+    if(this.selCreator) {
+      packs = Moulinette.optimizePacks(packs.filter(p => p.publisher == id))
+    }
+
+    // color
+    const cloudColor = game.settings.get("moulinette-core", "cloudColor")
+
+    this.packs = []
+    let packList = `<option value="-1">${game.i18n.localize("mtte.allPacks")}</option>`
+    if(this.selCreator) {
+      const packNames = Object.keys(packs).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+      for(const p of packNames) {
+        const count = packs[p].reduce((acc, p) => acc + p.count, 0);
+        const ids = packs[p].reduce((acc, p) => acc + (acc.length > 0 ? "," : "") + p.idx, "");
+        const isRemote = packs[p].reduce((remote, p) => remote && p.isRemote, true);
+
+        // highlight cloud/remote assets based on configuration
+        let packClass = ""
+        if(isRemote && cloudColor == "def") packClass = "cloud"
+        if(isRemote && cloudColor == "contrast") packClass = "cloud contrast"
+
+        const packName = Moulinette.prettyText(p)
+        packList += `<option value="${ids}" class="${packClass}">${Moulinette.prettyText(packName)} (${Moulinette.prettyNumber(count)})</option>`
+        // keep pack ids for up/down key event
+        this.packs.push({ id: ids, name: packName})
+      }
+    }
+    this.html.find(".filterCombo.packs").html(packList)
+
+    await this._searchAssets()
   }
   
   /**
@@ -415,7 +471,7 @@ export class MoulinetteFilePickerUI extends FormApplication {
     else {
       // browse => show all folders but no asset
       const viewMode = game.settings.get("moulinette", "displayMode")
-      let assetsToShow = supportsModes && viewMode == "browse" ? this.assets.filter(a => a.indexOf('class="folder"') > 0) : this.assets.slice(0, MoulinetteForge.MAX_ASSETS).join("")
+      let assetsToShow = supportsModes && viewMode == "browse" ? this.assets.filter(a => a.indexOf('class="folder"') > 0) : this.assets.slice(0, MoulinetteFilePicker.MAX_ASSETS).join("")
       // if only 1 folder, show all assets
       if(assetsToShow.length == 1 && viewMode == "browse") {
         assetsToShow = this.assets
