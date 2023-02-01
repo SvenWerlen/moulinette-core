@@ -54,6 +54,16 @@ Hooks.once("init", async function () {
     type: Boolean
   });
 
+  game.settings.register("moulinette-core", "dropdownMode", {
+    name: game.i18n.localize("mtte.configDropdownMode"),
+    hint: game.i18n.localize("mtte.configDropdownModeHint"),
+    scope: "world",
+    config: true,
+    default: null,
+    choices: { none: game.i18n.localize("mtte.dropdownDefault"), auto: game.i18n.localize("mtte.dropdownAuto") },
+    type: String
+  });
+
   game.settings.register("moulinette-core", "cloudColor", {
     name: game.i18n.localize("mtte.configCloudColor"),
     hint: game.i18n.localize("mtte.configCloudColorHint"),
@@ -61,8 +71,7 @@ Hooks.once("init", async function () {
     config: true,
     default: "def",
     choices: { none: game.i18n.localize("mtte.cloudColorNone"), def: game.i18n.localize("mtte.cloudColorDefault"), contrast: game.i18n.localize("mtte.cloudColorContrast") },
-    type: String,
-    onChange: () => game.moulinette.user = {}
+    type: String
   });
   
   game.settings.register("moulinette-core", "browseMode", {
