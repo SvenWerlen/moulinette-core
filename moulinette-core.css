@@ -451,6 +451,31 @@
   align-items: start;
 }
 
+#moulinette-available .main {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+#moulinette-available .infos {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 25px;
+  overflow: hidden;
+}
+
+#moulinette-available .list {
+  height: auto;
+  position: absolute;
+  top: 25px;
+  bottom: 0px;
+  left: 0px;
+  overflow-y: auto;
+  width: 100%;
+  margin-bottom: 0px;
+}
+
 /** Inspired by: https://css-tricks.com/examples/LongDropdowns/# **/
 
 .filterCombo {

@@ -565,10 +565,13 @@ export class MoulinetteFileUtil {
             }
             for(let i = 0; i<pack.assets.length; i++) {
               const asset = pack.assets[i]
+              // SAS for individual asset
+              const sas = Array.isArray(pack.sas) ? [pack.sas[2*i],pack.sas[2*i+1]] : null
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {
                 let type = pack.meta && pack.meta.type ? pack.meta.type : "img"
                 let aData = { pack: idx, filename: asset, type: type}
+                if(sas) { aData['sas'] = sas[0]; aData['sasTh'] = sas[1] }
                 const ext = asset.substr(asset.lastIndexOf('.') + 1)
                 if(URL.indexOf("moulinette/scenes/custom") >= 0) {
                   aData.type = "scene"
@@ -591,10 +594,14 @@ export class MoulinetteFileUtil {
               }
               // sounds from Moulinette Cloud
               else if(asset.type == "snd") {
-                assets.push({ pack: idx, filename: asset.path, type: asset.type, duration: asset.duration, loop: asset.loop, title: asset.title })
+                const aData = { pack: idx, filename: asset.path, type: asset.type, duration: asset.duration, loop: asset.loop, title: asset.title }
+                if(sas) { aData['sas'] = sas[0]; aData['sasTh'] = sas[1] }
+                assets.push(aData)
                 // WebM could be tiles, too (video)
                 if(pack.isLocal && !pack.path.startsWith("moulinette/sounds/custom") && asset.path.substr(asset.path.lastIndexOf('.') + 1) == "webm") {
-                  assets.push({ pack: idx, filename: asset, type: pack.meta && pack.meta.type ? pack.meta.type : "img"})
+                  const aData2 = { pack: idx, filename: asset, type: pack.meta && pack.meta.type ? pack.meta.type : "img"}
+                  if(sas) { aData2['sas'] = sas[0]; aData2['sasTh'] = sas[1] }
+                  assets.push(aData2)
                   packData.count++;
                 }
               }
@@ -602,7 +609,9 @@ export class MoulinetteFileUtil {
               else {
                 const path = asset['path']
                 delete asset['path']
-                assets.push({ pack: idx, filename: path ? path : asset['name'], data: asset, type: asset.type})
+                const aData = { pack: idx, filename: path ? path : asset['name'], data: asset, type: asset.type}
+                if(sas) { aData['sas'] = sas[0]; aData['sasTh'] = sas[1] }
+                assets.push(aData)
               }
             }
             assetsPacks.push(packData)
@@ -818,6 +827,28 @@ export class MoulinetteFileUtil {
     }
   }
   
+  /**
+   * Search for available assets on Moulinette Cloud (count only)
+   */
+  static async getAvailableMatchesMoulinetteCloud(searchTerms, type, countOnly = true) {
+
+    // check if user disabled that feature
+    const cloudEnabled = game.settings.get("moulinette-core", "enableMoulinetteCloud")
+    const cloudContent = game.settings.get("moulinette-core", "showCloudContent")
+    if(!cloudEnabled || !cloudContent) return countOnly ? 0 : [];
+
+    // request Moulinette servers
+    const url = game.moulinette.applications.MoulinetteClient.SERVER_URL + 
+      `/api/marketplace/search?type=${type}&terms=${encodeURIComponent(searchTerms)}&list=${!countOnly}`
+    const response = await fetch(url).catch(function(e) {
+      console.warn(`MoulinetteClient | Cannot establish connection to server ${MoulinetteClient.SERVER_URL}`, e)
+    });
+    if(!response || response.status != 200) {
+      return 0;
+    }
+    return await response.json()
+  }
+
   /**
    * Search for matching a asset
    */

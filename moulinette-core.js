@@ -9,6 +9,8 @@ import { MoulinetteForgeModule } from "./modules/moulinette-forge-module.js"
 import { MoulinettePatreon } from "./modules/moulinette-patreon.js"
 import { MoulinetteHelp } from "./modules/moulinette-help.js"
 import { MoulinetteSources } from "./modules/moulinette-sources.js"
+import { MoulinetteAvailableAssets } from "./modules/moulinette-available.js"
+import { MoulinetteAvailableResult } from "./modules/moulinette-availableresult.js"
 import { MoulinetteAPI } from "./modules/moulinette-api.js"
 
 /**
@@ -181,6 +183,8 @@ Hooks.once("init", async function () {
       MoulinetteFilePicker,
       MoulinetteHelp,
       MoulinetteSources,
+      MoulinetteAvailableAssets,
+      MoulinetteAvailableResult,
       MoulinetteAPI
     },
     cache: new MoulinetteCache(),

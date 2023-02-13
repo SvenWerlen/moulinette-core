@@ -1,0 +1,47 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  <h3>{{assetName}}</h3>
+  <div class="tileres">
+    {{#if mouliplaceUrl}}
+      <a href="{{mouliplaceUrl}}" target="_blank"><img id="previewImage" width="{{imageSize}}" height="{{imageSize}}" src="{{url}}"/></a>
+    {{/if}}
+    {{#unless mouliplaceUrl}}
+      <img id="previewImage" width="{{imageSize}}" height="{{imageSize}}" src="{{url}}"/>
+    {{/unless}}
+  </div>
+  <p>
+    <b>{{localize "mtte.imageFrom"}}</b>: 
+      {{#if mouliplaceCreatorUrl}}
+        <a href="{{mouliplaceCreatorUrl}}" target="_blank">{{pack.creator}}</a>
+      {{/if}}
+      {{#unless mouliplaceCreatorUrl}}
+        {{pack.creator}}
+      {{/unless}}
+      {{#if mouliplaceUrl}}
+        (<a href="{{mouliplaceUrl}}" target="_blank">{{pack.name}}</a>)
+      {{/if}}
+      {{#unless mouliplaceUrl}}
+        ({{pack.name}})
+      {{/unless}}
+  </p>
+  <p>  
+    <b>{{localize "mtte.requiredTiers"}}</b>:
+    <ul>
+    {{#each tiers as |t|}}
+      <li>{{t.title}} ({{t.amount}} $USD) {{#if t.id}}- <a href="https://www.patreon.com/join/{{../vanity}}/checkout?rid={{t.id}}" target="_blank">{{localize "mtte.subscribe"}}</a></li>{{/if}}
+    {{/each}}
+    </ul>
+  </p>
+  <br />
+  <footer>
+  
+  <div class="actions">
+    {{#if mouliplaceUrl}}
+      <a href="{{mouliplaceUrl}}" target="_blank"><button><i class="fas fa-store"></i> {{localize "mtte.packOnMouliplace"}}</button></a>
+    {{/if}}
+    <a href="{{moulinetteUrl}}" target="_blank"><button><i class="fas fa-store"></i> {{localize "mtte.creatorMoulinetteWebsite"}}</button></a>
+    {{#if creatorUrl}}
+      <a href="{{creatorUrl}}" target="_blank"><button><i class="fas fa-external-link-alt"></i> {{localize "mtte.creatorWebsite"}}</button></a>
+    {{/if}}
+  </div>
+  </footer>
+</form>
