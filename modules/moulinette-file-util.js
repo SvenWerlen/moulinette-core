@@ -575,7 +575,7 @@ export class MoulinetteFileUtil {
                 }
                 else if(["ogg", "mp3", "wav", "m4a", "flac", "webm"].includes(ext)) {
                   // WebM could be tiles, too (video) - unless they are from "sounds"
-                  if(!packData.isRemote && ext == "webm" && !pack.path.startsWith("moulinette/sounds/custom")) {
+                  if(ext == "webm" && !pack.path.startsWith("moulinette/sounds/custom")) {
                     assets.push(duplicate(aData)); packData.count++;
                   }
                   // WebM are considered sounds - unless they are from tiles or images or remote (creators don't use that format)
