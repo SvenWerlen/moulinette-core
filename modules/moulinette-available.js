@@ -38,10 +38,34 @@ export class MoulinetteAvailableAssets extends FormApplication {
     for(let a = 0; a < this.assetsData.results.length; a++) {
       const asset = this.assetsData.results[a]
       const pack = this.assetsData.packs[asset.pack]
-      const url = `${pack.baseUrl}/${asset.path}`
-      const filename = asset.path.split("/").pop().replace("_thumb", "")
-      const title = `${filename} from ${this.pack.creator} (${this.pack.name})`
-      this.assets.push(`<div class="tileres" title="${title}" data-idx="${a}"><img width="${this.assetsSize}" height="${this.assetsSize}" src="${url}"/></div>`)
+      const path = asset.data ? asset.data.path : asset.path
+      const url = `${pack.baseUrl}/${path}`
+      const filename = path.split("/").pop().replace("_thumb", "")
+      const title = `${filename} from ${pack.creator} (${pack.name})`
+      if(asset.data && asset.data['type'] == "snd") {
+        const name = game.moulinette.applications.Moulinette.prettyText(asset.data.title && asset.data.title.length > 0 ? asset.data.title : asset.data.path.split("/").pop())
+        const shortName = name.length <= 40 ? name : name.substring(0,40) + "..."
+
+        const durHr = Math.floor(asset.data.duration / (3600))
+        const durMin = Math.floor((asset.data.duration - 3600*durHr)/60)
+        const durSec = asset.data.duration % 60
+        const duration = (durHr > 0 ? `${durHr}:${durMin.toString().padStart(2,'0')}` : durMin.toString()) + ":" + durSec.toString().padStart(2,'0')
+        const previewSoundURL = `${pack.baseUrl}/${asset.data.path.slice(0, -4)}_preview.ogg` // remove .ogg/.mp3/... from original path
+
+        let html = `<div class="sound" data-idx="${a}">` +
+          `<div class="audio" title="${title}">${shortName}</div>` +
+          `<div class="background"><i class="fas fa-music"></i></div>` +
+          `<div class="duration"><i class="far fa-hourglass"></i> ${duration}</div>` +
+          `<div class="sound-controls">` +
+            (asset.data.preview ? `<div class="ctrl sound-play" data-url="${previewSoundURL}"><a data-action="sound-play" title="${game.i18n.localize("mtte.previewSound")}"><i class="fas fa-play"></i></a></div>` : "") +
+          "</div></div>"
+
+        //this.assets.push(`<div class="sound"><a data-idx="${a}">${title}</a></div>`)
+        this.assets.push(html)
+
+      } else {
+        this.assets.push(`<div class="tileres" title="${title}" data-idx="${a}"><img width="${this.assetsSize}" height="${this.assetsSize}" src="${url}"/></div>`)
+      }
     }
 
     // randomize results (avoid some publishers to always be listed first)
@@ -58,9 +82,33 @@ export class MoulinetteAvailableAssets extends FormApplication {
     this.html = html
     
     this.html.find(".tileres").click(this._onShowTile.bind(this))
+    this.html.find(".sound").click(this._onShowTile.bind(this))
+
+    // make sure window is on top of others
+    this.bringToTop()
 
     // autoload on scroll
     this.html.find(".list").on('scroll', this._onScroll.bind(this))
+
+    // autoload on scroll
+    const parent = this
+    this.html.find(".sound-play").click(ev => {
+      ev.preventDefault();
+      const audio = html.find("#availablePreview")[0]
+      const url = $(ev.currentTarget).data("url")
+      if (url == parent.previewUrl) {
+        if (audio.paused) {
+          audio.play();
+        } else {
+          audio.pause();
+        }
+      } else {
+        parent.previewUrl = url
+        audio.src = url;
+        audio.play();
+      }
+      return false
+    })
   }
 
   // re-enable listeners
@@ -78,8 +126,9 @@ export class MoulinetteAvailableAssets extends FormApplication {
     if(assetIdx >=0 && assetIdx < this.assetsData.results.length) {
       const asset = this.assetsData.results[assetIdx]
       const pack = this.assetsData.packs[asset.pack]
-      const url = `${pack.baseUrl}/${asset.path}`
-      new MoulinetteAvailableResult(pack, url, this.assetsSize).render(true)
+      const url = asset.data ? `${pack.baseUrl}/${asset.data.path}` : `${pack.baseUrl}/${asset.path}`
+      this.html.find("#availablePreview")[0].pause()
+      new MoulinetteAvailableResult(pack, url, this.assetsSize, asset).render(true)
     }
   }
 

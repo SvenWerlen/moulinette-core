@@ -476,6 +476,20 @@
   margin-bottom: 0px;
 }
 
+#moulinette-available .sound {
+  cursor: pointer;
+}
+
+#moulinette-availableresult .sound .icon {
+  font-size: 64px;
+  margin: 15px;
+  color: #777;
+}
+
+#moulinette-available .sound-controls {
+  visibility: visible;
+}
+
 /** Inspired by: https://css-tricks.com/examples/LongDropdowns/# **/
 
 .filterCombo {
