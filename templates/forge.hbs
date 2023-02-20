@@ -106,7 +106,7 @@
 
   {{#unless error}}
   <div class="list">
-    <div class="authentication-warning">
+    <div class="tooltip-authentication">
     {{#if disabled}}
     <!-- MOULINETTE CLOUD DISABLED -->
       <div class="status">
@@ -138,6 +138,10 @@
         {{/unless}}
       {{/if}}
     {{/unless}}
+    </div>
+
+    <div class="tooltip-indexing">
+      {{{localize "mtte.tooltipConfigure"}}}
     </div>
 
     {{#each assets as |a|}}{{{a}}}{{/each}}

@@ -490,8 +490,10 @@
   visibility: visible;
 }
 
-.authentication-warning {
+.mtte .tooltip-authentication {
   position: absolute;
+  color: #777;
+  font-style: italic;
   right: 0;
   left: 0;
   top: 0;
@@ -502,10 +504,17 @@
   text-align: center;
 }
 
-.authentication-warning .status {
+.mtte .tooltip-authentication .status {
   font-size: 42px;
-  color: #777;
   margin-bottom: 15px;
+}
+
+.mtte .tooltip-indexing {
+  color: #777;
+  font-style: italic;
+  position: absolute;
+  left: 0;
+  bottom: 0;
 }
 
 /** Inspired by: https://css-tricks.com/examples/LongDropdowns/# **/

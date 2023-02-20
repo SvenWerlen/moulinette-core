@@ -185,7 +185,8 @@ Hooks.once("init", async function () {
       MoulinetteSources,
       MoulinetteAvailableAssets,
       MoulinetteAvailableResult,
-      MoulinetteAPI
+      MoulinettePatreon,
+      MoulinetteAPI,
     },
     cache: new MoulinetteCache(),
     forge: [],
