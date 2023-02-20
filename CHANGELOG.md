@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [10.7.0] - 2023-02-19
+### Added
+- Marketplace integration (available assets)
+- Tooltips to guide user (authentication, moulinette support)
+
 ## [10.6.2] - 2023-02-04
 ### Fixed
 - 10.6.0: Help still recommending V9 (rather than V10)
