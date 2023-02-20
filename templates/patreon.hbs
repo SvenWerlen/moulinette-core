@@ -1,6 +1,6 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
   {{#if disabled}}
-  {{localize "mtte.moulinetteCloudDisabled"}}
+  {{{localize "mtte.moulinetteCloudDisabled"}}}
   {{/if}}
   {{#unless disabled}}
     {{#unless user.fullName}}
@@ -15,6 +15,7 @@
       {{#if user.fullName}}
       <p><button class="logout"><i class="fas fa-unlink"></i> {{localize "mtte.disconnect"}}</button></p>
       <p><button class="gift"><i class="fas fa-gift"></i> {{localize "mtte.receiveGift"}}</button></p>
+      <p><a href="https://assets.moulinette.cloud/marketplace/creators"><button class="creators"><i class="fas fa-users"></i> {{localize "mtte.availableCreators"}}</button></a></p>
       {{#unless user.patron}}
       <p><a href="https://www.patreon.com/moulinette" target="_blank"><button><i class="fab fa-patreon"></i> {{localize "mtte.supportMoulinette"}}</button></a></p>
       {{/unless}}

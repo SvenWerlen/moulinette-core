@@ -1,6 +1,7 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
 
 <div class="body">
+
   <div class="header">
     {{#if error}}
     <div class="error">{{error}}</div>
@@ -105,6 +106,40 @@
 
   {{#unless error}}
   <div class="list">
+    <div class="authentication-warning">
+    {{#if disabled}}
+    <!-- MOULINETTE CLOUD DISABLED -->
+      <div class="status">
+        <a class="mouAuthenticate"><i class="fas fa-eye-slash"></i></a>
+      </div>
+      {{{localize "mtte.moulinetteCloudDisabled"}}}
+    {{/if}}
+    {{#unless disabled}}
+    <!-- MOULINETTE CLOUD ENABLED -->
+      {{#unless user.fullName}}
+        <!-- PATREON NOT LINKED -->
+        <div class="status">
+          <a class="mouAuthenticate"><i class="fas fa-unlink"></i></a>
+        </div>
+        {{{localize "mtte.tooltipAuthenticate"}}}
+      {{/unless}}
+      {{#if user.fullName}}
+        <!-- PATREON NOT LINKED -->
+        <div class="status">
+          <a class="mouAuthenticate"><i class="fab fa-patreon"></i></a>
+        </div>
+        {{localize "mtte.tooltipAuthenticatedAs"}} ({{user.fullName}}).
+        {{#if user.patron}}
+          <!-- NOT SUPPORTING MOULINETTE -->
+          {{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}}). {{{localize "mtte.tooltipFullAccess"}}}.
+        {{/if}}
+        {{#unless user.patron}}
+          {{{localize "mtte.tooltipSupportMoulinette"}}}
+        {{/unless}}
+      {{/if}}
+    {{/unless}}
+    </div>
+
     {{#each assets as |a|}}{{{a}}}{{/each}}
   </div>
   

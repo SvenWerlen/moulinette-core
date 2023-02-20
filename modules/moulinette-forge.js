@@ -130,7 +130,8 @@ export class MoulinetteForge extends FormApplication {
       footer: await this.activeModule.instance.getFooter(),
       terms: terms,
       compactUI: uiMode == "compact",
-      dropdownModeAuto: game.settings.get("moulinette-core", "dropdownMode") == "auto"
+      dropdownModeAuto: game.settings.get("moulinette-core", "dropdownMode") == "auto",
+      disabled: !game.settings.get("moulinette-core", "enableMoulinetteCloud")
     }
     
     data.publishers = publishers
@@ -149,8 +150,13 @@ export class MoulinetteForge extends FormApplication {
   activateListeners(html, focus = true) {
     super.activateListeners(html);
     
-    // make sure window is on top of others
-    this.bringToTop()
+    const parent = this
+
+    // make sure window is on top of others (except if called from child)
+    if(!this.noBringToTop) {
+      this.bringToTop()
+      this.noBringToTop = false
+    }
     
     // give focus to input text
     if(focus) {
@@ -168,6 +174,13 @@ export class MoulinetteForge extends FormApplication {
       html.find(".sOptions a.wholeWord").addClass("active")
     }
 
+    // re-enable moulinette Cloud
+    html.find(".mouCloudEnable").click(async function(ev) {
+      ev.preventDefault()
+      await game.settings.set("moulinette-core", "enableMoulinetteCloud", true)
+      parent.render()
+    })
+
     // buttons
     html.find("button").click(this._onClickButton.bind(this))
 
@@ -182,13 +195,19 @@ export class MoulinetteForge extends FormApplication {
 
     // footer toggle
     html.find(".footerToggle a").click(ev => html.find(".footer").show())
+
+    // patreon authentication
+    html.find(".mouAuthenticate").click(ev => { 
+      ev.preventDefault(); 
+      new MoulinettePatreon(parent).render(true); 
+      return false; 
+    })
     
     // highlight current displayMode
     const dMode = game.settings.get("moulinette", "displayMode")
     html.find(`.display-modes .mode-${dMode}`).addClass("active")
 
     // asset search (filter on creator)
-    const parent = this
     html.find(".filterList.creators a").click(async function(ev) {
       ev.preventDefault();
       const source = ev.currentTarget;

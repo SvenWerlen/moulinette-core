@@ -6,8 +6,9 @@ export class MoulinettePatreon extends FormApplication {
   // client ID for FVTT integration
   static CLIENT_ID = "K3ofcL8XyaObRrO_5VPuzXEPnOVCIW3fbLIt6Vygt_YIM6IKxA404ZQ0pZbZ0VkB"
   
-  constructor() {
+  constructor(callingWindow) {
     super()
+    this.callingWindow = callingWindow
   }
   
   static get defaultOptions() {
@@ -35,9 +36,25 @@ export class MoulinettePatreon extends FormApplication {
   activateListeners(html) {
     super.activateListeners(html);
     this.html = html
-    
+    const parent = this
+
     // buttons
     html.find("button").click(this._onClickButton.bind(this))
+
+    if(this.callingWindow) {
+      this.callingWindow.noBringToTop = true
+      this.callingWindow.render(true)
+    }
+
+    // re-enable moulinette Cloud
+    html.find(".mouCloudEnable").click(async function(ev) {
+      ev.preventDefault()
+      await game.settings.set("moulinette-core", "enableMoulinetteCloud", true)
+      parent.render()
+    })
+
+    // make sure window is on top of others
+    this.bringToTop()
   }
   
   /**
