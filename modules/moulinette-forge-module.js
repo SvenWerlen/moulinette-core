@@ -215,4 +215,10 @@ export class MoulinetteForgeModule {
     await game.settings.set("moulinette", "favorites", favs)
   }
   
+  /**
+   * Overwrite this function to implement function
+   */
+  async getAssetURL(packIdx, path) {
+    console.debug("Moulinette Forge Module | Default getAssetURL() does nothing")
+  }
 }

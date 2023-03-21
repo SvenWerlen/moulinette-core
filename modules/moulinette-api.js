@@ -70,4 +70,18 @@ export class MoulinetteAPI {
     picker.render(true)
   }
 
+  /**
+   * Retrieve the URL of the asset 
+   * - type: type of asset (sounds)
+   * - packIdx: pack index
+   * - assetPath: asset relative path
+   */
+  static getAssetURL(type, packIdx, assetPath) {
+    const module = game.moulinette.forge.find(f => f.id == type)
+    if(module) {
+      return module.instance.getAssetURL(packIdx, assetPath)
+    }
+    return null
+  }
+
 };

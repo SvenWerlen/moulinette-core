@@ -23,7 +23,7 @@
 
 #moulinette.forge .list .path {
   display: inline;
-  font-size: x-small;
+  font-size: small;
 }
 
 #moulinette.forge .header {
@@ -526,7 +526,7 @@
 /*
 	LEVEL ONE
 */
-ul.filterList             { list-style: none; position: relative; width: 100%; margin: 0; padding: 1px 3px; max-width: 255px; background: #D6D4C8; }
+ul.filterList             { list-style: none; position: relative; width: 100%; margin: 0; padding: 1px 3px; max-width: 255px; }
 ul.filterList li          { float: left; width: 250px; position: relative; }
 ul.filterList li.top      { border: 1px solid var(--color-border-light-tertiary); border-radius: 3px; background: rgba(0, 0, 0, 0.02); }
 ul.filterList a:hover     { color: #000; }

@@ -114,7 +114,7 @@ export class MoulinetteForge extends FormApplication {
 
     // fetch initial asset list
     const terms = this.search && this.search.terms ? this.search.terms : ""
-    this.assets = await this.activeModule.instance.getAssetList(terms, -1, null)
+    this.assets = terms.length > 0 ? await this.activeModule.instance.getAssetList(terms, -1, null) : []
 
     const data = {
       user: await game.moulinette.applications.Moulinette.getUser(),
