@@ -116,27 +116,30 @@
     {{/if}}
     {{#unless disabled}}
     <!-- MOULINETTE CLOUD ENABLED -->
-      {{#unless user.fullName}}
-        <!-- PATREON NOT LINKED -->
-        <div class="status">
-          <a class="mouAuthenticate"><i class="fas fa-unlink"></i></a>
-        </div>
-        {{{localize "mtte.tooltipAuthenticate"}}}
-      {{/unless}}
-      {{#if user.fullName}}
-        <!-- PATREON NOT LINKED -->
-        <div class="status">
-          <a class="mouAuthenticate"><i class="fab fa-patreon"></i></a>
-        </div>
-        {{localize "mtte.tooltipAuthenticatedAs"}} ({{user.fullName}}).
-        {{#if user.patron}}
-          <!-- NOT SUPPORTING MOULINETTE -->
-          {{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}}). {{{localize "mtte.tooltipFullAccess"}}}.
-        {{/if}}
-        {{#unless user.patron}}
-          {{{localize "mtte.tooltipSupportMoulinette"}}}
+      {{#unless assets}}
+        <!-- No Assets -> Show Infos -->
+        {{#unless user.fullName}}
+          <!-- PATREON NOT LINKED -->
+          <div class="status">
+            <a class="mouAuthenticate"><i class="fas fa-unlink"></i></a>
+          </div>
+          {{{localize "mtte.tooltipAuthenticate"}}}
         {{/unless}}
-      {{/if}}
+        {{#if user.fullName}}
+          <!-- PATREON NOT LINKED -->
+          <div class="status">
+            <a class="mouAuthenticate"><i class="fab fa-patreon"></i></a>
+          </div>
+          {{localize "mtte.tooltipAuthenticatedAs"}} ({{user.fullName}}).
+          {{#if user.patron}}
+            <!-- NOT SUPPORTING MOULINETTE -->
+            {{localize "mtte.patron"}} <i class="fas fa-heart red"></i> ({{user.patron}}). {{{localize "mtte.tooltipFullAccess"}}}.
+          {{/if}}
+          {{#unless user.patron}}
+            {{{localize "mtte.tooltipSupportMoulinette"}}}
+          {{/unless}}
+        {{/if}}
+      {{/unless}}
     {{/unless}}
     </div>
 
