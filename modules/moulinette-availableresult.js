@@ -3,12 +3,13 @@
  *************************/
 export class MoulinetteAvailableResult extends FormApplication {
   
-  constructor(pack, url, size, asset) {
+  constructor(pack, url, size, asset, searchIdx) {
     super()
     this.pack = pack
     this.url = url
     this.asset = asset
     this.size = size
+    this.searchIdx = searchIdx ? searchIdx : null
   }
   
   static get defaultOptions() {
@@ -26,7 +27,7 @@ export class MoulinetteAvailableResult extends FormApplication {
   
   async getData() {
     const client = new game.moulinette.applications.MoulinetteClient()
-    const information = await client.get(`/api/marketplace/${this.pack.id}`)
+    const information = await client.get(`/api/marketplace/${this.pack.id}/${this.searchIdx}`)
 
     // update pack information
     if(information.status == 200) {

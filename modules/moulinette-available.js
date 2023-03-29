@@ -34,6 +34,7 @@ export class MoulinetteAvailableAssets extends FormApplication {
   async getData() {
     this.assets = []
     this.assetsData = await game.moulinette.applications.MoulinetteFileUtil.getAvailableMatchesMoulinetteCloud(this.searchTerms, this.assetsType, false)
+    const searchIdx = this.assetsData.id
     
     for(let a = 0; a < this.assetsData.results.length; a++) {
       const asset = this.assetsData.results[a]
@@ -52,7 +53,7 @@ export class MoulinetteAvailableAssets extends FormApplication {
         const duration = (durHr > 0 ? `${durHr}:${durMin.toString().padStart(2,'0')}` : durMin.toString()) + ":" + durSec.toString().padStart(2,'0')
         const previewSoundURL = `${pack.baseUrl}/${asset.data.path.slice(0, -4)}_preview.ogg` // remove .ogg/.mp3/... from original path
 
-        let html = `<div class="sound" data-idx="${a}">` +
+        let html = `<div class="sound" data-idx="${a}" data-sidx="${searchIdx}">` +
           `<div class="audio" title="${title}">${shortName}</div>` +
           `<div class="background"><i class="fas fa-music"></i></div>` +
           `<div class="duration"><i class="far fa-hourglass"></i> ${duration}</div>` +
@@ -64,7 +65,7 @@ export class MoulinetteAvailableAssets extends FormApplication {
         this.assets.push(html)
 
       } else {
-        this.assets.push(`<div class="tileres" title="${title}" data-idx="${a}"><img width="${this.assetsSize}" height="${this.assetsSize}" src="${url}"/></div>`)
+        this.assets.push(`<div class="tileres" title="${title}" data-idx="${a}" data-sidx="${searchIdx}"><img width="${this.assetsSize}" height="${this.assetsSize}" src="${url}"/></div>`)
       }
     }
 
@@ -122,13 +123,14 @@ export class MoulinetteAvailableAssets extends FormApplication {
     event.preventDefault();
     const source = event.currentTarget;
     const assetIdx = source.dataset.idx;
+    const searchIdx = source.dataset.sidx;
 
     if(assetIdx >=0 && assetIdx < this.assetsData.results.length) {
       const asset = this.assetsData.results[assetIdx]
       const pack = this.assetsData.packs[asset.pack]
       const url = asset.data ? `${pack.baseUrl}/${asset.data.path}` : `${pack.baseUrl}/${asset.path}`
       this.html.find("#availablePreview")[0].pause()
-      new MoulinetteAvailableResult(pack, url, this.assetsSize, asset).render(true)
+      new MoulinetteAvailableResult(pack, url, this.assetsSize, asset, searchIdx).render(true)
     }
   }
 
