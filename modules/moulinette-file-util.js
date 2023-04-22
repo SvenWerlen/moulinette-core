@@ -265,7 +265,6 @@ export class MoulinetteFileUtil {
         const assets = await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug)
         // retrieve common base path
         const basePath = MoulinetteFileUtil.findLongestCommonBase(assets)
-
         const pack = { 
           name: source.pack, 
           source: source.source,
@@ -274,7 +273,7 @@ export class MoulinetteFileUtil {
           isLocal: true,
         }
         // support for Forge (assets have full URL => remove it)
-        if(ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(source.source) ) {
+        if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(source.source) ) {
           pack.path = basePath
         }
         
@@ -980,10 +979,15 @@ export class MoulinetteFileUtil {
    * ==> "https://assets.forge-vtt.com/bazaar/systems/pf1/assets/"
    */
   static findLongestCommonBase(strList) {
+    if(!strList || strList.length <= 1) {
+      return ""
+    }
+
     let common = null
     for(const str of strList) {
-      if(!common) {
+      if(common == null) {
         common = str
+        continue;
       }
       let maxCommonChars = common.length
       for(var i = 0; i < common.length; i++) {
