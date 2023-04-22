@@ -8,6 +8,9 @@ export class MoulinetteFileUtil {
 
   static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
   static REMOTE_BASE_S3 = "https://nyc3.digitaloceanspaces.com"
+
+  // maximum filesize for generating thumbnails
+  static MAX_THUMB_FILESIZE = 10*1024*1024 // 10 MB
   
   /**
    * Detects which source to use (depending if server si Forge or local)
