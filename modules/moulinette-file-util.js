@@ -520,7 +520,7 @@ export class MoulinetteFileUtil {
           continue
         }
         // download index file from URL
-        const noCache = URL.startsWith(game.moulinette.applications.MoulinetteClient.SERVER_URL) ? "?ms=" + new Date().getTime() : "";
+        const noCache = "?ms=" + new Date().getTime();
         const response = await fetch(URL + noCache, {cache: "no-store"}).catch(function(e) {
           console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
           return;
