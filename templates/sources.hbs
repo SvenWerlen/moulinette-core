@@ -6,40 +6,46 @@
   </div>
 
   <div class="main">
-  <table class="sources">
-  <tr>
-    <th class="auto"></td>
-    <th class="type">{{localize "mtte.type"}}</td>
-    <th class="creator">{{localize "mtte.publisher"}}</td>
-    <th class="pack">{{localize "mtte.pack"}}</td>
-    <th class="source">{{localize "mtte.source"}}</td>
-    <th class="path">{{localize "mtte.path"}}</td>
-    <th class="actions">{{localize "mtte.actions"}}</td>
-  </tr>
-  {{#each sources as |s|}}
-  <tr class="source {{#unless s.enabled}}inactive{{/unless}}" data-idx="{{@index}}">
-    <td class="auto">
-      {{#if s.auto}}<i class="fas fa-cube"></i>{{/if}}
-      {{#unless s.auto}}<i class="fas fa-user"></i>{{/unless}}
-    </td>
-    <td class="type">{{s.type}}</td>
-    <td class="creator">{{s.creator}}</td>
-    <td class="pack">{{s.pack}}</td>
-    <td class="source">{{s.source}}</td>
-    <td class="path">{{s.path}}</td>
-    <td class="actions">
-      <a class="toggle" title="{{localize "mtte.toggleSource"}}"><i class="fas fa-eye{{#unless s.enabled}}-slash{{/unless}}"></i></a>
-      <a class="edit" title="{{localize "mtte.editSource"}}"><i class="fas fa-edit"></i></a>
-      {{#if s.custom}}
-        <a class="reset" title="{{localize "mtte.resetSource"}}"><i class="fas fa-broom"></i></a>
-      {{/if}}
-      {{#unless s.auto}}
-        <a class="delete" title="{{localize "mtte.deleteSource"}}"><i class="fas fa-trash"></i></a>
-      {{/unless}}
-    </td>
-  </tr>
-  {{/each}}
-  </table>
+    <div class="sources">
+      <table>
+      <tr>
+        <th class="auto"></td>
+        <th class="type">{{localize "mtte.type"}}</td>
+        <th class="creator">{{localize "mtte.publisher"}}</td>
+        <th class="pack">{{localize "mtte.pack"}}</td>
+        <th class="source">{{localize "mtte.source"}}</td>
+        <th class="path">{{localize "mtte.path"}}</td>
+        <th class="actions">{{localize "mtte.actions"}}</td>
+      </tr>
+      {{#each sources as |s|}}
+      <tr class="source {{#unless s.enabled}}inactive{{/unless}}" data-idx="{{@index}}">
+        <td class="auto">
+          {{#if s.auto}}<i class="fas fa-cube"></i>{{/if}}
+          {{#unless s.auto}}<i class="fas fa-user"></i>{{/unless}}
+        </td>
+        <td class="type">{{s.type}}</td>
+        <td class="creator">{{s.creator}}</td>
+        <td class="pack">{{s.pack}}</td>
+        <td class="source">{{s.source}}</td>
+        <td class="path">{{s.path}}</td>
+        <td class="actions">
+          <a class="toggle" title="{{localize "mtte.toggleSource"}}"><i class="fas fa-eye{{#unless s.enabled}}-slash{{/unless}}"></i></a>
+          <a class="edit" title="{{localize "mtte.editSource"}}"><i class="fas fa-edit"></i></a>
+          {{#if s.custom}}
+            <a class="reset" title="{{localize "mtte.resetSource"}}"><i class="fas fa-broom"></i></a>
+          {{/if}}
+          {{#unless s.auto}}
+            <a class="delete" title="{{localize "mtte.deleteSource"}}"><i class="fas fa-trash"></i></a>
+          {{/unless}}
+        </td>
+      </tr>
+      {{/each}}
+      </table>
+      <div class="exports">
+        <button class="export"><i class="fas fa-file-export"></i> {{localize "mtte.exportConfig"}}</button>
+        <button class="import"><i class="fas fa-file-import"></i> {{localize "mtte.importConfig"}}</button>
+      </div>
+    </div>
   </div>
 
   <div class="footer">

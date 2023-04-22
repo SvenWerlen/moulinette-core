@@ -376,6 +376,15 @@
   padding-right: 15px;
 }
 
+.mtte .sources {
+  width: 100%;
+}
+
+.mtte .exports {
+  width: 350px;
+  display: flex;
+}
+
 .mtte .sources tr:hover {
   background-color: darkgrey;
 }

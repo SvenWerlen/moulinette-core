@@ -37,16 +37,16 @@ export class MoulinetteFileUtil {
   /**
    * Returns the base URL when available
    */
-  static async getBaseURL() {
+  static async getBaseURL(source = null) {
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
-    if(bucket && bucket.length > 0 && bucket != "null") {
+    if((!source || source == "s3") && bucket && bucket.length > 0 && bucket != "null") {
       const e = game.data.files.s3.endpoint;
       return `${e.protocol}//${bucket}.${e.host}/`
     } 
 
     // #40 : Non-host GMs can't use Moulinette for games hosted on The Forge
     // https://github.com/SvenWerlen/moulinette-core/issues/40
-    if (typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge)  {
+    if ((!source || source == "forgevtt") && typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge)  {
       const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
       return theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "";
     }
@@ -159,8 +159,8 @@ export class MoulinetteFileUtil {
   /**
    * Uploads a file into the right folder (improved version)
    */
-  static async uploadFile(file, name, folderPath, overwrite = false) {
-    const source = MoulinetteFileUtil.getSource()
+  static async uploadFile(file, name, folderPath, overwrite = false, toSource) {
+    const source = toSource ? toSource : MoulinetteFileUtil.getSource()
     await MoulinetteFileUtil.createFolderRecursive(folderPath)
     
     // check if file already exist
@@ -253,6 +253,7 @@ export class MoulinetteFileUtil {
 
     const sources = MoulinetteFileUtil.getMoulinetteSources()
     for(const source of sources) {
+      const baseURL = await MoulinetteFileUtil.getBaseURL(source.source)
       if(source.type == type) {
         // check data
         if(!source.publisher || !source.pack || !source.path || !source.source) {
@@ -261,7 +262,8 @@ export class MoulinetteFileUtil {
         } 
         const pack = { 
           name: source.pack, 
-          path: source.path, 
+          source: source.source,
+          path: baseURL + source.path, 
           assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug),
           isLocal: true,
         }

@@ -59,6 +59,9 @@ export class MoulinetteSources extends FormApplication {
     super.activateListeners(html);
     this.html = html
 
+    // import/export actions
+    html.find(".exports button").click(this._onAction.bind(this));
+    
     // actions (on individual source)
     html.find(".actions a").click(this._onAction.bind(this));
     // actions (on buttons)
@@ -83,6 +86,9 @@ export class MoulinetteSources extends FormApplication {
             ui.notifications.info(`Source ${path} + ${picker.activeSource}`)
             // change browse button
             this.html.find(".browse").css("color", "green")
+            // prefill creator and pack
+            this.html.find("#creator").val("My Assets")
+            this.html.find("#pack").val(path.split("/").pop())
           },
       }).browse();
     }
@@ -216,6 +222,42 @@ export class MoulinetteSources extends FormApplication {
       setting.pack = pack
       await game.settings.set("moulinette", "sources", settings)
       return this.render()
+    }
+    // button : export
+    else if(source.classList.contains("export")) {
+      const filename = `moulinette-${game.world.id}-sources.json`
+      const data = Array.isArray(game.settings.get("moulinette", "sources")) ? game.settings.get("moulinette", "sources") : []
+      saveDataToFile(JSON.stringify(data, null, 2), "text/json", filename);
+    }
+    else if(source.classList.contains("import")) {
+      const parent = this
+      new Dialog({
+        title: `Import Data: Moulinette Sources`,
+        content: await renderTemplate("templates/apps/import-data.html", {
+          hint1: game.i18n.format("DOCUMENT.ImportDataHint1", {document: "sources"}),
+          hint2: game.i18n.format("DOCUMENT.ImportDataHint2", {name: "this config"})
+        }),
+        buttons: {
+          import: {
+            icon: '<i class="fas fa-file-import"></i>',
+            label: "Import",
+            callback: html => {
+              const form = html.find("form")[0];
+              if ( !form.data.files.length ) return ui.notifications.error("You did not upload a data file!");
+              readTextFromFile(form.data.files[0]).then(json => {
+                game.settings.set("moulinette", "sources", JSON.parse(json)).then(ev => parent.render(true))
+              });
+            }
+          },
+          no: {
+            icon: '<i class="fas fa-times"></i>',
+            label: game.i18n.localize("mtte.cancel")
+          }
+        },
+        default: "import"
+      }, {
+        width: 400
+      }).render(true);
     }
   }
 
