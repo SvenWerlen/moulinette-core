@@ -260,16 +260,22 @@ export class MoulinetteFileUtil {
           console.warn(`Moulinette FileUtil | Invalid moulinette source!`, source)
           continue;
         } 
+
+        // retrieve all assets in source path
+        const assets = await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug)
+        // retrieve common base path
+        const basePath = MoulinetteFileUtil.findLongestCommonBase(assets)
+
         const pack = { 
           name: source.pack, 
           source: source.source,
-          path: baseURL + source.path, 
-          assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug),
+          path: baseURL + source.path + basePath, 
+          assets: assets.map(a => a.substring(basePath.length)),
           isLocal: true,
         }
-        // support for Forge (assets have full URL)
-        if(source.source == "forge-bazaar" && ForgeVTT.usingTheForge) {
-          pack.path = ""
+        // support for Forge (assets have full URL => remove it)
+        if(ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(source.source) ) {
+          pack.path = basePath
         }
         
         // check if publisher already exist
@@ -964,5 +970,30 @@ export class MoulinetteFileUtil {
     }
 
     return true
+  }
+
+  /**
+   * This function retrieves the longest common base from a list of paths
+   * Ex: 
+   *   "https://assets.forge-vtt.com/bazaar/systems/pf1/assets/fonts/rpgawesome-webfont.svg"
+   *   "https://assets.forge-vtt.com/bazaar/systems/pf1/assets/icons/feats/simple-weapon-proficiency.jpg"
+   * ==> "https://assets.forge-vtt.com/bazaar/systems/pf1/assets/"
+   */
+  static findLongestCommonBase(strList) {
+    let common = null
+    for(const str of strList) {
+      if(!common) {
+        common = str
+      }
+      let maxCommonChars = common.length
+      for(var i = 0; i < common.length; i++) {
+        if(i >= str.length || common[i] != str[i]) {
+          maxCommonChars = i
+          break
+        }
+      }
+      common = common.substr(0, maxCommonChars)
+    }
+    return common
   }
 }
