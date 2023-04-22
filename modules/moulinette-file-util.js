@@ -113,9 +113,10 @@ export class MoulinetteFileUtil {
   /**
    * Checks if a file exists (based on its path)
    */
-  static async fileExists(path) {
+  static async fileExists(path, toSource) {
+    const source = toSource ? toSource : MoulinetteFileUtil.getSource()
     try {
-      const parentFolder = await FilePicker.browse(MoulinetteFileUtil.getSource(), path.substring(0, path.lastIndexOf('/')), MoulinetteFileUtil.getOptions());
+      const parentFolder = await FilePicker.browse(source, path.substring(0, path.lastIndexOf('/')), MoulinetteFileUtil.getOptions());
       const decodedPaths = parentFolder.files.map(f => decodeURIComponent(f))
 
       // ForgeVTT FilePicker returns files with path inclusive of basePath, which is the current user's asset library
