@@ -381,7 +381,7 @@
 }
 
 .mtte .exports {
-  width: 350px;
+  width: 450px;
   display: flex;
 }
 
@@ -406,6 +406,24 @@
 .mtte .actions label {
   padding: 0px 3px 0px 10px;
   font-weight: bold;
+}
+
+.mtte .actions label.cb {
+  padding-left: 0px;
+}
+
+.mtte .actions .creatorPack {
+  display: flex;
+  align-items: center;
+  min-width: 320px;
+  max-width: 320px;
+}
+
+.mtte .actions .creatorPack.descr {
+  display: block;
+  text-align: right;
+  font-style: italic;
+  padding: 0px 10px 0px 3px;
 }
 
 .mtte .actions button {

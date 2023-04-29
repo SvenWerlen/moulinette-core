@@ -46,6 +46,7 @@
   "mtte.giftWelcome": "クリエイターからギフトコンテンツを頂いている場合はここに適用できます。ギフトクーポンが有効であればギフトとその中身がMoulinetteに表示されます。ギフトで取得されたアセットはそのクリエイターのPatreonを支持しているときと同等のものを利用できます。",
   "mtte.homeWelcome": "ようこそ！Moulinetteとはシーン、画像、アイコン、音声、翻訳を様々なソースから一括に集めて、手軽に検索・ダウンロードするためのModです！",
   "mtte.imageFrom": "画像元",
+  "mtte.indexingInProgress": "インデックス中です……しばらくお待ち下さい。",
   "mtte.indexingMoulinette": "Moulinette インデックス",
   "mtte.learnMore": "よりMoulinetteの詳細や支援方法を御覧ください。",
   "mtte.moulinette": "Moulinette",

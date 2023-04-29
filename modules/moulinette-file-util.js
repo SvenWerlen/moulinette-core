@@ -49,9 +49,14 @@ export class MoulinetteFileUtil {
 
     // #40 : Non-host GMs can't use Moulinette for games hosted on The Forge
     // https://github.com/SvenWerlen/moulinette-core/issues/40
-    if ((!source || source == "forgevtt") && typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge)  {
-      const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
-      return theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "";
+    if (typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge) {
+      if (!source || source == "forgevtt")  {
+        const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
+        return theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "";
+      }
+      else if(source == "forge-bazaar") {
+        return ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + "bazaar/assets/"
+      }
     }
 
     return "";
@@ -121,8 +126,8 @@ export class MoulinetteFileUtil {
 
       // ForgeVTT FilePicker returns files with path inclusive of basePath, which is the current user's asset library
       if (typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge) {
-          const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
-          path = (theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "") + path;
+        const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
+        path = (theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "") + path;
       }
 
       return parentFolder.files.includes(path) || decodedPaths.includes(path);
@@ -150,9 +155,9 @@ export class MoulinetteFileUtil {
     try {
       if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
         console.log("MoulinetteFileUtil | Uploading with The Forge")
-        return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+        return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
       } else {
-        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
       }
     } catch (e) {
       console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
@@ -176,9 +181,9 @@ export class MoulinetteFileUtil {
     try {
       if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
         console.log("MoulinetteFileUtil | Uploading with The Forge")
-        return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+        return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
       } else {
-        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions());
+        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
       }
     } catch (e) {
       console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
@@ -191,9 +196,11 @@ export class MoulinetteFileUtil {
    * Scans a folder for assets matching provided extension
    * (requires a 2-level folder structure => publishers-packs-files)
    */  
-  static async scanAssets(sourcePath, extensions) {
+  static async scanAssets(sourcePath, extensions, source) {
     const debug = game.settings.get("moulinette-core", "debugScanAssets")
-    const source = MoulinetteFileUtil.getSource()
+    if(!source) {
+      source = MoulinetteFileUtil.getSource()
+    }
     // first level = publishers
     let publishers = []
     if(debug) console.log(`Moulinette FileUtil | Root: scanning ${sourcePath} ...`)
@@ -250,10 +257,8 @@ export class MoulinetteFileUtil {
   /**
    * Scans a source (core) for assets matching type
    */  
-  static async scanSourceAssets(type, extensions) {
+  static async updateSourceIndex(indexData, type, extensions) {
     const debug = game.settings.get("moulinette-core", "debugScanAssets")
-    let publishers = []
-    let publishersByName = {}
 
     const sources = MoulinetteFileUtil.getMoulinetteSources()
     for(const source of sources) {
@@ -265,33 +270,54 @@ export class MoulinetteFileUtil {
           continue;
         } 
 
-        // retrieve all assets in source path
-        const assets = await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug)
-        // retrieve common base path
-        const basePath = MoulinetteFileUtil.findLongestCommonBase(assets)
-        const pack = { 
-          name: source.pack, 
-          source: source.source,
-          path: baseURL + source.path + basePath, 
-          assets: assets.map(a => a.substring(basePath.length)),
-          isLocal: true,
-        }
-        // support for Forge (assets have full URL => remove it)
-        if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(source.source) ) {
-          pack.path = basePath
+        const key = `${source.type}:${source.source}:${source.path}`
+        
+        // check if index already exists
+        if(key in indexData && !source.forceRefresh) {
+          console.warn(game.i18n.format("mtte.indexNoRefresh", {path: source.path}));
+          continue;
         }
         
-        // check if publisher already exist
-        if( source.publisher in publishersByName ) {
-          publishersByName[source.publisher].packs.push(pack)
+        // retrieve all assets in source path
+        let creators = []
+        if(source.publisher == "*") {
+          creators = await MoulinetteFileUtil.scanAssets(source.path, extensions, source.source)
         } 
-        // doesn't exist yet => create new publisher
         else {
-          publishers.push({ publisher: source.publisher, packs: [pack] })
+          const assets = await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug)
+          creators = [{
+            publisher: source.publisher, 
+            packs: [{ 
+              name: source.pack, 
+              source: source.source,
+              path: baseURL + source.path, 
+              assets: assets,
+              isLocal: true,
+            }] 
+          }]
         }
+
+        // optimize content
+        for(const c of creators) {
+          for(const p of c.packs) {
+            // retrieve common base path
+            const basePath = MoulinetteFileUtil.findLongestCommonBase(p.assets)
+            if(basePath.length > 0) {
+              p.path = p.path + "/" + basePath
+              p.assets = p.assets.map(a => a.substring(basePath.length + 1))
+            }
+
+            // support for Forge (assets have full URL => remove it)
+            if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(source.source) ) {
+              p.path = basePath
+            }
+          }
+        }
+
+        // update index
+        indexData[key] = creators
       }
     }
-    return publishers
   }
   
   /**
@@ -499,26 +525,6 @@ export class MoulinetteFileUtil {
         data = game.moulinette.cache.getData(URL);
       } 
       else { 
-        // workaround for The Forge
-        if(URL.endsWith("index.json")) {
-          // prepare URL
-          const baseURL = await MoulinetteFileUtil.getBaseURL()
-          if( baseURL.length > 0 && URL.startsWith(baseURL) ) {
-            URL = URL.substring(baseURL.length)
-          }
-          // download indexes
-          const fb = await FilePicker.browse(MoulinetteFileUtil.getSource(), URL.substring(0, URL.lastIndexOf("/")), MoulinetteFileUtil.getOptions()).catch(function(e) {
-            console.warn(`Moulinette FileUtil | No index ${URL} exists yet.`)
-            return;
-          });
-          const found = fb && fb.files ? fb.files.filter(f => f.endsWith(URL)) : null
-          if(found && found.length == 1) {
-            URL = found[0] + (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge ? `?t=${Date.now()}` : "")
-          } else {
-            console.log(`Moulinette FileUtil | `, URL, fb)
-            continue
-          }
-        }
         if(!cloudEnabled && URL.startsWith(game.moulinette.applications.MoulinetteClient.SERVER_URL)) {
           console.log(`Moulinette FileUtil | Moulinette Cloud disabled `)
           continue
@@ -539,6 +545,19 @@ export class MoulinetteFileUtil {
         data = duplicate(data)
       }
       
+      // new index format consists of dict with multiple entries
+      if(!(data instanceof Array)) {
+        const newData = []
+        const sources = MoulinetteFileUtil.getMoulinetteSources().map(s => `${s.type}:${s.source}:${s.path}`)
+        for(const key of Object.keys(data)) {
+          // only active sources (or global/default ones)
+          if(["global", "default"].includes(key) || sources.includes(key) ) {
+            newData.push(...data[key])
+          }
+        }
+        data = newData
+      }
+
       try {
         let minExpiration = 24*60 // smallest expiration time
         for(const pub of data) {
@@ -1002,6 +1021,53 @@ export class MoulinetteFileUtil {
       }
       common = common.substr(0, maxCommonChars)
     }
-    return common
+    // only keep path up to folder (don't split path)
+    const idx = common.lastIndexOf("/")
+    return idx > 0 ? common.substring(0, idx) : ""
+  }
+
+  /**
+   * Updates an Index by:
+   *  - Retrieving existing index
+   *  - Indexing [moulinetteFolder]/custom folder 
+   *  - Indexing each source matching [assetType]. Only if not already existing
+   *  - Updating provided index
+   * 
+   * Keys for assets (ex: images)
+   *  - "global" : global path (always updated)
+   *  - "moulinette/images/custom" : default path
+   *  - "[source]:[path]" : sources
+   */
+  static async updateIndex(assetType, moulinetteFolder, extensions, scanGlobal = true) {
+    const baseURL = await MoulinetteFileUtil.getBaseURL()
+    const filename = "index-mtte.json"
+    const URL = `${baseURL}${moulinetteFolder}/${filename}` 
+
+    // download index file from URL
+    let indexData = {}
+    const noCache = "?ms=" + new Date().getTime();
+    const response = await fetch(URL + noCache, {cache: "no-store"}).catch(function(e) {
+      console.error(`Moulinette FileUtil | Exception while downloading index ${URL}`, e)
+    });
+    if(response && response.status == 200) {
+      indexData = await response.json();
+    }
+    
+    // Update global folder
+    if(scanGlobal) {
+      const customPath = game.settings.get("moulinette-core", "customPath")
+      if(customPath) {
+        indexData["global"] = await MoulinetteFileUtil.scanAssetsInCustomFolders(customPath, extensions)
+      }
+    }
+
+    // Update default custom folder
+    indexData["default"] = await MoulinetteFileUtil.scanAssets(moulinetteFolder, extensions)
+    
+    // Update sources
+    await MoulinetteFileUtil.updateSourceIndex(indexData, assetType, extensions)
+
+    // Upload index file
+    await MoulinetteFileUtil.uploadFile(new File([JSON.stringify(indexData)], filename, { type: "application/json", lastModified: new Date() }), filename, moulinetteFolder, true)
   }
 }

@@ -3,9 +3,11 @@
  *************************/
 export class MoulinetteSources extends FormApplication {
   
-  constructor(filters = []) {
+  constructor(parent, filters, extensions) {
     super()
+    this.parent = parent
     this.filters = filters
+    this.extensions = extensions
   }
   
   static get defaultOptions() {
@@ -23,15 +25,42 @@ export class MoulinetteSources extends FormApplication {
   }
   
   async getData() {
-
-    // prepare list
     let sources = []
-    let types = ["images", "tiles", "scenes", "sounds"]
-    const settings = Array.isArray(game.settings.get("moulinette", "sources")) ? game.settings.get("moulinette", "sources") : []
-    for(const s of settings) {
-      if(!s.auto) sources.push(s)
+    
+    // global path
+    const customPath = game.settings.get("moulinette-core", "customPath")
+    if(customPath) {
+      sources.push({
+        auto: true,
+        type: "global",
+        creator: "*",
+        pack: "*",
+        source: game.moulinette.applications.MoulinetteFileUtil.getSource(),
+        path: customPath,
+        enabled: true,
+        custom: false,
+        immuable: true
+      })
     }
 
+    // default source
+    for(const f of this.filters) {
+      sources.push({
+        auto: true,
+        type: "default",
+        creator: "*",
+        pack: "*",
+        source: game.moulinette.applications.MoulinetteFileUtil.getSource(),
+        path: `moulinette/${f}/custom`,
+        enabled: true,
+        custom: false,
+        immuable: true
+      })
+    }
+    
+    let types = ["images", "tiles", "scenes", "sounds"]
+    const settings = Array.isArray(game.settings.get("moulinette", "sources")) ? game.settings.get("moulinette", "sources") : []
+    
     for(const s of game.moulinette.sources) {
       const setting = settings.find(sett => sett.auto && sett.source == s.source && sett.path == s.path && sett.type == s.type)
       sources.push({
@@ -46,8 +75,12 @@ export class MoulinetteSources extends FormApplication {
       })
     }
 
+    for(const s of settings) {
+      if(!s.auto) sources.push(s)
+    }
+
     if(this.filters.length > 0) {
-      sources = sources.filter(s => this.filters.includes(s.type))
+      sources = sources.filter(s => ["global", "default"].includes(s.type) || this.filters.includes(s.type))
       types = types.filter(t => this.filters.includes(t))
     }
 
@@ -66,6 +99,21 @@ export class MoulinetteSources extends FormApplication {
     html.find(".actions a").click(this._onAction.bind(this));
     // actions (on buttons)
     html.find(".actions button").click(this._onAction.bind(this));
+
+    // actions (on buttons)
+    html.find(".actions input[type='checkbox']").click(ev => {
+      if($(ev.currentTarget).is(":checked")) {
+        html.find(".creatorPack.custom").hide()
+        html.find(".creatorPack.auto").show()
+      } else {
+        html.find(".creatorPack.custom").show()
+        html.find(".creatorPack.auto").hide()
+      }
+      
+    })
+
+    // make sure window is on top of others
+    this.bringToTop()
   }
 
   /**
@@ -120,6 +168,16 @@ export class MoulinetteSources extends FormApplication {
         const sel = this.sources[idx]
         // set index
         this.html.find("#idxEdit").val(idx)
+        // auto
+        if(sel.creator == "*") {
+          this.html.find("#autoEdit").prop('checked', true);
+          this.html.find(".creatorPack.auto").show()
+          this.html.find(".creatorPack.custom").hide()
+        } else {
+          this.html.find("#autoEdit").prop('checked', false);
+          this.html.find(".creatorPack.auto").hide()
+          this.html.find(".creatorPack.custom").show()
+        }
         // toggle actions visibility
         this.html.find(".update").show()
         this.html.find(".add").hide()
@@ -152,6 +210,7 @@ export class MoulinetteSources extends FormApplication {
     }
     // button : Add
     else if(source.classList.contains("add")) {
+      const auto = this.html.find('#auto').is(":checked")
       const type = this.html.find('select[name=type] option').filter(':selected').val()
       const creator = this.html.find('#creator').val()
       const pack = this.html.find('#pack').val()
@@ -160,14 +219,14 @@ export class MoulinetteSources extends FormApplication {
       if( !type || type.length < 3 ) {
         return ui.notifications.error(`Please select a valid source type (drop-down list)!`)
       }
-      if( !creator || creator.length < 3 || creator.length > 20 ) {
-        return ui.notifications.error(`Please enter a valid text (min 3 chars) as creator!`)
-      }
-      if( !pack || pack.length < 3 || pack.length > 20 ) {
-        return ui.notifications.error(`Please enter a valid text (min 3 chars) as pack!`)
-      }
       if( !folder ) {
         return ui.notifications.error(`Please browse and pick a valid folder!`)
+      }
+      if( !auto && (!creator || creator.length < 3 || creator.length > 20) ) {
+        return ui.notifications.error(`Please enter a valid text (min 3 chars) as creator!`)
+      }
+      if( !auto && (!pack || pack.length < 3 || pack.length > 20) ) {
+        return ui.notifications.error(`Please enter a valid text (min 3 chars) as pack!`)
       }
       // check that source doesn't exist
       const source = this.sources.find(s => s.type == type && s.source == folder.source && s.path == folder.path)
@@ -179,8 +238,8 @@ export class MoulinetteSources extends FormApplication {
       settings.push({
         auto: false,
         type: type,
-        creator: creator,
-        pack: pack,
+        creator: auto ? "*" : creator,
+        pack: auto ? "*" : pack,
         source: folder.source,
         path: folder.path,
         enabled: true
@@ -192,21 +251,26 @@ export class MoulinetteSources extends FormApplication {
     }
     // button : Cancel
     else if(source.classList.contains("cancel")) {
+      // reset visibility
+      this.html.find(".creatorPack.custom").show()
+      this.html.find(".creatorPack.auto").hide()
+      this.html.find("#auto").prop('checked', false);
       // toggle actions visibility
       this.html.find(".update").hide()
       this.html.find(".add").show()
     }
     // button : Edit source
     else if(source.classList.contains("update")) {
+      const auto = this.html.find('#autoEdit').is(":checked")
       const idx = this.html.find('#idxEdit').val()
       const creator = this.html.find('#creatorEdit').val()
       const pack = this.html.find('#packEdit').val()
       // validate
       if( idx < 0 || idx >= this.sources.length ) return;
-      if( !creator || creator.length < 3 || creator.length > 20 ) {
+      if( !auto && (!creator || creator.length < 3 || creator.length > 20) ) {
         return ui.notifications.error(`Please enter a valid text (min 3 chars) as creator!`)
       }
-      if( !pack || pack.length < 3 || pack.length > 20 ) {
+      if( !auto && (!pack || pack.length < 3 || pack.length > 20) ) {
         return ui.notifications.error(`Please enter a valid text (min 3 chars) as pack!`)
       }
       // retrieve setting
@@ -218,8 +282,8 @@ export class MoulinetteSources extends FormApplication {
       }
 
       // store settings
-      setting.creator = creator
-      setting.pack = pack
+      setting.creator = auto ? "*" : creator
+      setting.pack = auto ? "*" : pack
       await game.settings.set("moulinette", "sources", settings)
       return this.render()
     }
@@ -229,6 +293,7 @@ export class MoulinetteSources extends FormApplication {
       const data = Array.isArray(game.settings.get("moulinette", "sources")) ? game.settings.get("moulinette", "sources") : []
       saveDataToFile(JSON.stringify(data, null, 2), "text/json", filename);
     }
+    // button : import
     else if(source.classList.contains("import")) {
       const parent = this
       new Dialog({
@@ -259,6 +324,32 @@ export class MoulinetteSources extends FormApplication {
         width: 400
       }).render(true);
     }
+    // button : index
+    else if(source.classList.contains("index")) {
+      ui.notifications.info(game.i18n.localize("mtte.indexingInProgress"));
+      game.moulinette.applications.Moulinette.inprogress(this.html.find(".index"))
+      
+      // scan tiles
+      for(const f of this.filters) {
+        await game.moulinette.applications.MoulinetteFileUtil.updateIndex(f, `moulinette/${f}/custom`, this.extensions, false)
+      }
+
+      // clear cache
+      game.moulinette.cache.clear()
+      if(this.parent) {
+        this.parent.clearCache()
+        // close source UI
+        this.close()
+      }
+      
+    }
+  }
+
+  close() {
+    // refresh moulinette UI
+    const forgeClass = game.moulinette.modules.find(m => m.id == "forge").class
+    new forgeClass().render(true)
+    super.close()
   }
 
 }
