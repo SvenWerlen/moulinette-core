@@ -286,9 +286,19 @@ export class MoulinetteFileUtil {
         
         // retrieve all assets in source path
         let creators = []
+
+        // 1st level = creators, 2nd levl = packs
         if(source.publisher == "*") {
           creators = await MoulinetteFileUtil.scanAssets(source.path, extensions, source.source)
         } 
+        // 1st level = packs
+        else if(source.pack == "*") {
+          creators = [{
+            publisher: source.publisher,
+            packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(source.source, source.path, extensions, debug)
+            }]
+        }
+        // 1st level = assets
         else {
           const assets = await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug)
           creators = [{
