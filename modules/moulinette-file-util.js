@@ -8,6 +8,7 @@ export class MoulinetteFileUtil {
 
   static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
   static REMOTE_BASE_S3 = "https://nyc3.digitaloceanspaces.com"
+  static LOCAL_SOURCES = ["data", "public"]
 
   // maximum filesize for generating thumbnails
   static MAX_THUMB_FILESIZE = 10*1024*1024 // 10 MB
@@ -295,9 +296,9 @@ export class MoulinetteFileUtil {
             packs: [{ 
               name: source.pack, 
               source: source.source,
-              path: baseURL + source.path, 
+              path: source.path, 
               assets: assets,
-              isLocal: true,
+              isLocal: MoulinetteFileUtil.LOCAL_SOURCES.includes(source.source),
             }] 
           }]
         }
@@ -331,7 +332,7 @@ export class MoulinetteFileUtil {
         name: decodeURIComponent(pack.split('/').pop()), 
         path: pack, 
         source: source,
-        isLocal: true,
+        isLocal: MoulinetteFileUtil.LOCAL_SOURCES.includes(source),
         assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source, decodeURIComponent(pack), extensions, debug) 
       }
       
@@ -582,6 +583,7 @@ export class MoulinetteFileUtil {
               path: pack.path,
               count: pack.assets.length,
               isLocal: pack.isLocal,
+              source: pack.source,
               isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3),
               isShowCase: pack.showCase,
               deps: pack.deps,
