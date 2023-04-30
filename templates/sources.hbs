@@ -34,6 +34,9 @@
           {{#unless s.immuable}}
             <a class="toggle" title="{{localize "mtte.toggleSource"}}"><i class="fas fa-eye{{#unless s.enabled}}-slash{{/unless}}"></i></a>
             <a class="edit" title="{{localize "mtte.editSource"}}"><i class="fas fa-edit"></i></a>
+            <a class="forceIndex" title="{{#if s.forceRefresh}}{{localize "mtte.sourceForceRefresh"}}{{/if}}{{#unless s.forceRefresh}}{{localize "mtte.sourceNoRefresh"}}{{/unless}}">
+              <i class="fas {{#if s.forceRefresh}}fa-sync{{/if}}{{#unless s.forceRefresh}}fa-history{{/unless}}"></i>
+            </a>
             {{#if s.custom}}
               <a class="reset" title="{{localize "mtte.resetSource"}}"><i class="fas fa-broom"></i></a>
             {{/if}}
@@ -47,6 +50,7 @@
       </table>
       <div class="exports">
         <button class="index"><i class="fas fa-sync"></i> {{localize "mtte.index"}}</button>
+        <button class="clearIndex"><i class="fas fa-trash"></i> {{localize "mtte.clearIndex"}}</button>
         <button class="export"><i class="fas fa-file-export"></i> {{localize "mtte.exportConfig"}}</button>
         <button class="import"><i class="fas fa-file-import"></i> {{localize "mtte.importConfig"}}</button>
       </div>

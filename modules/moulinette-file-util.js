@@ -232,6 +232,7 @@ export class MoulinetteFileUtil {
     for(const s of settings) {
       if(!s.auto) sources.push({
           type: s.type,
+          forceRefresh: s.forceRefresh,
           publisher: s.creator,
           pack: s.pack,
           source: s.source,
@@ -244,6 +245,7 @@ export class MoulinetteFileUtil {
       if(!setting || setting.enabled) {
         sources.push({
           type: s.type,
+          forceRefresh: setting ? setting.forceRefresh : s.forceRefresh,
           publisher: setting && setting.creator ? setting.creator : s.publisher,
           pack: setting && setting.pack ? setting.pack : s.pack,
           source: s.source,
@@ -295,23 +297,6 @@ export class MoulinetteFileUtil {
               isLocal: true,
             }] 
           }]
-        }
-
-        // optimize content
-        for(const c of creators) {
-          for(const p of c.packs) {
-            // retrieve common base path
-            const basePath = MoulinetteFileUtil.findLongestCommonBase(p.assets)
-            if(basePath.length > 0) {
-              p.path = p.path + "/" + basePath
-              p.assets = p.assets.map(a => a.substring(basePath.length + 1))
-            }
-
-            // support for Forge (assets have full URL => remove it)
-            if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(source.source) ) {
-              p.path = basePath
-            }
-          }
         }
 
         // update index
@@ -551,7 +536,7 @@ export class MoulinetteFileUtil {
         const sources = MoulinetteFileUtil.getMoulinetteSources().map(s => `${s.type}:${s.source}:${s.path}`)
         for(const key of Object.keys(data)) {
           // only active sources (or global/default ones)
-          if(["global", "default"].includes(key) || sources.includes(key) ) {
+          if(["global", "default", "specific"].includes(key) || sources.includes(key) ) {
             newData.push(...data[key])
           }
         }
@@ -1008,19 +993,23 @@ export class MoulinetteFileUtil {
 
     let common = null
     for(const str of strList) {
-      if(common == null) {
-        common = str
-        continue;
-      }
-      let maxCommonChars = common.length
-      for(var i = 0; i < common.length; i++) {
-        if(i >= str.length || common[i] != str[i]) {
-          maxCommonChars = i
-          break
+      if (typeof str === 'string' || str instanceof String) {
+        if(common == null) {
+          common = str
+          continue;
         }
+        let maxCommonChars = common.length
+        for(var i = 0; i < common.length; i++) {
+          if(i >= str.length || common[i] != str[i]) {
+            maxCommonChars = i
+            break
+          }
+        }
+        common = common.substring(0, maxCommonChars)
       }
-      common = common.substr(0, maxCommonChars)
     }
+    if(common == null) common = ""
+
     // only keep path up to folder (don't split path)
     const idx = common.lastIndexOf("/")
     return idx > 0 ? common.substring(0, idx) : ""
@@ -1038,7 +1027,7 @@ export class MoulinetteFileUtil {
    *  - "moulinette/images/custom" : default path
    *  - "[source]:[path]" : sources
    */
-  static async updateIndex(assetType, moulinetteFolder, extensions, scanGlobal = true) {
+  static async updateIndex(forgeModule, assetType, moulinetteFolder, extensions, scanGlobal = true) {
     const baseURL = await MoulinetteFileUtil.getBaseURL()
     const filename = "index-mtte.json"
     const URL = `${baseURL}${moulinetteFolder}/${filename}` 
@@ -1066,6 +1055,107 @@ export class MoulinetteFileUtil {
     
     // Update sources
     await MoulinetteFileUtil.updateSourceIndex(indexData, assetType, extensions)
+
+    // Update module-specific assets
+    indexData["specific"] = await forgeModule.indexAssets()
+
+    // Optimize content
+    for(const key in indexData) {
+      
+      // Optimisation #1 : pack path
+      for(const c of indexData[key]) {
+        for(const p of c.packs) {
+          // retrieve common base path
+          const basePath = MoulinetteFileUtil.findLongestCommonBase(p.assets)
+          if(basePath.length > 0) {
+            p.path = p.path + "/" + basePath
+            p.assets = p.assets.map(a => a.substring(basePath.length + 1))
+          }
+  
+          // support for Forge (assets have full URL => remove it)
+          if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(source.source) ) {
+            p.path = basePath
+          }
+        }
+      }
+  
+      // Optimisation #2 : Add duration for sounds
+      if(assetType == "sounds") {
+        const audio = new Audio()
+        audio.preload = "metadata"
+        for(const c of indexData[key]) {
+          for(const p of c.packs) {
+            const durations = []
+            for(const a of p.assets) {
+              audio.src = a.match(/^https?:\/\//) ? a : `${p.path}/${MoulinetteFileUtil.encodeURL(a)}`
+              const promise = new Promise( (resolve,reject)=>{
+                audio.onloadedmetadata = function() {
+                  resolve(audio.duration);
+                }
+                audio.onerror = function() {
+                  console.warn(`Moulinette FileUtil | Audio file '${decodeURIComponent(audio.src)}' seems corrupted`)
+                  resolve(0.0)
+                }
+              });
+              const duration = await promise
+              durations.push(Math.round(duration))
+            }
+            p.durations = durations
+          }
+        }
+      }
+
+      // Optimisation #3 : Generate thumbnail for scenes
+      if(assetType == "scenes") {
+        if(game.settings.get("moulinette-scenes", "generateThumbnails")) {
+          for(const c of indexData[key]) {
+            for(const p of c.packs) {
+              const baseURL = await MoulinetteFileUtil.getBaseURL(p.source)
+              for(const a of p.assets) {
+                if (typeof a === 'string' || a instanceof String) {
+                  if(a.indexOf("_thumb") > 0) continue;
+                  let imgPath = p.path.length > 0 ? `${p.path}/${a}` : a
+                  // remove s3/forge full URL from image path (for S3)
+                  if(baseURL.length > 0 && imgPath.startsWith(baseURL)) {
+                    imgPath = imgPath.substring(baseURL.length)
+                  }
+                  const thumbPath = imgPath.substring(0, imgPath.lastIndexOf(".")) + "_thumb.webp"
+                  const thumbFilename = thumbPath.split("/").pop()
+                  const thumbFolder = thumbPath.substring(0, thumbPath.lastIndexOf("/"))
+                  try {
+                    console.log(`Moulinette FileUtil | Creating thumbnail for ${imgPath}`)
+                    // skip map if thumbnail already exists
+                    if(await MoulinetteFileUtil.fileExists(`${thumbFolder}/${thumbFilename}`, p.source)) {
+                      console.warn(`Moulinette FileUtil | Thumbnail ${thumbFolder}/${thumbFilename} already exists. Skipping.`)
+                      continue
+                    }
+
+                    const headData = await fetch(baseURL + imgPath, {method: 'HEAD'})
+                    const fileSize = headData.headers.get("content-length")
+                    if(fileSize > MoulinetteFileUtil.MAX_THUMB_FILESIZE) {
+                      console.warn(`Moulinette FileUtil | File too large (${fileSize}). Thumbnail generation skipped.`)
+                      continue;
+                    }
+                    const thumb = await ImageHelper.createThumbnail(baseURL + imgPath, { width: 400, height: 400, center: true, format: "image/webp"})
+                    // convert to file
+                    const res = await fetch(thumb.thumb);
+                    const buf = await res.arrayBuffer();
+                    const thumbFile = new File([buf], thumbFilename, { type: "image/webp" })
+                    await MoulinetteFileUtil.uploadFile(thumbFile, thumbFilename, thumbFolder, true, p.source)
+                  } catch (error) {
+                    console.warn(`Moulinette FileUtil | Failed to create thumbnail for ${imgPath}.`, error);
+                  }
+                }
+              }
+            }
+          }
+        } else {
+          console.warn("Moulinette FileUtil | Thumbnails generation skipped!");
+        }
+      }
+    }
+
+    console.log(indexData)
 
     // Upload index file
     await MoulinetteFileUtil.uploadFile(new File([JSON.stringify(indexData)], filename, { type: "application/json", lastModified: new Date() }), filename, moulinetteFolder, true)

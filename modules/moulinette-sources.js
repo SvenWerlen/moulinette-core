@@ -70,6 +70,7 @@ export class MoulinetteSources extends FormApplication {
         pack: setting && setting.pack ? setting.pack : s.pack,
         source: s.source,
         path: s.path,
+        forceRefresh: setting ? setting.forceRefresh : false,
         enabled: setting ? setting.enabled : true,
         custom: setting ? true : false
       })
@@ -149,11 +150,31 @@ export class MoulinetteSources extends FormApplication {
         // check if entry exists
         let config = settings.find(s => s.type == sel.type && s.source == sel.source && s.path == sel.path)
         if(!config) {
-          config = { auto: true, type: sel.type, source: sel.source, path: sel.path, enabled: true }
+          config = { auto: true, forceRefresh: false, type: sel.type, source: sel.source, path: sel.path, enabled: true }
           settings.push(config)
         }
         // toggle
         config.enabled = !config.enabled
+        // store settings
+        await game.settings.set("moulinette", "sources", settings)
+        return this.render()
+      }
+
+    }
+    // toggle force-reindex
+    else if(source.classList.contains("forceIndex")) {
+      const src = source.closest(".source")
+      const idx = $(src).data("idx")
+      if(idx >= 0 && idx < this.sources.length) {
+        const sel = this.sources[idx]
+        // check if entry exists
+        let config = settings.find(s => s.type == sel.type && s.source == sel.source && s.path == sel.path)
+        if(!config) {
+          config = { auto: true, forceRefresh: false, type: sel.type, source: sel.source, path: sel.path, enabled: true }
+          settings.push(config)
+        }
+        // toggle
+        config.forceRefresh = !config.forceRefresh
         // store settings
         await game.settings.set("moulinette", "sources", settings)
         return this.render()
@@ -237,12 +258,13 @@ export class MoulinetteSources extends FormApplication {
 
       settings.push({
         auto: false,
+        forceRefresh: false,
         type: type,
         creator: auto ? "*" : creator,
         pack: auto ? "*" : pack,
         source: folder.source,
         path: folder.path,
-        enabled: true
+        enabled: true,
       })
       this.folder = null
       this.html.find(".browse").css("color", "inherit")
@@ -331,7 +353,7 @@ export class MoulinetteSources extends FormApplication {
       
       // scan tiles
       for(const f of this.filters) {
-        await game.moulinette.applications.MoulinetteFileUtil.updateIndex(f, `moulinette/${f}/custom`, this.extensions, false)
+        await game.moulinette.applications.MoulinetteFileUtil.updateIndex(this.parent, f, `moulinette/${f}/custom`, this.extensions, false)
       }
 
       // clear cache
@@ -342,6 +364,28 @@ export class MoulinetteSources extends FormApplication {
         this.close()
       }
       
+    }
+    else if(source.classList.contains("clearIndex")) {
+      const sourceUI = this
+      Dialog.confirm({
+        title: game.i18n.localize("mtte.clearIndex"),
+        content: game.i18n.localize("mtte.clearIndexConfirmation"),
+        yes: async function() {
+          // clear the indices
+          for(const f of sourceUI.filters) {
+            await game.moulinette.applications.MoulinetteFileUtil.uploadFile(new File([JSON.stringify({})], "index-mtte.json", { type: "application/json", lastModified: new Date() }), "index-mtte.json", `moulinette/${f}/custom`, true)
+          }
+          // 
+          // clear cache
+          game.moulinette.cache.clear()
+          if(sourceUI.parent) {
+            sourceUI.parent.clearCache()
+            // close source UI
+            sourceUI.close()
+          }
+        },
+        no: () => {}
+      });
     }
   }
 

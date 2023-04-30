@@ -221,4 +221,11 @@ export class MoulinetteForgeModule {
   async getAssetURL(packIdx, path) {
     console.debug("Moulinette Forge Module | Default getAssetURL() does nothing")
   }
+
+  /**
+   * Overwrite this function to implement module-specific indexing
+   */
+  async indexAssets() {
+    console.debug("Moulinette Forge Module | Default onIndexAssets() does nothing")
+  }
 }
