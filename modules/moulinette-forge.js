@@ -30,7 +30,7 @@ export class MoulinetteForge extends FormApplication {
     }
 
     // timer for storing position
-    this.positionTimer = "init"
+    this.positionTimer = null
   }
   
   static get defaultOptions() {
@@ -673,21 +673,22 @@ export class MoulinetteForge extends FormApplication {
     new MoulinetteShortcuts(moduleId, filters).render(true)
   }
 
+  /**
+   * Save position when window moves or resized
+   */
   setPosition({left, top, width, height, scale}={}) {
     super.setPosition({left, top, width, height, scale})
 
-    // avoid storing position on init
-    if(this.positionTimer == "init") {
-      this.positionTimer = null
-    }
-    else {
-      const parent = this
-      clearInterval(this.positionTimer);
-      this.positionTimer = setInterval(function() {
-        clearInterval(parent.positionTimer)
+    const parent = this
+    clearInterval(this.positionTimer);
+    this.positionTimer = setInterval(function() {
+      clearInterval(parent.positionTimer)
+      const position = game.settings.get("moulinette", "winPosForge")
+      if(parent.position.left != position.left || parent.position.top != position.top || 
+        parent.position.width != position.width || parent.position.height != position.height) {
         game.settings.set("moulinette", "winPosForge", parent.position)
         console.log("Moulinette Forge | Window position stored!")
-      }, 2000);
-    }
+      }
+    }, 2000);
   }
 }
