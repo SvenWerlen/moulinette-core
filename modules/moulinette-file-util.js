@@ -1073,7 +1073,7 @@ export class MoulinetteFileUtil {
           }
   
           // support for Forge (assets have full URL => remove it)
-          if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(source.source) ) {
+          if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(p.source) ) {
             p.path = basePath
           }
         }
