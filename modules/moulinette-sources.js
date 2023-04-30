@@ -243,11 +243,11 @@ export class MoulinetteSources extends FormApplication {
       if( !folder ) {
         return ui.notifications.error(`Please browse and pick a valid folder!`)
       }
-      if( !auto && (!creator || creator.length < 3 || creator.length > 20) ) {
-        return ui.notifications.error(`Please enter a valid text (min 3 chars) as creator!`)
+      if( !auto && (!creator || creator.length < 1 || creator.length > 120) ) {
+        return ui.notifications.error(`Please enter a valid text (max 120 chars) as creator!`)
       }
-      if( !auto && (!pack || pack.length < 3 || pack.length > 20) ) {
-        return ui.notifications.error(`Please enter a valid text (min 3 chars) as pack!`)
+      if( !auto && (!pack || pack.length < 1 || pack.length > 120) ) {
+        return ui.notifications.error(`Please enter a valid text (max 120 chars) as pack!`)
       }
       // check that source doesn't exist
       const source = this.sources.find(s => s.type == type && s.source == folder.source && s.path == folder.path)
@@ -289,11 +289,11 @@ export class MoulinetteSources extends FormApplication {
       const pack = this.html.find('#packEdit').val()
       // validate
       if( idx < 0 || idx >= this.sources.length ) return;
-      if( !auto && (!creator || creator.length < 3 || creator.length > 20) ) {
-        return ui.notifications.error(`Please enter a valid text (min 3 chars) as creator!`)
+      if( !auto && (!creator || creator.length < 1 || creator.length > 120) ) {
+        return ui.notifications.error(`Please enter a valid text (max 120 chars) as creator!`)
       }
-      if( !auto && (!pack || pack.length < 3 || pack.length > 20) ) {
-        return ui.notifications.error(`Please enter a valid text (min 3 chars) as pack!`)
+      if( !auto && (!pack || pack.length < 1 || pack.length > 120) ) {
+        return ui.notifications.error(`Please enter a valid text (max 120 chars) as pack!`)
       }
       // retrieve setting
       const source = this.sources[idx]
