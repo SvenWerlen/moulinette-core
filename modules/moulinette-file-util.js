@@ -215,7 +215,10 @@ export class MoulinetteFileUtil {
       
     for(const pub of dir1.dirs) {
       if(debug) console.log(`Moulinette FileUtil | Root: processing publisher ${pub}...`)
-      publishers.push({ publisher: decodeURIComponent(pub.split('/').pop()), packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(source, decodeURIComponent(pub), extensions, debug) })
+      publishers.push({ 
+        publisher: decodeURIComponent(pub.split('/').pop()), 
+        packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(source, decodeURIComponent(pub), extensions, debug),
+      })
     }
     return publishers
   }
@@ -324,7 +327,13 @@ export class MoulinetteFileUtil {
     
     for(const pack of dir.dirs) {
       if(debug) console.log(`Moulinette FileUtil | Publisher: processing pack ${pack}...`)
-      const packEntry = { name: decodeURIComponent(pack.split('/').pop()), path: pack, assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source, decodeURIComponent(pack), extensions, debug) }
+      const packEntry = { 
+        name: decodeURIComponent(pack.split('/').pop()), 
+        path: pack, 
+        source: source,
+        isLocal: true,
+        assets: await MoulinetteFileUtil.scanAssetsInPackFolder(source, decodeURIComponent(pack), extensions, debug) 
+      }
       
       // check if folder has meta-information attached  
       let dir = await FilePicker.browse(source, decodeURIComponent(pack), MoulinetteFileUtil.getOptions());
@@ -1061,7 +1070,9 @@ export class MoulinetteFileUtil {
 
     // Optimize content
     for(const key in indexData) {
-      
+      // Double-check
+      if(!indexData[key]) continue;
+
       // Optimisation #1 : pack path
       for(const c of indexData[key]) {
         for(const p of c.packs) {
@@ -1154,8 +1165,6 @@ export class MoulinetteFileUtil {
         }
       }
     }
-
-    console.log(indexData)
 
     // Upload index file
     await MoulinetteFileUtil.uploadFile(new File([JSON.stringify(indexData)], filename, { type: "application/json", lastModified: new Date() }), filename, moulinetteFolder, true)

@@ -227,5 +227,6 @@ export class MoulinetteForgeModule {
    */
   async indexAssets() {
     console.debug("Moulinette Forge Module | Default onIndexAssets() does nothing")
+    return []
   }
 }
