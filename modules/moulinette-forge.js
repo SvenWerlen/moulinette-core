@@ -13,15 +13,24 @@ export class MoulinetteForge extends FormApplication {
   
   constructor(tab, search) {
     super()
-    const curTab = tab ? tab : game.settings.get("moulinette", "currentTab")
+    const curSavedTab = game.settings.get("moulinette", "currentTab")
+    const curTab = tab ? tab : curSavedTab
     this.assetInc = 0
     this.tab = MoulinetteForge.TABS.includes(curTab) ? curTab : null
     this.search = search
+
+    // store tab
+    if(this.tab != curSavedTab) {
+      game.settings.set("moulinette", "currentTab", this.tab)
+    }
 
     // clear all caches
     for(const f of game.moulinette.forge) {
       f.instance.clearCache()
     }
+
+    // timer for storing position
+    this.positionTimer = "init"
   }
   
   static get defaultOptions() {
@@ -33,7 +42,7 @@ export class MoulinetteForge extends FormApplication {
       title: game.i18n.localize("mtte.moulinetteForge"),
       template: "modules/moulinette-core/templates/forge.hbs",
       width: position ? position.width : 880,
-      height: 800,
+      height: position ? position.height : 800,
       left: position ? position.left : null,
       top: position ? position.top : null,
       resizable: true,
@@ -41,12 +50,6 @@ export class MoulinetteForge extends FormApplication {
       closeOnSubmit: false,
       submitOnClose: false,
     });
-  }
-  
-  close() {
-    // store window position and size
-    game.settings.set("moulinette", "winPosForge", this.position)
-    super.close()
   }
   
   async getData() {
@@ -546,9 +549,6 @@ export class MoulinetteForge extends FormApplication {
     
     // re-enable listeners
     this._reEnableListeners()
-    
-    // force resize window
-    this.setPosition()
   }
   
   /**
@@ -673,4 +673,21 @@ export class MoulinetteForge extends FormApplication {
     new MoulinetteShortcuts(moduleId, filters).render(true)
   }
 
+  setPosition({left, top, width, height, scale}={}) {
+    super.setPosition({left, top, width, height, scale})
+
+    // avoid storing position on init
+    if(this.positionTimer == "init") {
+      this.positionTimer = null
+    }
+    else {
+      const parent = this
+      clearInterval(this.positionTimer);
+      this.positionTimer = setInterval(function() {
+        clearInterval(parent.positionTimer)
+        game.settings.set("moulinette", "winPosForge", parent.position)
+        console.log("Moulinette Forge | Window position stored!")
+      }, 2000);
+    }
+  }
 }
