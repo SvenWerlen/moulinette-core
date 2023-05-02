@@ -171,7 +171,7 @@ export class MoulinetteFileUtil {
    */
   static async uploadFile(file, name, folderPath, overwrite = false, toSource) {
     const source = toSource ? toSource : MoulinetteFileUtil.getSource()
-    //await MoulinetteFileUtil.createFolderRecursive(folderPath)
+    await MoulinetteFileUtil.createFolderRecursive(folderPath)
     
     // check if file already exist
     const baseURL = await MoulinetteFileUtil.getBaseURL();
