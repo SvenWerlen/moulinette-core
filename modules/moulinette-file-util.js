@@ -171,7 +171,7 @@ export class MoulinetteFileUtil {
    */
   static async uploadFile(file, name, folderPath, overwrite = false, toSource) {
     const source = toSource ? toSource : MoulinetteFileUtil.getSource()
-    await MoulinetteFileUtil.createFolderRecursive(folderPath)
+    //await MoulinetteFileUtil.createFolderRecursive(folderPath)
     
     // check if file already exist
     const baseURL = await MoulinetteFileUtil.getBaseURL();
@@ -1142,13 +1142,14 @@ export class MoulinetteFileUtil {
                   if(baseURL.length > 0 && imgPath.startsWith(baseURL)) {
                     imgPath = imgPath.substring(baseURL.length)
                   }
-                  const thumbPath = imgPath.substring(0, imgPath.lastIndexOf(".")) + "_thumb.webp"
+                  
+                  const thumbPath = "moulinette/thumbs/" + imgPath.substring(0, imgPath.lastIndexOf(".")) + "_thumb.webp"
                   const thumbFilename = thumbPath.split("/").pop()
                   const thumbFolder = thumbPath.substring(0, thumbPath.lastIndexOf("/"))
                   try {
                     console.log(`Moulinette FileUtil | Creating thumbnail for ${imgPath}`)
                     // skip map if thumbnail already exists
-                    if(await MoulinetteFileUtil.fileExists(`${thumbFolder}/${thumbFilename}`, p.source)) {
+                    if(await MoulinetteFileUtil.fileExists(`${thumbFolder}/${thumbFilename}`)) {
                       console.warn(`Moulinette FileUtil | Thumbnail ${thumbFolder}/${thumbFilename} already exists. Skipping.`)
                       continue
                     }
@@ -1164,7 +1165,8 @@ export class MoulinetteFileUtil {
                     const res = await fetch(thumb.thumb);
                     const buf = await res.arrayBuffer();
                     const thumbFile = new File([buf], thumbFilename, { type: "image/webp" })
-                    await MoulinetteFileUtil.uploadFile(thumbFile, thumbFilename, thumbFolder, true, p.source)
+                    await MoulinetteFileUtil.uploadFile(thumbFile, thumbFilename, thumbFolder, true)
+                    console.log(`Moulinette FileUtil | Thumbnail ${thumbFilename} `)
                   } catch (error) {
                     console.warn(`Moulinette FileUtil | Failed to create thumbnail for ${imgPath}.`, error);
                   }
