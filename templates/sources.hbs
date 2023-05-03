@@ -15,6 +15,7 @@
         <th class="pack">{{localize "mtte.pack"}}</td>
         <th class="source">{{localize "mtte.source"}}</td>
         <th class="path">{{localize "mtte.path"}}</td>
+        <th class="path">{{localize "mtte.filters"}}</td>
         <th class="actions">{{localize "mtte.actions"}}</td>
       </tr>
       {{#each sources as |s|}}
@@ -30,6 +31,7 @@
         <td class="pack">{{s.pack}}</td>
         <td class="source">{{s.source}}</td>
         <td class="path">{{s.path}}</td>
+        <td class="filters">{{#unless s.filters}}-{{/unless}}{{#if s.filters}}{{s.filters}}{{/if}}</td>
         <td class="actions">
           {{#unless s.immuable}}
             <a class="toggle" title="{{localize "mtte.toggleSource"}}"><i class="fas fa-eye{{#unless s.enabled}}-slash{{/unless}}"></i></a>
@@ -62,6 +64,7 @@
       <h3>{{localize "mtte.addSource"}}</h3>
       <div class="actions">
         <button class="browse"><i class="fas fa-folder-open"></i> {{localize "mtte.pickFolder"}}</button>
+        <a class="filter" title="{{localize "mtte.filterFiles"}}"><i class="fas fa-filter"></i></a>
         <label for="type">{{localize "mtte.type"}}:</label>
         <select name="type">
           {{#each types as |t|}}
@@ -86,6 +89,7 @@
       <h3>{{localize "mtte.updateSource"}}</h3>
       <div class="actions">
         <input type="hidden" id="idxEdit" name="idx">
+        <a class="filter" title="{{localize "mtte.filterFiles"}}"><i class="fas fa-filter"></i></a>
         <div class="creatorPack custom">
           <label for="creatorEdit">{{localize "mtte.publisher"}}:</label>
           <input type="text" id="creatorEdit" name="creator" minlength="1" maxlength="120">

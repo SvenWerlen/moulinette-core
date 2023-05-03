@@ -1,3 +1,5 @@
+import { MoulinetteSourcesFilter } from "./moulinette-sources-filter.js"
+
 /*************************
  * Moulinette Sources
  *************************/
@@ -7,6 +9,7 @@ export class MoulinetteSources extends FormApplication {
     super()
     this.parent = parent
     this.filters = filters
+    this.curFilters = null
     this.extensions = extensions
   }
   
@@ -141,6 +144,16 @@ export class MoulinetteSources extends FormApplication {
           },
       }).browse();
     }
+    // filter files
+    else if(source.classList.contains("filter")) {
+      const parent = this
+      const dialog = new MoulinetteSourcesFilter(this.extensions, this.curFilters, function(filters) {
+        parent.curFilters = filters
+      })
+      dialog.position.left = event.pageX - dialog.position.width/2
+      dialog.position.top = event.pageY - 120 // is auto
+      dialog.render(true)
+    }
     // toggle visibility
     else if(source.classList.contains("toggle")) {
       const src = source.closest(".source")
@@ -189,6 +202,8 @@ export class MoulinetteSources extends FormApplication {
         const sel = this.sources[idx]
         // set index
         this.html.find("#idxEdit").val(idx)
+        // filters
+        this.curFilters = sel.filters
         // auto
         if(sel.creator == "*") {
           this.html.find("#autoEdit").prop('checked', true);
@@ -263,10 +278,12 @@ export class MoulinetteSources extends FormApplication {
         creator: auto ? "*" : creator,
         pack: auto ? "*" : pack,
         source: folder.source,
+        filters: this.curFilters && this.curFilters.length > 0 ? this.curFilters : null,
         path: folder.path,
         enabled: true,
       })
       this.folder = null
+      this.curFilters = null
       this.html.find(".browse").css("color", "inherit")
       await game.settings.set("moulinette", "sources", settings)
       return this.render()
@@ -280,6 +297,9 @@ export class MoulinetteSources extends FormApplication {
       // toggle actions visibility
       this.html.find(".update").hide()
       this.html.find(".add").show()
+      // reset
+      this.folder = null
+      this.curFilters = null
     }
     // button : Edit source
     else if(source.classList.contains("update")) {
@@ -306,7 +326,10 @@ export class MoulinetteSources extends FormApplication {
       // store settings
       setting.creator = auto ? "*" : creator
       setting.pack = auto ? "*" : pack
+      setting.filters = this.curFilters
       await game.settings.set("moulinette", "sources", settings)
+      this.folder = null
+      this.curFilters = null
       return this.render()
     }
     // button : export
@@ -349,8 +372,8 @@ export class MoulinetteSources extends FormApplication {
     // button : index
     else if(source.classList.contains("index")) {
       ui.notifications.info(game.i18n.localize("mtte.indexingInProgress"));
-      game.moulinette.applications.Moulinette.inprogress(this.html.find(".index"))
-      
+      game.moulinette.applications.Moulinette.inprogress(this.html.find(".index"))    
+
       // scan tiles
       for(const f of this.filters) {
         await game.moulinette.applications.MoulinetteFileUtil.updateIndex(this.parent, f, `moulinette/${f}/custom`, this.extensions, false)

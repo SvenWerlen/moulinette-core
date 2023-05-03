@@ -78,6 +78,8 @@
   "mtte.errorSASTokenAboutToExpire": "Votre jeton expirera dans {minutes} minutes. Reconnectez votre compte Patreon pour supprimer ce message.",
   "mtte.errorSASTokenExpired": "Votre jeton a expiré. Reconnectez votre compte Patreon pour avoir accès aux éléments de Moulinette Cloud",
   "mtte.exportConfig": "Exporter config",
+  "mtte.filterFiles": "Filtrer les fichiers par format supporté",
+  "mtte.filters": "Filtres",
   "mtte.generateShortcut": "Raccourcis",
   "mtte.giftWelcome": "Si vous avez reçu un coupon-cadeau d'un créateur, vous pouvez l'utiliser ici. Si votre coupon est valide, moulinette listera votre cadeau et ses bénéfices. Un cadeau vous donne accès à des contenus comme si vous supportiez le créateur.",
   "mtte.help": "Aide",

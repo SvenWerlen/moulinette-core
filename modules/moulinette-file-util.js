@@ -239,6 +239,7 @@ export class MoulinetteFileUtil {
           forceRefresh: s.forceRefresh,
           publisher: s.creator,
           pack: s.pack,
+          filters: s.filters,
           source: s.source,
           path: s.path
         })
@@ -252,6 +253,7 @@ export class MoulinetteFileUtil {
           forceRefresh: setting ? setting.forceRefresh : s.forceRefresh,
           publisher: setting && setting.creator ? setting.creator : s.publisher,
           pack: setting && setting.pack ? setting.pack : s.pack,
+          filters: s.filters,
           source: s.source,
           path: s.path
         })
@@ -278,6 +280,10 @@ export class MoulinetteFileUtil {
 
         const key = `${source.type}:${source.source}:${source.path}`
         
+        // filter extensions
+        const filteredExtensions = extensions.filter(e => !source.filters || source.filters.includes(e))
+        console.info(`Moulinette FileUtil | Indexing ${source.path} using filters: ${filteredExtensions}`, source)
+
         // check if index already exists
         if(key in indexData && !source.forceRefresh) {
           console.warn(game.i18n.format("mtte.indexNoRefresh", {path: source.path}));
@@ -289,18 +295,18 @@ export class MoulinetteFileUtil {
 
         // 1st level = creators, 2nd levl = packs
         if(source.publisher == "*") {
-          creators = await MoulinetteFileUtil.scanAssets(source.path, extensions, source.source)
+          creators = await MoulinetteFileUtil.scanAssets(source.path, filteredExtensions, source.source)
         } 
         // 1st level = packs
         else if(source.pack == "*") {
           creators = [{
             publisher: source.publisher,
-            packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(source.source, source.path, extensions, debug)
+            packs: await MoulinetteFileUtil.scanAssetsInPublisherFolder(source.source, source.path, filteredExtensions, debug)
             }]
         }
         // 1st level = assets
         else {
-          const assets = await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, extensions, debug)
+          const assets = await MoulinetteFileUtil.scanAssetsInPackFolder(source.source, source.path, filteredExtensions, debug)
           creators = [{
             publisher: source.publisher, 
             packs: [{ 

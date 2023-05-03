@@ -78,6 +78,8 @@
   "mtte.errorSASTokenAboutToExpire": "Your token will expire in {minutes} minutes. Relink your Patreon account to hide this message.",
   "mtte.errorSASTokenExpired": "Your token expired. Relink your Patreon to get access to Moulinette Cloud assets",
   "mtte.exportConfig": "Export config",
+  "mtte.filterFiles": "Filter files by supported format",
+  "mtte.filters": "Filters",
   "mtte.generateShortcut": "Shortcuts",
   "mtte.giftWelcome": "If you received a gift from a content creator, you can apply it here. If the coupon is valid, moulinette will list your gift and its benefits. A gift can provide you access to the creator's assets as if you would support him.",
   "mtte.help": "Help",

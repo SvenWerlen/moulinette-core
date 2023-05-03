@@ -1,0 +1,10 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+
+  {{#each options as |o|}}
+    <input type="checkbox" id="ext{{o.filter}}" value="{{o.filter}}" {{#if o.checked}}checked="checked"{{/if}}>
+    <label for="ext{{o.filter}}"> .{{o.filter}}</label><br>
+  {{/each}}
+
+  <button class="applyFilters"><i class="fas fa-save"></i> {{localize "mtte.apply"}}</button>
+
+</form>
