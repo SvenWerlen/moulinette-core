@@ -195,7 +195,8 @@ Hooks.once("init", async function () {
     sources: [
       { type: "images", publisher: "Foundry VTT", pack: "Core Data Icons", source: "public", path: "icons" }
     ],
-    toggles: {}
+    toggles: {},
+    cloud: { lastSearch: {} }
   }
   game.moulinette.toggles.patreon = true
 

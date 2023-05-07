@@ -879,6 +879,14 @@ export class MoulinetteFileUtil {
     const cloudContent = game.settings.get("moulinette-core", "showCloudContent")
     if(!cloudEnabled || !cloudContent) return countOnly ? 0 : [];
 
+    // check if that last search wasn't the same
+    const key = `${searchTerms}#${type}`
+    if(game.moulinette.cloud.lastSearch.key == key) {
+      if(countOnly || game.moulinette.cloud.lastSearch.packs) {
+        return game.moulinette.cloud.lastSearch
+      }
+    }
+
     // request Moulinette servers
     const url = game.moulinette.applications.MoulinetteClient.SERVER_URL + 
       `/api/marketplace/search?type=${type}&terms=${encodeURIComponent(searchTerms)}&list=${!countOnly}`
@@ -888,7 +896,12 @@ export class MoulinetteFileUtil {
     if(!response || response.status != 200) {
       return 0;
     }
-    return await response.json()
+    const results = await response.json()
+
+    // keep last results to avoid calling the server multiple times for the same search (when applying filters for instance)
+    game.moulinette.cloud.lastSearch = results
+    game.moulinette.cloud.lastSearch.key = key
+    return results
   }
 
   /**
