@@ -284,6 +284,19 @@
   font-size: 18px;
 }
 
+.mtte .filters {
+  max-width: 18px;
+  margin-left: 12px;
+  font-size: 18px;
+  margin-right: 2px;
+}
+
+.mtte .filterOption {
+  display: flex;
+  height: 22px;
+  font-size: 14px;
+}
+
 .moulinette-options .active {
   color: #FFF;
   border: 1px solid red;

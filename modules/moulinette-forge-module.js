@@ -229,4 +229,12 @@ export class MoulinetteForgeModule {
     console.debug("Moulinette Forge Module | Default onIndexAssets() does nothing")
     return []
   }
+
+  /**
+   * Overwrite this function to add filters
+   */
+  getFilters() {
+    console.debug("Moulinette Forge Module | Default getFilters() returns nothing")
+    return []
+  }
 }

@@ -1,6 +1,6 @@
 import { MoulinettePatreon } from "./moulinette-patreon.js"
-import { MoulinetteForgeModule } from "./moulinette-forge-module.js"
 import { MoulinetteShortcuts } from "./moulinette-shortcuts.js"
+import { MoulinetteForgeFilters } from "./moulinette-forge-filters.js"
 
 /*************************
  * Moulinette Forge
@@ -80,6 +80,9 @@ export class MoulinetteForge extends FormApplication {
     // color
     const cloudColor = game.settings.get("moulinette-core", "cloudColor")
 
+    // filters
+    const filters = this.activeModule.instance.getFilters()
+
     // fetch available packs & build publishers
     let publishers = {}
     let packs = await this.activeModule.instance.getPackList()
@@ -127,6 +130,8 @@ export class MoulinetteForge extends FormApplication {
       supportsThumbSizes: this.activeModule.instance.supportsThumbSizes(),
       supportsWholeWordSearch: this.activeModule.instance.supportsWholeWordSearch(),
       supportsShortcuts: ["tiles", "sounds", "scenes", "prefabs"].includes(this.activeModule.id),
+      supportsFilters: filters.length > 0,
+      filters: filters,
       hidePacks: assetsCount == 0,
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: this.assets.slice(0, MoulinetteForge.MAX_ASSETS),
@@ -195,6 +200,9 @@ export class MoulinetteForge extends FormApplication {
 
     // thumb sizes
     html.find(".thumbsizes a").click(this._onChangeThumbsizes.bind(this))
+
+    // filters
+    html.find(".filters a").click(this._onFilters.bind(this))
 
     // footer toggle
     html.find(".footerToggle a").click(ev => html.find(".footer").show())
@@ -517,7 +525,12 @@ export class MoulinetteForge extends FormApplication {
     const searchTerms = this.html.find("#search").val().toLowerCase()
     console.log(`Moulinette | Searching ${searchTerms} with filters: ${this.selCreator} ${this.selPack}`)
 
-    this.assets = await this.activeModule.instance.getAssetList(searchTerms, this.selPack, this.selCreator)
+    // retrieve module filters
+    const curFilters = game.settings.get("moulinette", "moduleFilters")
+    const moduleId = this.activeModule.id
+    const moduleFilters = moduleId in curFilters ? curFilters[moduleId] : []
+
+    this.assets = await this.activeModule.instance.getAssetList(searchTerms, this.selPack, this.selCreator, moduleFilters)
     const supportsModes = this.activeModule.instance.supportsModes()
     
     this.expand = true // flag to disable expand/collapse
@@ -690,5 +703,31 @@ export class MoulinetteForge extends FormApplication {
         console.log("Moulinette Forge | Window position stored!")
       }
     }, 2000);
+  }
+
+  /**
+   * User chose filters
+   */
+  async _onFilters(event) {
+    event.preventDefault();
+    const parent = this
+
+    // stored filters
+    const moduleId = parent.activeModule.id
+    const curFilters = game.settings.get("moulinette", "moduleFilters")
+    const moduleFilters = moduleId in curFilters ? curFilters[moduleId] : []    
+    
+    const filters = this.activeModule.instance.getFilters()
+    for(const f of filters) {
+      f.checked = moduleFilters.includes(f.id)
+    }
+    const dialog = new MoulinetteForgeFilters(filters, async function(filters) {
+      curFilters[moduleId] = filters
+      await game.settings.set("moulinette", "moduleFilters", curFilters)
+      parent._searchAssets()
+    })
+    dialog.position.left = event.pageX - dialog.position.width/2
+    dialog.position.top = event.pageY - 120 // is auto
+    dialog.render(true)
   }
 }

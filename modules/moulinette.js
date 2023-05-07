@@ -226,4 +226,41 @@ export class Moulinette {
     return packFolder
   }
 
+  /**
+   * Create article
+   */
+  static async generateArticle(name, assetPath, folderId) {
+    const journalData = {
+      name: name, 
+      pages: [],
+      folder: folderId
+    }
+    const assetExt = assetPath.split(".").pop()
+    if(["mp4", "webm"].includes(assetExt)) {
+      journalData.pages.push({
+        name: name,
+        type: "video",
+        title: { show: false, level: 1 },
+        video: {
+          controls: false,
+          volume: 1.0,
+          loop: true,
+          autoplay: true,
+          timestamp: 0,
+          width: null,
+          height: null
+        },
+        src: assetPath
+      })
+    } else {
+      journalData.pages.push({
+        name: name,
+        type: "image",
+        title: { show: false, level: 1 },
+        src: assetPath
+      })
+    }
+    return await JournalEntry.create(journalData)
+  }
+
 };
