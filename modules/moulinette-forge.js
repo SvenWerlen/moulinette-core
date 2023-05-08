@@ -118,9 +118,14 @@ export class MoulinetteForge extends FormApplication {
       p["cleanName"] = p["name"].startsWith(p["publisher"]) ? p["name"].substring(p["publisher"].length).trim() : p["name"]
     }
 
+    // retrieve module filters
+    const curFilters = game.settings.get("moulinette", "moduleFilters")
+    const moduleId = this.activeModule.id
+    const moduleFilters = moduleId in curFilters ? curFilters[moduleId] : []
+
     // fetch initial asset list
     const terms = this.search && this.search.terms ? this.search.terms : ""
-    this.assets = terms.length > 0 ? await this.activeModule.instance.getAssetList(terms, -1, null) : []
+    this.assets = terms.length > 0 ? await this.activeModule.instance.getAssetList(terms, -1, null, moduleFilters) : []
 
     const data = {
       user: await game.moulinette.applications.Moulinette.getUser(),
@@ -132,6 +137,7 @@ export class MoulinetteForge extends FormApplication {
       supportsShortcuts: ["tiles", "sounds", "scenes", "prefabs"].includes(this.activeModule.id),
       supportsFilters: filters.length > 0,
       filters: filters,
+      filtersEnabled: moduleFilters.length > 0,
       hidePacks: assetsCount == 0,
       assetsCount: `${assetsCount.toLocaleString()}${special ? "+" : ""}`,
       assets: this.assets.slice(0, MoulinetteForge.MAX_ASSETS),
@@ -724,6 +730,13 @@ export class MoulinetteForge extends FormApplication {
     const dialog = new MoulinetteForgeFilters(filters, async function(filters) {
       curFilters[moduleId] = filters
       await game.settings.set("moulinette", "moduleFilters", curFilters)
+      const filterButton = parent.html.find(".filters a.filters")
+      if(filters.length > 0) {
+        filterButton.addClass("enabled")
+      } else {
+        filterButton.removeClass("enabled")
+      }
+
       parent._searchAssets()
     })
     dialog.position.left = event.pageX - dialog.position.width/2

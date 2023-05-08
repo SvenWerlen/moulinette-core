@@ -102,7 +102,7 @@
         {{/if}}
         {{#if supportsFilters}}
         <div class="filters"><div class="form-fields filters">
-            <a class="filters" title="{{localize "mtte.applyFilters"}}">
+            <a class="filters {{#if filtersEnabled}}enabled{{/if}}" title="{{localize "mtte.applyFilters"}}">
                 <i class="fas fa-filter"></i>
             </a>
         </div></div>

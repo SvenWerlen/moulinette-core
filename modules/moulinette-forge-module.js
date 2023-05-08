@@ -54,7 +54,7 @@ export class MoulinetteForgeModule {
   /**
    * Overwrite this function to implement your asset search (filter with searchTerms)
    */
-  async getAssetList(searchTerms, packs, publisher, type) {
+  async getAssetList(searchTerms, packs, publisher, moduleFilters) {
     console.debug("Moulinette Forge Module | Default getAssetList() returns empty list")
     return []
   }

@@ -291,6 +291,10 @@
   margin-right: 2px;
 }
 
+.mtte .filters a.enabled {
+  color: red;
+}
+
 .mtte .filterOption {
   display: flex;
   height: 22px;
