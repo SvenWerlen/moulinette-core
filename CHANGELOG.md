@@ -1,9 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [11.001] - 2023-05-07
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [11.0.1] - 2023-05-07
 ### Changed
-- Versionning changed to simpler incremental format.
 - Improvement on how Moulinette stores the position of the window
 - Indexes are now world-specific
 - Index folders from multiple sources
@@ -11,15 +13,6 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Export & Import sources configurations
 - Module filters (ex: scenes can be filtered with "gridless")
-
-
-
-
-
-# Changelog (OLDER VERSIONS)
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [10.8.1] - 2023-03-21
 ### Fixed
