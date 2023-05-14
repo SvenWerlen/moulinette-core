@@ -312,7 +312,7 @@ export class MoulinetteFileUtil {
             packs: [{ 
               name: source.pack, 
               source: source.source,
-              path: source.path, 
+              path: baseURL + source.path, 
               assets: assets,
               isLocal: MoulinetteFileUtil.LOCAL_SOURCES.includes(source.source),
             }] 
