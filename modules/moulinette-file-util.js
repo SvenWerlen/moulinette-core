@@ -1110,13 +1110,9 @@ export class MoulinetteFileUtil {
           // retrieve common base path
           const basePath = MoulinetteFileUtil.findLongestCommonBase(p.assets)
           if(basePath.length > 0) {
-            p.path = p.path + "/" + basePath
+            // Works for The Forge or any other remote hosting
+            p.path = basePath.startsWith("http") ? basePath : p.path + "/" + basePath
             p.assets = p.assets.map(a => a.substring(basePath.length + 1))
-          }
-  
-          // support for Forge (assets have full URL => remove it)
-          if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && ["forge-bazaar", "forgevtt"].includes(p.source) ) {
-            p.path = basePath
           }
         }
       }
