@@ -703,7 +703,11 @@ export class MoulinetteForge extends FormApplication {
     this.positionTimer = setInterval(function() {
       clearInterval(parent.positionTimer)
       const position = game.settings.get("moulinette", "winPosForge")
-      if(parent.position.left != position.left || parent.position.top != position.top || 
+      if(!position) {
+        game.settings.set("moulinette", "winPosForge", parent.position)
+        console.log("Moulinette Forge | Window position stored!")
+      }
+      else if(parent.position.left != position.left || parent.position.top != position.top || 
         parent.position.width != position.width || parent.position.height != position.height) {
         game.settings.set("moulinette", "winPosForge", parent.position)
         console.log("Moulinette Forge | Window position stored!")
