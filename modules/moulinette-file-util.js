@@ -547,8 +547,15 @@ export class MoulinetteFileUtil {
           return;
         });
         if(!response || response.status != 200) {
-          ui.notifications.warn(game.i18n.localize("mtte.errorBuildingAssetIndex"));
-          console.warn(`Moulinette FileUtil | Couldn't load source ${URL}. Response : `, response)
+          // Stop notifying users about it. Brings confusion.
+          // Only do it for server unavailability
+          if(URL.indexOf("index-mtte.json") < 0) {
+            ui.notifications.warn(game.i18n.localize("mtte.errorBuildingAssetIndex"));
+            console.warn(`Moulinette FileUtil | Couldn't load source ${URL}. Response : `, response)
+            console.warn(`Moulinette FileUtil | Moulinette servers might be down?`)
+          } else {
+            console.warn(`Moulinette FileUtil | Moulinette couldn't find local index. You might want to index your assets.`)
+          }
           continue;
         }
         data = await response.json();
