@@ -375,14 +375,15 @@ export class MoulinetteForge extends FormApplication {
         const count = packs[p].reduce((acc, p) => acc + p.count, 0);
         const ids = packs[p].reduce((acc, p) => acc + (acc.length > 0 ? "," : "") + p.idx, "");
         const isRemote = packs[p].reduce((remote, p) => remote && p.isRemote, true);
-
+        const isFree = packs[p].reduce((free, p) => free && p.isFree, true);
+        
         // highlight cloud/remote assets based on configuration
         let packClass = ""
         if(isRemote && cloudColor == "def") packClass = "cloud"
         if(isRemote && cloudColor == "contrast") packClass = "cloud contrast"
 
         const packName = Moulinette.prettyText(p)
-        packList += `<option value="${ids}" class="${packClass}">${Moulinette.prettyText(packName)} (${Moulinette.prettyNumber(count)})</option>`
+        packList += `<option value="${ids}" class="${packClass}">${Moulinette.prettyText(packName)} ${isFree ? "🎁 " : ""}(${Moulinette.prettyNumber(count)})</option>`
         // keep pack ids for up/down key event
         this.packs.push({ id: ids, name: packName})
       }
@@ -421,6 +422,7 @@ export class MoulinetteForge extends FormApplication {
         const count = packs[p].reduce((acc, p) => acc + p.count, 0);
         const ids = packs[p].reduce((acc, p) => acc + (acc.length > 0 ? "," : "") + p.idx, "");
         const isRemote = packs[p].reduce((remote, p) => remote && p.isRemote, true);
+        const isFree = packs[p].reduce((free, p) => free && p.isFree, true);
 
         // highlight cloud/remote assets based on configuration
         let packClass = ""
@@ -428,7 +430,7 @@ export class MoulinetteForge extends FormApplication {
         if(isRemote && cloudColor == "contrast") packClass = "cloud contrast"
 
         const packName = Moulinette.prettyText(p)
-        packList += `<li data-id="${ids}" class="${packClass}"><a><i class="fas fa-${isRemote ? "cloud" : "desktop"}"></i> ${Moulinette.prettyText(packName)} (${Moulinette.prettyNumber(count)})</a></li>`
+        packList += `<li data-id="${ids}" class="${packClass}"><a><i class="fas fa-${isRemote ? "cloud" : "desktop"}"></i> ${Moulinette.prettyText(packName)} ${ isFree ? '<i class="fa-solid fa-gift"></i> ' : ''}(${Moulinette.prettyNumber(count)})</a></li>`
         // keep pack ids for up/down key event
         this.packs.push({ id: ids, name: packName})
       }

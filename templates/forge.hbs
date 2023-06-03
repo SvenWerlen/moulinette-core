@@ -52,7 +52,7 @@
               <select class="filterCombo packs" tabindex="0">
                 <option value="-1">{{localize "mtte.allPacks"}}</option>
                 {{#each packs as |p|}}
-                  <option value="{{p.idx}}">{{pretty p.name}} ({{pretty p.count}})</option>
+                  <option value="{{p.idx}}">{{pretty p.name}} {{#if p.isFree}}🎁 {{/if}}({{pretty p.count}})</option>
                 {{/each}}
               </select>
             {{/unless}}
@@ -61,7 +61,7 @@
                 <li class="top"><a><i class="fas fa-box"></i> <span id="packName">{{localize "mtte.choosePack"}}</span></a>
                   <ul class="sub_menu">
                     <li data-id="-1"><a>{{localize "mtte.allPacks"}} ({{assetsCount}})</a></li>
-                    {{#each packs as |p|}}<li data-id="{{p.idx}}"><a>{{pretty p.name}} ({{pretty p.count}})</a></li>{{/each}}
+                    {{#each packs as |p|}}<li data-id="{{p.idx}}"><a>{{pretty p.name}} {{#if p.isFree}}<i class="fa-solid fa-gift"></i> {{/if}}({{pretty p.count}})</a></li>{{/each}}
                     <li class="filler"></li>
                   </ul>
                 </li>
