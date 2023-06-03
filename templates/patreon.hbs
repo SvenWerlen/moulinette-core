@@ -11,23 +11,39 @@
     </p>
     {{/unless}}
     <footer>
-    <div class="module">
+    <div class="block actions">
       {{#if user.fullName}}
-      <p><button class="logout"><i class="fas fa-unlink"></i> {{localize "mtte.disconnect"}}</button></p>
-      <p><button class="gift"><i class="fas fa-gift"></i> {{localize "mtte.receiveGift"}}</button></p>
-      <p><a href="https://assets.moulinette.cloud/marketplace/creators"><button class="creators"><i class="fas fa-users"></i> {{localize "mtte.availableCreators"}}</button></a></p>
-      {{#unless user.patron}}
-      <p><a href="https://www.patreon.com/moulinette" target="_blank"><button><i class="fab fa-patreon"></i> {{localize "mtte.supportMoulinette"}}</button></a></p>
-      {{/unless}}
+        <div>
+          <div class="error" style="display: none;"></div>
+          <div class="progress"></div>
+        </div>
+        <div class="login">
+          {{#unless user.discord_user_id}}
+            <p><button class="loginDiscord"><i class="fab fa-discord"></i> {{localize "mtte.linkDiscord"}}</button></p>
+          {{/unless}}
+          {{#unless user.user_id}}
+            <p><button class="loginPatreon"><i class="fab fa-patreon"></i> {{localize "mtte.linkPatreon"}}</button></p>
+          {{/unless}}
+          <p><button class="gift"><i class="fas fa-gift"></i> {{localize "mtte.receiveGift"}}</button></p>
+          <p><a href="https://assets.moulinette.cloud/marketplace/creators"><button class="creators"><i class="fas fa-users"></i> {{localize "mtte.availableCreators"}}</button></a></p>
+          {{#unless user.patron}}
+          <p><a href="https://www.patreon.com/moulinette" target="_blank"><button><i class="fab fa-patreon"></i> {{localize "mtte.supportMoulinette"}}</button></a></p>
+          {{/unless}}
+          <p><button class="refresh"><i class="fas fa-sync-alt"></i> {{localize "mtte.refreshLinks"}}</button></p>
+          <p><button class="logout"><i class="fas fa-sign-out-alt"></i> {{localize "mtte.disconnect"}}</button></p>
+        </div>
       {{/if}}
       {{#unless user.fullName}}
-      <p><button class="login"><i class="fab fa-patreon"></i> {{localize "mtte.authenticate"}}</button></p>
+        <div class="login actions">
+          <button class="loginPatreon" style="width: 250px"><i class="fab fa-patreon"></i> {{localize "mtte.authenticatePatreon"}}</button> 
+          <button class="loginDiscord" style="width: 250px"><i class="fab fa-discord"></i> {{localize "mtte.authenticateDiscord"}}</button>
+        </div>
       {{/unless}}
     </div>
     
-    <div class="module desc">
+    <div class="block desc">
       {{#if user.fullName}}
-      {{localize "mtte.patreonLinked"}}
+      <h3>{{localize "mtte.patreonLinked"}}</h3>
       <ul>
       <li>{{user.fullName}} {{#if user.vanity}}({{user.vanity}}){{/if}}</li>
       {{#if user.patron}}
@@ -41,17 +57,24 @@
         <li class="error">{{localize "mtte.notPatron"}}</li>
         {{/unless}}
       {{/unless}}
+      </ul>
       {{#if user.pledges}}
-        </ul>
-        {{localize "mtte.patreonPledges"}}
+        <h3>{{localize "mtte.patreonPledges"}}</h3>
         <ul>
         {{#each user.pledges as |p|}}
         <li>{{p.vanity}}: {{p.pledge}} <i class="fas fa-dollar-sign" title="{{p.paid}} $USD ({{p.days}} {{localize "mtte.days"}})"></i></li>
         {{/each}}
         </ul>
       {{/if}}
-      {{#if user.gifts}}
+      {{#if user.discordRoles}}
+        <h3>{{localize "mtte.discordRoles"}}</h3>
+        <ul>
+        {{#each user.discordRoles as |r|}}
+        <li>{{r.guild}}: {{r.name}}</li>
+        {{/each}}
         </ul>
+      {{/if}}
+      {{#if user.gifts}}
         {{localize "mtte.patreonGifts"}}
         <ul>
         {{#each user.gifts as |g|}}

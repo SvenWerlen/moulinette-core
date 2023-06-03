@@ -45,13 +45,19 @@ export class MoulinetteAvailableResult extends FormApplication {
       previewSoundURL = `${this.pack.baseUrl}/${this.asset.data.path.slice(0, -4)}_preview.ogg` // remove .ogg/.mp3/... from original path
     }
 
+    const tiers = information.data.tiers.filter(t => t.source == "patreon")
+    const roles = information.data.tiers.filter(t => t.source == "discord")
+    
     return { 
       imageSize: this.size,
       creatorUrl: information.status == 200 ? information.data.publisherUrl : null,
       mouliplaceCreatorUrl: information.status == 200 ? information.data.mouliplaceCreatorUrl : null,
       mouliplaceUrl: information.status == 200 ? information.data.mouliplaceUrl : null,
       moulinetteUrl: "https://assets.moulinette.cloud/marketplace/creators",
-      tiers: information.data.tiers,
+      tiers: tiers,
+      hasTiers: tiers.length > 0,
+      roles: roles,
+      hasRoles: roles.length > 0,
       vanity: information.data.vanity,
       asset: this.asset,
       isSound: this.asset.data && this.asset.data.type == "snd",

@@ -46,14 +46,26 @@
         ({{pack.name}})
       {{/unless}}
   </p>
+  {{#if hasTiers}}
   <p>  
     <b>{{localize "mtte.requiredTiers"}}</b>:
     <ul>
     {{#each tiers as |t|}}
-      <li>{{t.title}} ({{t.amount}} $USD) {{#if t.id}}- <a href="https://www.patreon.com/join/{{../vanity}}/checkout?rid={{t.id}}" target="_blank">{{localize "mtte.subscribe"}}</a></li>{{/if}}
+      <li>{{t.title}} ({{t.amount}} $USD) {{#if t.id}}- <a href="https://www.patreon.com/join/{{../vanity}}/checkout?rid={{t.id}}" target="_blank">{{localize "mtte.subscribe"}}</a>{{/if}}</li>
     {{/each}}
     </ul>
   </p>
+  {{/if}}
+  {{#if hasRoles}}
+  <p>  
+    <b>{{localize "mtte.requiredRoles"}}</b>:
+    <ul>
+    {{#each roles as |r|}}
+      <li>{{r.title}}</li>
+    {{/each}}
+    </ul>
+  </p>
+  {{/if}}
   <br />
   <footer>
   

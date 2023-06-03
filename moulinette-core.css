@@ -109,6 +109,24 @@
   text-align: center;
 }
 
+#moulinette-patreon footer {
+  display: flex;
+  align-items: flex-end;
+}
+
+.mtte .block {
+  margin: 5px;
+  width: 100%;
+  display: inline-block;
+  text-align: start;
+  margin-right: 15px;
+}
+
+.mtte .block.actions {
+  max-width: 250px;
+  text-align: center;
+}
+
 .mtte .module.desc {
   text-align: left;
 }
@@ -289,6 +307,10 @@
   margin-left: 12px;
   font-size: 18px;
   margin-right: 2px;
+}
+
+.mtte .main .filters {
+  font-size: inherit !important;
 }
 
 .mtte .filters a.enabled {

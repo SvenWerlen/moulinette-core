@@ -5,10 +5,12 @@ export class MoulinettePatreon extends FormApplication {
   
   // client ID for FVTT integration
   static CLIENT_ID = "K3ofcL8XyaObRrO_5VPuzXEPnOVCIW3fbLIt6Vygt_YIM6IKxA404ZQ0pZbZ0VkB"
+  static DISCORD_CLIENT_ID = "1104472072853405706"
   
   constructor(callingWindow) {
     super()
     this.callingWindow = callingWindow
+    this.forceRefresh = false
   }
   
   static get defaultOptions() {
@@ -17,7 +19,7 @@ export class MoulinettePatreon extends FormApplication {
       classes: ["mtte", "patreon"],
       title: game.i18n.localize("mtte.moulinettePatreon"),
       template: "modules/moulinette-core/templates/patreon.hbs",
-      width: 550,
+      width: 650,
       height: "auto",
       resizable: true,
       closeOnSubmit: false,
@@ -29,7 +31,7 @@ export class MoulinettePatreon extends FormApplication {
     if(!game.settings.get("moulinette-core", "enableMoulinetteCloud")) {
       return { disabled: true }
     }
-    const user = await game.moulinette.applications.Moulinette.getUser(true)
+    const user = await game.moulinette.applications.Moulinette.getUser(true, this.forceRefresh)
     return { user: user }
   }
 
@@ -67,8 +69,12 @@ export class MoulinettePatreon extends FormApplication {
       console.log("Moulinette Patreon | Refreshing")
       game.moulinette.cache.clear()
       this.render()
-    } else if(source.classList.contains("login")) {
-      const newGUID = randomID(26);
+    } else if(source.classList.contains("refresh")) {
+      this.forceRefresh = true
+      this.html.find(".login button").hide()
+      this.render()
+    } else if(source.classList.contains("loginPatreon")) {
+      const newGUID = game.moulinette.user.id.length == 26 ? game.moulinette.user.id : randomID(26);
       const callback = `${game.moulinette.applications.MoulinetteClient.SERVER_URL}/patreon/callback`
       const patreonURL = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.CLIENT_ID}&redirect_uri=${callback}&scope=identity identity.memberships&state=${newGUID}`
       game.moulinette.cache.clear()
@@ -76,6 +82,7 @@ export class MoulinettePatreon extends FormApplication {
       window.open(patreonURL, '_blank');
 
       this.html.find(".login").hide()
+      this.html.find(".error").show()
       this.html.find(".error").html(game.i18n.localize("mtte.continue"))
 
       const parent = this
@@ -95,7 +102,7 @@ export class MoulinettePatreon extends FormApplication {
 
         const client = new game.moulinette.applications.MoulinetteClient()
         const noCache = "?ms=" + new Date().getTime()
-        const ready = await client.get(`/user/${newGUID}/ready`)
+        const ready = await client.get(`/user/${newGUID}/ready?patreon=1`)
         if(ready && ready.status == 200 && ready.data.status == "yes") {
           clearInterval(parent.timer);
           parent.render()
@@ -103,7 +110,45 @@ export class MoulinettePatreon extends FormApplication {
 
       }, 2000);
 
-    } else if(source.classList.contains("logout")) {
+    } else if(source.classList.contains("loginDiscord")) {
+      const newGUID = game.moulinette.user.id.length == 26 ? game.moulinette.user.id : randomID(26);
+      const callback = `${game.moulinette.applications.MoulinetteClient.SERVER_URL}/discord/callback`
+      const discordURL = `https://discord.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.DISCORD_CLIENT_ID}&scope=identify guilds&redirect_uri=${callback}&state=${newGUID}`
+      game.moulinette.cache.clear()
+      await game.settings.set("moulinette", "userId", newGUID)
+      window.open(discordURL, '_blank');
+
+      this.html.find(".login").hide()
+      this.html.find(".error").show()
+      this.html.find(".error").html(game.i18n.localize("mtte.continue"))
+
+      const parent = this
+      this.timerIter = 0
+      this.timer = setInterval(async function(){
+        const progress = parent.html.find(".progress")
+
+        // stop after 2 minutes maximum
+        if(parent.timerIter > 60) {
+          parent.html.find(".error").html(game.i18n.localize("mtte.authenticationTimeout"))
+          progress.html("")
+          return clearInterval(parent.timer);
+        }
+
+        parent.timerIter++;
+        progress.html(progress.text() + " .")
+
+        const client = new game.moulinette.applications.MoulinetteClient()
+        const noCache = "?ms=" + new Date().getTime()
+        const ready = await client.get(`/user/${newGUID}/ready?discord=1`)
+        if(ready && ready.status == 200 && ready.data.status == "yes") {
+          clearInterval(parent.timer);
+          parent.render()
+        }
+
+      }, 2000);
+
+    }
+    else if(source.classList.contains("logout")) {
       console.log("Moulinette Patreon | Loging out")
       await game.settings.set("moulinette", "userId", "anonymous");
       game.moulinette.cache.clear()

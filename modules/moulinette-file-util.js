@@ -606,6 +606,7 @@ export class MoulinetteFileUtil {
               path: pack.path,
               count: pack.assets.length,
               isLocal: pack.isLocal,
+              isFree: pack.free,
               source: pack.source,
               isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3),
               isShowCase: pack.showCase,
