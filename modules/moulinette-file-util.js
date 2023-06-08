@@ -44,8 +44,20 @@ export class MoulinetteFileUtil {
   static async getBaseURL(source = null) {
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
     if((!source || source == "s3") && bucket && bucket.length > 0 && bucket != "null") {
-      const e = game.data.files.s3.endpoint;
-      return `${e.protocol}//${bucket}.${e.host}/`
+      //const e = game.data.files.s3.endpoint;
+      //return `${e.protocol}//${bucket}.${e.host}/`
+      let root = await FilePicker.browse(MoulinetteFileUtil.getSource(), "", MoulinetteFileUtil.getOptions());
+      
+      // Workaround - Moulinette requires 1 file to fetch base URL of S3 storage
+      if(root.files.length == 0) {
+        await FilePicker.upload("s3", "", new File(["Do NOT delete. Required by Moulinette"], "mtte.txt"), MoulinetteFileUtil.getOptions())
+        root = await FilePicker.browse(MoulinetteFileUtil.getSource(), "", MoulinetteFileUtil.getOptions());
+      }
+      if(root.files.length > 0) {
+        const file = root.files[0]
+        return file.substr(0, file.lastIndexOf("/") + 1)
+      }
+      return ""
     } 
 
     // #40 : Non-host GMs can't use Moulinette for games hosted on The Forge

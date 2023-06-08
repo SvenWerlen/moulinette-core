@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.0.6] - 2023-05-07
 ### Fixed
+- 11.0.7: Fix for V11 and S3
 - 11.0.6: Official support for V11
 - 11.0.5: Indexed packs have invalid path on The Forge
 - 11.0.4: Fix for The Forge (Bazaar). Invalid URLs for thumbs.
