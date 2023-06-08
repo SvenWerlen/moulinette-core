@@ -87,6 +87,9 @@ export class MoulinetteFileUtil {
    * Creates a new folder
    */
   static async createFolderIfMissing(parent, childPath) {
+    // folder don't have to be created on S3 (automatically handled by S3 provider)
+    if(MoulinetteFileUtil.getSource() == "s3") return
+
     const parentFolder = await FilePicker.browse(MoulinetteFileUtil.getSource(), parent, MoulinetteFileUtil.getOptions());
     if (!parentFolder.dirs.includes(childPath)) {
       try {
@@ -98,10 +101,13 @@ export class MoulinetteFileUtil {
   }
   
   /**
-   * Creates folders recursively (much better than previous 
+   * Creates folders recursively (much better than previous)
    */
   static async createFolderRecursive(path) {
     const source = MoulinetteFileUtil.getSource()
+    // folder don't have to be created on S3 (automatically handled by S3 provider)
+    if(source == "s3") return
+    
     const folders = path.split("/")
     let curFolder = ""
     for( const f of folders ) {
@@ -406,7 +412,12 @@ export class MoulinetteFileUtil {
     if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && source != "public") {
       return files.map( (path) => { return decodeURIComponent(path) } )
     } else {
-      return files.map( (path) => { return decodeURIComponent(path).split(decodeURIComponent(packPath))[1].substr(1) } ) // remove front /
+      if(source == "s3") {
+        return files.map( (path) => { return path.split(packPath)[1].substring(1) } ) // remove front /
+      } else {
+        return files.map( (path) => { return decodeURIComponent(path).split(decodeURIComponent(packPath))[1].substring(1) } ) // remove front /
+      }
+      
     }
   }
   
@@ -763,7 +774,7 @@ export class MoulinetteFileUtil {
       const idx = filePath.lastIndexOf('/')
       const path = idx < 0 ? "" : "/" + filePath.substring(0, idx)
 
-      const breadcrumb = `${creator}##${pack}##${path}`
+      const breadcrumb = `${decodeURIComponent(creator)}##${decodeURIComponent(pack)}##${decodeURIComponent(path)}`
       f.idx = id
       if(folders.hasOwnProperty(breadcrumb)) {
         folders[breadcrumb].push(f)
