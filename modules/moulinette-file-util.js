@@ -140,7 +140,9 @@ export class MoulinetteFileUtil {
   static async fileExists(path, toSource) {
     const source = toSource ? toSource : MoulinetteFileUtil.getSource()
     try {
-      const parentFolder = await FilePicker.browse(source, path.substring(0, path.lastIndexOf('/')), MoulinetteFileUtil.getOptions());
+      const basePath = await MoulinetteFileUtil.getBaseURL(source)
+      const parentFolderPath = basePath && basePath.length > 0 && path.startsWith(basePath) ? path.substring(basePath.length) : path
+      const parentFolder = await FilePicker.browse(source, parentFolderPath.substring(0, parentFolderPath.lastIndexOf('/')), MoulinetteFileUtil.getOptions());
       const decodedPaths = parentFolder.files.map(f => decodeURIComponent(f))
 
       // ForgeVTT FilePicker returns files with path inclusive of basePath, which is the current user's asset library
@@ -148,7 +150,10 @@ export class MoulinetteFileUtil {
         const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
         path = (theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "") + path;
       }
-
+      // FilePicker returns files with path inclusive of basePath for S3
+      else if(source == "s3") {
+        path = basePath + path
+      }
       return parentFolder.files.includes(path) || decodedPaths.includes(path);
     } catch(exc) {
       console.log(exc)
@@ -1188,21 +1193,21 @@ export class MoulinetteFileUtil {
                     imgPath = imgPath.substring(baseURL.length)
                   }
                   
-                  const thumbPath = "moulinette/thumbs/" + imgPath.substring(0, imgPath.lastIndexOf(".")) + "_thumb.webp"
+                  const thumbPath = decodeURIComponent("moulinette/thumbs/" + imgPath.substring(0, imgPath.lastIndexOf(".")) + "_thumb.webp")
                   const thumbFilename = thumbPath.split("/").pop()
                   const thumbFolder = thumbPath.substring(0, thumbPath.lastIndexOf("/"))
                   try {
                     console.log(`Moulinette FileUtil | Creating thumbnail for ${imgPath}`)
                     // skip map if thumbnail already exists
                     if(await MoulinetteFileUtil.fileExists(`${thumbFolder}/${thumbFilename}`)) {
-                      console.warn(`Moulinette FileUtil | Thumbnail ${thumbFolder}/${thumbFilename} already exists. Skipping.`)
+                      console.log(`Moulinette FileUtil | 👍 Thumbnail ${thumbFolder}/${thumbFilename} already exists. Skipping.`)
                       continue
                     }
 
                     const headData = await fetch(baseURL + imgPath, {method: 'HEAD'})
                     const fileSize = headData.headers.get("content-length")
                     if(fileSize > MoulinetteFileUtil.MAX_THUMB_FILESIZE) {
-                      console.warn(`Moulinette FileUtil | File too large (${fileSize}). Thumbnail generation skipped.`)
+                      console.warn(`Moulinette FileUtil | ⚠ File too large (${fileSize}). Thumbnail generation skipped.`)
                       continue;
                     }
                     const thumb = await ImageHelper.createThumbnail(baseURL + imgPath, { width: 400, height: 400, center: true, format: "image/webp"})
