@@ -141,8 +141,18 @@ export class MoulinetteFileUtil {
     const source = toSource ? toSource : MoulinetteFileUtil.getSource()
     try {
       const basePath = await MoulinetteFileUtil.getBaseURL(source)
-      const parentFolderPath = basePath && basePath.length > 0 && path.startsWith(basePath) ? path.substring(basePath.length) : path
-      const parentFolder = await FilePicker.browse(source, parentFolderPath.substring(0, parentFolderPath.lastIndexOf('/')), MoulinetteFileUtil.getOptions());
+      let parentFolderPath = basePath && basePath.length > 0 && path.startsWith(basePath) ? path.substring(basePath.length) : path
+      parentFolderPath = parentFolderPath.substring(0, parentFolderPath.lastIndexOf('/'))
+
+      let parentFolder = null
+      // optimization (LukeAbby's idea!)
+      if(MoulinetteFileUtil.lastFolder == parentFolderPath) {
+        parentFolder = MoulinetteFileUtil.lastFolderData
+      } else {
+        parentFolder = await FilePicker.browse(source, parentFolderPath, MoulinetteFileUtil.getOptions());
+        MoulinetteFileUtil.lastFolder = parentFolderPath
+        MoulinetteFileUtil.lastFolderData = parentFolder
+      }
       const decodedPaths = parentFolder.files.map(f => decodeURIComponent(f))
 
       // ForgeVTT FilePicker returns files with path inclusive of basePath, which is the current user's asset library
