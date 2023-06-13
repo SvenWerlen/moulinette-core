@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.1.0] - 2023-06-12
+### Changed
+- Cache baseURL for S3 (fix for non-performant workaround introduced in 11.0.7)
+
 ## [11.0.6] - 2023-05-07
 ### Fixed
+- 11.0.9: Fix fileExists for S3
 - 11.0.8: Fix folder creation for S3 and special characters (&,+)
 - 11.0.7: Fix for V11 and S3
 - 11.0.6: Official support for V11
