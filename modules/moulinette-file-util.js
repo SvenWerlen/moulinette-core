@@ -12,6 +12,9 @@ export class MoulinetteFileUtil {
 
   // maximum filesize for generating thumbnails
   static MAX_THUMB_FILESIZE = 10*1024*1024 // 10 MB
+
+  // keep baseURL in cache
+  static _s3BaseURL;
   
   /**
    * Detects which source to use (depending if server si Forge or local)
@@ -44,9 +47,16 @@ export class MoulinetteFileUtil {
   static async getBaseURL(source = null) {
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
     if((!source || source == "s3") && bucket && bucket.length > 0 && bucket != "null") {
+      // in memory?
+      if(MoulinetteFileUtil._s3BaseURL) {
+        return MoulinetteFileUtil._s3BaseURL
+      }
+
+      // DOESN'T WORK WITH V11 anymore
       //const e = game.data.files.s3.endpoint;
       //return `${e.protocol}//${bucket}.${e.host}/`
       let root = await FilePicker.browse(MoulinetteFileUtil.getSource(), "", MoulinetteFileUtil.getOptions());
+      let baseURL = ""
       
       // Workaround - Moulinette requires 1 file to fetch base URL of S3 storage
       if(root.files.length == 0) {
@@ -55,9 +65,11 @@ export class MoulinetteFileUtil {
       }
       if(root.files.length > 0) {
         const file = root.files[0]
-        return file.substr(0, file.lastIndexOf("/") + 1)
+        baseURL = file.substr(0, file.lastIndexOf("/") + 1)
       }
-      return ""
+      // keep in cache (avoid API call to S3)
+      MoulinetteFileUtil._s3BaseURL = baseURL
+      return baseURL
     } 
 
     // #40 : Non-host GMs can't use Moulinette for games hosted on The Forge
