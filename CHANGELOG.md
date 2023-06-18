@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [11.1.0] - 2023-06-12
+## [11.1.2] - 2023-06-12
 ### Fixed
+- 11.1.2: Crashes while indexing own s3 files #12
 - 11.1.1: Fix folder names disappear when expand/collapsing, even core data folders
 ### Changed
 - Cache baseURL for S3 (fix for non-performant workaround introduced in 11.0.7)

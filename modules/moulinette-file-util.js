@@ -439,12 +439,7 @@ export class MoulinetteFileUtil {
     if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && source != "public") {
       return files.map( (path) => { return decodeURIComponent(path) } )
     } else {
-      if(source == "s3") {
-        return files.map( (path) => { return path.split(packPath)[1].substring(1) } ) // remove front /
-      } else {
-        return files.map( (path) => { return decodeURIComponent(path).split(decodeURIComponent(packPath))[1].substring(1) } ) // remove front /
-      }
-      
+      return files.map( (path) => { return decodeURIComponent(path).split(decodeURIComponent(packPath))[1].substring(1) } ) // remove front /
     }
   }
   
