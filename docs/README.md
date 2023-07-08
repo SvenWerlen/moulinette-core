@@ -45,7 +45,7 @@ Hooks.once("ready", async function () {
 
 By default, Moulinette expects your assets to be deployed in a specific "custom" folder, depending on the type of asset:
 * `moulinette/images/custom/` for images and tiles (`gif`,`jpg`, `jpeg`, `png`, `webp`, `svg`)
-* `moulientte/sounds/custom/` for sounds and music (`mp3`, `ogg`, `wav`)
+* `moulientte/sounds/custom/` for sounds and music (`mp3`, `ogg`, `wav`, `opus`)
 
 In that folder, you need to make sure to have a 2-level structure
 ```

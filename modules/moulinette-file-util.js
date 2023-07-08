@@ -670,7 +670,7 @@ export class MoulinetteFileUtil {
                 if(URL.indexOf("moulinette/scenes/custom") >= 0) {
                   aData.type = "scene"
                 }
-                else if(["ogg", "mp3", "wav", "m4a", "flac", "webm"].includes(ext)) {
+                else if(["ogg", "mp3", "wav", "m4a", "flac", "webm", "opus"].includes(ext)) {
                   // WebM could be tiles, too (video) - unless they are from "sounds"
                   if(ext == "webm" && !pack.path.startsWith("moulinette/sounds/custom")) {
                     assets.push(duplicate(aData)); packData.count++;
