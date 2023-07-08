@@ -9,6 +9,7 @@ export class MoulinetteFileUtil {
   static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
   static REMOTE_BASE_S3 = "https://nyc3.digitaloceanspaces.com"
   static LOCAL_SOURCES = ["data", "public"]
+  static RETRIES = 3
 
   // maximum filesize for generating thumbnails
   static MAX_THUMB_FILESIZE = 10*1024*1024 // 10 MB
@@ -874,23 +875,16 @@ export class MoulinetteFileUtil {
   static async downloadDependencies(depList, packURL, sas, destPath, force=false) {
     let results = []
     // download direct dependencies
+    // downloadFile(url, folder, filename, force=false, infoList) {
     for(const dep of depList) {
       const filepath = destPath + dep
       const folder = decodeURIComponent(filepath.substring(0, filepath.lastIndexOf('/')))
       const filename = decodeURIComponent(dep.split('/').pop())
       const srcURL = packURL + "/" + dep + sas
       
-      if(force || !await MoulinetteFileUtil.fileExists(filepath)) {
-        // create target folder
-        await MoulinetteFileUtil.createFolderRecursive(folder)
-        // download file
-        let res = await fetch(srcURL).catch(function(e) {
-          console.log(`Moulinette | Not able to fetch file`, e)
-        });
-        if(!res) return ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
-    
-        const blob = await res.blob()
-        results.push(await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, force))
+      const success = MoulinetteFileUtil.downloadFile(srcURL, folder, filename, force, results)
+      if(!success) {
+        return ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
       }
     }
     return results;
@@ -1019,8 +1013,9 @@ export class MoulinetteFileUtil {
 
   /**
    * This function downloads a file into a specific folder
+   * 2023-07-08: retries and better error management
    */
-  static async downloadFile(url, folder, filename) {
+  static async downloadFile(url, folder, filename, force=false, uploadList=[]) {
     // fix for ScenePacker
     folder = decodeURIComponent(folder)
     filename = decodeURIComponent(filename)
@@ -1029,17 +1024,36 @@ export class MoulinetteFileUtil {
     await MoulinetteFileUtil.createFolderRecursive(folder)
     const browse = await FilePicker.browse(MoulinetteFileUtil.getSource(), folder);
     const files = browse.files.map(f => decodeURIComponent(f))
-    if(files.includes(`${folder}/${filename}`)) return true;
+    if(!force && files.includes(`${folder}/${filename}`)) return true;
 
-    try {
-      let res = await fetch(url)
-      if(!res || res.status != 200) { return false; }
-      const blob = await res.blob()
-      await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, false)
-      return true
-    } catch(e) {
-      return false
+    let triesCount = 0
+    const infoURL = ("" + url).split("?")[0]
+    while(triesCount <= MoulinetteFileUtil.RETRIES) {
+      if(triesCount > 0) {
+        console.log(`Moulinette FileUtil | ${triesCount}# retry of downloading ${infoURL}`)
+      }
+      try {
+        let res = await fetch(url)
+        if(res && res.status == 200) {
+          const blob = await res.blob()
+          const success = await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, force)
+          if(success && success.status == "success") {
+            uploadList.push(success)
+            return true
+          }
+          else {
+            console.warn(`Moulinette FileUtil | MTTERR003 Download succeeded but upload failed for ${infoURL}`, res)
+          }
+        }
+        else {
+          console.warn(`Moulinette FileUtil | MTTERR001 Download failed for ${infoURL}`, res)
+        }
+      } catch(e) {
+        console.error(`Moulinette FileUtil | MTTERR002 Download throws exception for ${infoURL}`, e)
+      }
+      triesCount++
     }
+    return false
   }
 
 
