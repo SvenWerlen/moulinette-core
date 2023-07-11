@@ -882,7 +882,7 @@ export class MoulinetteFileUtil {
       const filename = decodeURIComponent(dep.split('/').pop())
       const srcURL = packURL + "/" + dep + sas
       
-      const success = MoulinetteFileUtil.downloadFile(srcURL, folder, filename, force, results)
+      const success = await MoulinetteFileUtil.downloadFile(srcURL, folder, filename, force, results)
       if(!success) {
         return ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
       }
