@@ -507,27 +507,17 @@ export class MoulinetteFilePickerUI extends FormApplication {
     const folder = folderEl.data('path')
     const folderIdx = folderEl.data("idx")
     if(!this.expand || folderEl.hasClass("expanded")) {
-      folderEl.find("div").toggle()
+      folderEl.find("div:not(.bc)").toggle()
       return
     }
-
+    
     let matchList = []
 
     // new optimized way
     if(folderIdx) {
       const key = `data-folder="${folderIdx}"`
-      console.log(key)
       for(const a of this.assets) {
         if(a.indexOf(key) > 0) {
-          matchList.push(a)
-        }
-      }
-    }
-    // old way
-    else {
-      const regex = new RegExp(`data-path="[^"]*${folder.replace("(",'\\(').replace(")",'\\)')}[^"/]+"`, "g")
-      for(const a of this.assets) {
-        if(decodeURIComponent(a).match(regex)) {
           matchList.push(a)
         }
       }
@@ -535,7 +525,7 @@ export class MoulinetteFilePickerUI extends FormApplication {
 
     folderEl.append(matchList)
     folderEl.addClass("expanded")
-
+    
     // re-enable listeners
     this._reEnableListeners()
   }

@@ -9,9 +9,13 @@ export class MoulinetteFileUtil {
   static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
   static REMOTE_BASE_S3 = "https://nyc3.digitaloceanspaces.com"
   static LOCAL_SOURCES = ["data", "public"]
+  static RETRIES = 3
 
   // maximum filesize for generating thumbnails
   static MAX_THUMB_FILESIZE = 10*1024*1024 // 10 MB
+
+  // keep baseURL in cache
+  static _s3BaseURL;
   
   /**
    * Detects which source to use (depending if server si Forge or local)
@@ -44,8 +48,29 @@ export class MoulinetteFileUtil {
   static async getBaseURL(source = null) {
     const bucket = game.settings.get("moulinette-core", "s3Bucket")
     if((!source || source == "s3") && bucket && bucket.length > 0 && bucket != "null") {
-      const e = game.data.files.s3.endpoint;
-      return `${e.protocol}//${bucket}.${e.host}/`
+      // in memory?
+      if(MoulinetteFileUtil._s3BaseURL) {
+        return MoulinetteFileUtil._s3BaseURL
+      }
+
+      // DOESN'T WORK WITH V11 anymore
+      //const e = game.data.files.s3.endpoint;
+      //return `${e.protocol}//${bucket}.${e.host}/`
+      let root = await FilePicker.browse(MoulinetteFileUtil.getSource(), "", MoulinetteFileUtil.getOptions());
+      let baseURL = ""
+      
+      // Workaround - Moulinette requires 1 file to fetch base URL of S3 storage
+      if(root.files.length == 0) {
+        await FilePicker.upload("s3", "", new File(["Do NOT delete. Required by Moulinette"], "mtte.txt"), MoulinetteFileUtil.getOptions())
+        root = await FilePicker.browse(MoulinetteFileUtil.getSource(), "", MoulinetteFileUtil.getOptions());
+      }
+      if(root.files.length > 0) {
+        const file = root.files[0]
+        baseURL = file.substr(0, file.lastIndexOf("/") + 1)
+      }
+      // keep in cache (avoid API call to S3)
+      MoulinetteFileUtil._s3BaseURL = baseURL
+      return baseURL
     } 
 
     // #40 : Non-host GMs can't use Moulinette for games hosted on The Forge
@@ -75,6 +100,9 @@ export class MoulinetteFileUtil {
    * Creates a new folder
    */
   static async createFolderIfMissing(parent, childPath) {
+    // folder don't have to be created on S3 (automatically handled by S3 provider)
+    if(MoulinetteFileUtil.getSource() == "s3") return
+
     const parentFolder = await FilePicker.browse(MoulinetteFileUtil.getSource(), parent, MoulinetteFileUtil.getOptions());
     if (!parentFolder.dirs.includes(childPath)) {
       try {
@@ -86,10 +114,13 @@ export class MoulinetteFileUtil {
   }
   
   /**
-   * Creates folders recursively (much better than previous 
+   * Creates folders recursively (much better than previous)
    */
   static async createFolderRecursive(path) {
     const source = MoulinetteFileUtil.getSource()
+    // folder don't have to be created on S3 (automatically handled by S3 provider)
+    if(source == "s3") return
+    
     const folders = path.split("/")
     let curFolder = ""
     for( const f of folders ) {
@@ -122,7 +153,19 @@ export class MoulinetteFileUtil {
   static async fileExists(path, toSource) {
     const source = toSource ? toSource : MoulinetteFileUtil.getSource()
     try {
-      const parentFolder = await FilePicker.browse(source, path.substring(0, path.lastIndexOf('/')), MoulinetteFileUtil.getOptions());
+      const basePath = await MoulinetteFileUtil.getBaseURL(source)
+      let parentFolderPath = basePath && basePath.length > 0 && path.startsWith(basePath) ? path.substring(basePath.length) : path
+      parentFolderPath = parentFolderPath.substring(0, parentFolderPath.lastIndexOf('/'))
+
+      let parentFolder = null
+      // optimization (LukeAbby's idea!)
+      if(MoulinetteFileUtil.lastFolder == parentFolderPath) {
+        parentFolder = MoulinetteFileUtil.lastFolderData
+      } else {
+        parentFolder = await FilePicker.browse(source, parentFolderPath, MoulinetteFileUtil.getOptions());
+        MoulinetteFileUtil.lastFolder = parentFolderPath
+        MoulinetteFileUtil.lastFolderData = parentFolder
+      }
       const decodedPaths = parentFolder.files.map(f => decodeURIComponent(f))
 
       // ForgeVTT FilePicker returns files with path inclusive of basePath, which is the current user's asset library
@@ -130,7 +173,10 @@ export class MoulinetteFileUtil {
         const theForgeAssetsLibraryUserPath = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + (await ForgeAPI.getUserId() || "user");
         path = (theForgeAssetsLibraryUserPath ? theForgeAssetsLibraryUserPath + "/" : "") + path;
       }
-
+      // FilePicker returns files with path inclusive of basePath for S3
+      else if(source == "s3") {
+        path = basePath + path
+      }
       return parentFolder.files.includes(path) || decodedPaths.includes(path);
     } catch(exc) {
       console.log(exc)
@@ -394,7 +440,7 @@ export class MoulinetteFileUtil {
     if(typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge && source != "public") {
       return files.map( (path) => { return decodeURIComponent(path) } )
     } else {
-      return files.map( (path) => { return decodeURIComponent(path).split(decodeURIComponent(packPath))[1].substr(1) } ) // remove front /
+      return files.map( (path) => { return decodeURIComponent(path).split(decodeURIComponent(packPath))[1].substring(1) } ) // remove front /
     }
   }
   
@@ -626,7 +672,7 @@ export class MoulinetteFileUtil {
                 if(URL.indexOf("moulinette/scenes/custom") >= 0) {
                   aData.type = "scene"
                 }
-                else if(["ogg", "mp3", "wav", "m4a", "flac", "webm"].includes(ext)) {
+                else if(["ogg", "mp3", "wav", "m4a", "flac", "webm", "opus"].includes(ext)) {
                   // WebM could be tiles, too (video) - unless they are from "sounds"
                   if(ext == "webm" && !pack.path.startsWith("moulinette/sounds/custom")) {
                     assets.push(duplicate(aData)); packData.count++;
@@ -752,7 +798,7 @@ export class MoulinetteFileUtil {
       const idx = filePath.lastIndexOf('/')
       const path = idx < 0 ? "" : "/" + filePath.substring(0, idx)
 
-      const breadcrumb = `${creator}##${pack}##${path}`
+      const breadcrumb = `${decodeURIComponent(creator)}##${decodeURIComponent(pack)}##${decodeURIComponent(path)}`
       f.idx = id
       if(folders.hasOwnProperty(breadcrumb)) {
         folders[breadcrumb].push(f)
@@ -830,23 +876,16 @@ export class MoulinetteFileUtil {
   static async downloadDependencies(depList, packURL, sas, destPath, force=false) {
     let results = []
     // download direct dependencies
+    // downloadFile(url, folder, filename, force=false, infoList) {
     for(const dep of depList) {
       const filepath = destPath + dep
       const folder = decodeURIComponent(filepath.substring(0, filepath.lastIndexOf('/')))
       const filename = decodeURIComponent(dep.split('/').pop())
       const srcURL = packURL + "/" + dep + sas
       
-      if(force || !await MoulinetteFileUtil.fileExists(filepath)) {
-        // create target folder
-        await MoulinetteFileUtil.createFolderRecursive(folder)
-        // download file
-        let res = await fetch(srcURL).catch(function(e) {
-          console.log(`Moulinette | Not able to fetch file`, e)
-        });
-        if(!res) return ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
-    
-        const blob = await res.blob()
-        results.push(await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, force))
+      const success = await MoulinetteFileUtil.downloadFile(srcURL, folder, filename, force, results)
+      if(!success) {
+        return ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
       }
     }
     return results;
@@ -975,8 +1014,9 @@ export class MoulinetteFileUtil {
 
   /**
    * This function downloads a file into a specific folder
+   * 2023-07-08: retries and better error management
    */
-  static async downloadFile(url, folder, filename) {
+  static async downloadFile(url, folder, filename, force=false, uploadList=[]) {
     // fix for ScenePacker
     folder = decodeURIComponent(folder)
     filename = decodeURIComponent(filename)
@@ -985,17 +1025,36 @@ export class MoulinetteFileUtil {
     await MoulinetteFileUtil.createFolderRecursive(folder)
     const browse = await FilePicker.browse(MoulinetteFileUtil.getSource(), folder);
     const files = browse.files.map(f => decodeURIComponent(f))
-    if(files.includes(`${folder}/${filename}`)) return true;
+    if(!force && files.includes(`${folder}/${filename}`)) return true;
 
-    try {
-      let res = await fetch(url)
-      if(!res || res.status != 200) { return false; }
-      const blob = await res.blob()
-      await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, false)
-      return true
-    } catch(e) {
-      return false
+    let triesCount = 0
+    const infoURL = ("" + url).split("?")[0]
+    while(triesCount <= MoulinetteFileUtil.RETRIES) {
+      if(triesCount > 0) {
+        console.log(`Moulinette FileUtil | ${triesCount}# retry of downloading ${infoURL}`)
+      }
+      try {
+        let res = await fetch(url)
+        if(res && res.status == 200) {
+          const blob = await res.blob()
+          const success = await MoulinetteFileUtil.uploadFile(new File([blob], filename, { type: blob.type, lastModified: new Date() }), filename, folder, force)
+          if(success && success.status == "success") {
+            uploadList.push(success)
+            return true
+          }
+          else {
+            console.warn(`Moulinette FileUtil | MTTERR003 Download succeeded but upload failed for ${infoURL}`, res)
+          }
+        }
+        else {
+          console.warn(`Moulinette FileUtil | MTTERR001 Download failed for ${infoURL}`, res)
+        }
+      } catch(e) {
+        console.error(`Moulinette FileUtil | MTTERR002 Download throws exception for ${infoURL}`, e)
+      }
+      triesCount++
     }
+    return false
   }
 
 
@@ -1166,21 +1225,21 @@ export class MoulinetteFileUtil {
                     imgPath = imgPath.substring(baseURL.length)
                   }
                   
-                  const thumbPath = "moulinette/thumbs/" + imgPath.substring(0, imgPath.lastIndexOf(".")) + "_thumb.webp"
+                  const thumbPath = decodeURIComponent("moulinette/thumbs/" + imgPath.substring(0, imgPath.lastIndexOf(".")) + "_thumb.webp")
                   const thumbFilename = thumbPath.split("/").pop()
                   const thumbFolder = thumbPath.substring(0, thumbPath.lastIndexOf("/"))
                   try {
                     console.log(`Moulinette FileUtil | Creating thumbnail for ${imgPath}`)
                     // skip map if thumbnail already exists
                     if(await MoulinetteFileUtil.fileExists(`${thumbFolder}/${thumbFilename}`)) {
-                      console.warn(`Moulinette FileUtil | Thumbnail ${thumbFolder}/${thumbFilename} already exists. Skipping.`)
+                      console.log(`Moulinette FileUtil | 👍 Thumbnail ${thumbFolder}/${thumbFilename} already exists. Skipping.`)
                       continue
                     }
 
                     const headData = await fetch(baseURL + imgPath, {method: 'HEAD'})
                     const fileSize = headData.headers.get("content-length")
                     if(fileSize > MoulinetteFileUtil.MAX_THUMB_FILESIZE) {
-                      console.warn(`Moulinette FileUtil | File too large (${fileSize}). Thumbnail generation skipped.`)
+                      console.warn(`Moulinette FileUtil | ⚠ File too large (${fileSize}). Thumbnail generation skipped.`)
                       continue;
                     }
                     const thumb = await ImageHelper.createThumbnail(baseURL + imgPath, { width: 400, height: 400, center: true, format: "image/webp"})
