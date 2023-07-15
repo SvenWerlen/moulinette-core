@@ -113,7 +113,7 @@ export class MoulinettePatreon extends FormApplication {
     } else if(source.classList.contains("loginDiscord")) {
       const newGUID = game.moulinette.user.id.length == 26 ? game.moulinette.user.id : randomID(26);
       const callback = `${game.moulinette.applications.MoulinetteClient.SERVER_URL}/discord/callback`
-      const discordURL = `https://discord.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.DISCORD_CLIENT_ID}&scope=identify guilds&redirect_uri=${callback}&state=${newGUID}`
+      const discordURL = `https://discord.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.DISCORD_CLIENT_ID}&scope=identify guilds guilds.members.read&redirect_uri=${callback}&state=${newGUID}`
       game.moulinette.cache.clear()
       await game.settings.set("moulinette", "userId", newGUID)
       window.open(discordURL, '_blank');
