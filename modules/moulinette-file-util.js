@@ -884,7 +884,7 @@ export class MoulinetteFileUtil {
       
       const success = await MoulinetteFileUtil.downloadFile(srcURL, folder, filename, force, results)
       if(!success) {
-        return ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
+        ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
       }
     }
     return results;
