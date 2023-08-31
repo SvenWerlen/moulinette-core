@@ -86,7 +86,7 @@ export class Moulinette {
       return game.moulinette.user
     }
     // default behaviour
-    if(!game.moulinette.user.cache || force) {
+    if(game.user.isGM && (!game.moulinette.user.cache || force)) {
       console.log("Moulinette | Retrieving user details")
       const client = new game.moulinette.applications.MoulinetteClient()
       const noCache = "?ms=" + new Date().getTime()

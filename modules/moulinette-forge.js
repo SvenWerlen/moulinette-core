@@ -54,9 +54,6 @@ export class MoulinetteForge extends FormApplication {
   
   async getData() {
     const uiMode = game.settings.get("moulinette-core", "uiMode")
-    if(!game.user.isGM) {
-      return { error: game.i18n.localize("mtte.errorGMOnly") }
-    }
     
     // no module available
     if(game.moulinette.forge.length == 0) {
@@ -75,6 +72,11 @@ export class MoulinetteForge extends FormApplication {
     if(!this.activeModule) {
       this.activeModule = game.moulinette.forge[0]
       this.activeModule.active = true
+    }
+
+    // check if user is allowed to use the module
+    if(!game.user.isGM && !this.activeModule.instance.supportsPlayersMode()) {
+      return { error: game.i18n.localize("mtte.errorGMOnly") }
     }
     
     // color
@@ -748,5 +750,12 @@ export class MoulinetteForge extends FormApplication {
     dialog.position.left = event.pageX - dialog.position.width/2
     dialog.position.top = event.pageY - 120 // is auto
     dialog.render(true)
+  }
+
+  /**
+   * Overwrite to allow players to also drag & drop (otherwise only GM are allowed)
+   */
+  _canDragStart(selector) {
+    return true;
   }
 }

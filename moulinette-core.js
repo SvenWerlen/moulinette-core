@@ -20,16 +20,16 @@ Hooks.once("init", async function () {
   console.log("Moulinette Core| Init")
   
   game.settings.register("moulinette", "userId", { scope: "world", config: false, type: String, default: "anonymous" });
-  game.settings.register("moulinette", "currentTab", { scope: "world", config: false, type: String, default: "scenes" })
-  game.settings.register("moulinette", "displayMode", { scope: "world", config: false, type: String, default: "list" })
-  game.settings.register("moulinette", "winPosForge", { scope: "world", config: false, type: Object, default: null })
+  game.settings.register("moulinette", "currentTab", { scope: "client", config: false, type: String, default: "scenes" })
+  game.settings.register("moulinette", "displayMode", { scope: "client", config: false, type: String, default: "list" })
+  game.settings.register("moulinette", "winPosForge", { scope: "client", config: false, type: Object, default: null })
   game.settings.register("moulinette", "favorites", { scope: "world", config: false, type: Object, default: { default: { icon: "fas fa-heart", list: [] }} })
   game.settings.register("moulinette", "currentFav", { scope: "world", config: false, type: String, default: "history" })
   game.settings.register("moulinette", "sources", { scope: "world", config: false, type: Object, default: [] })
-  game.settings.register("moulinette", "wholeWordSearch", { scope: "world", config: false, type: Boolean, default: false })
-  game.settings.register("moulinette", "moduleFilters", { scope: "world", config: false, type: Object, default: {} })
+  game.settings.register("moulinette", "wholeWordSearch", { scope: "client", config: false, type: Boolean, default: false })
+  game.settings.register("moulinette", "moduleFilters", { scope: "client", config: false, type: Object, default: {} })
   
-   game.settings.register("moulinette-core", "enableMoulinetteCloud", {
+  game.settings.register("moulinette-core", "enableMoulinetteCloud", {
     name: game.i18n.localize("mtte.configEnableMoulinetteCloud"),
     hint: game.i18n.localize("mtte.configEnableMoulinetteCloudHint"),
     scope: "world",

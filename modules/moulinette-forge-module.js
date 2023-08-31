@@ -21,6 +21,14 @@ export class MoulinetteForgeModule {
   }
 
   /**
+   * Overwrite this function to indicate if the module supports multiple modes (default : yes)
+   */
+  supportsPlayersMode() {
+    console.debug("Moulinette Forge Module | Default playersMode() not implemented")
+    return false
+  }
+
+  /**
    * Overwrite this function to indicate if the module supports thumb sizes
    */
   supportsThumbSizes() {
