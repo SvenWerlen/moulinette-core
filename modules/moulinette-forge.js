@@ -402,7 +402,11 @@ export class MoulinetteForge extends FormApplication {
     const Moulinette = game.moulinette.applications.Moulinette
     this.selCreator = id && id != "-1" ? id : null
     this.selPack = "-1"
+    
+    // mark creator as selected
+    this.html.find(`.filterCombo.creators option[value='${id}']`).prop('selected', true)
     this.html.find("#creatorName").text(this.selCreator ? id : game.i18n.localize("mtte.chooseCreator"))
+
     dropDownList.height(dropDownList.data("origHeight"))
     // refresh pack list
     this.html.find("#packName").text(game.i18n.localize("mtte.choosePack"))
@@ -418,6 +422,7 @@ export class MoulinetteForge extends FormApplication {
 
     this.packs = []
     let packList = `<li data-id="-1" class="all"><a>${game.i18n.localize("mtte.allPacks")} (${Moulinette.prettyNumber(assetsCount)})</a></li>`
+    let options = `<option value="-1">${game.i18n.localize("mtte.allPacks")} (${Moulinette.prettyNumber(assetsCount)})</option>`
     if(this.selCreator) {
       const packNames = Object.keys(packs).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
       for(const p of packNames) {
@@ -433,12 +438,14 @@ export class MoulinetteForge extends FormApplication {
 
         const packName = Moulinette.prettyText(p)
         packList += `<li data-id="${ids}" class="${packClass}"><a><i class="fas fa-${isRemote ? "cloud" : "desktop"}"></i> ${Moulinette.prettyText(packName)} ${ isFree ? '<i class="fa-solid fa-gift"></i> ' : ''}(${Moulinette.prettyNumber(count)})</a></li>`
+        options += `<option value="${ids}" class="${packClass}">${Moulinette.prettyText(packName)} (${Moulinette.prettyNumber(count)})</option>`
         // keep pack ids for up/down key event
         this.packs.push({ id: ids, name: packName})
       }
     }
     packList += `<li class="filler"></li>`
     this.html.find(".filterList.packs .sub_menu").html(packList)
+    this.html.find(".filterCombo.packs").empty().append(options);
 
     await this._searchAssets()
     this.html.find(".filterList.creators").focus()
@@ -452,6 +459,7 @@ export class MoulinetteForge extends FormApplication {
     if(this.selPack) {
       const match = this.packs.find(p => p.id == id)
       this.html.find("#packName").text(match ? match.name : game.i18n.localize("mtte.choosePack"))
+      this.html.find(`.filterCombo.packs option[value='${id}']`).prop('selected', true)
       dropDownList.height(dropDownList.data("origHeight"))
       await this._searchAssets()
       this.html.find(".filterList.packs").focus()
