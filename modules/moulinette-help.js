@@ -38,7 +38,7 @@ export class MoulinetteHelp extends FormApplication {
       search: game.moulinette.forge.find(f => f.id == "imagesearch"),
       s3bucket: bucket.length > 0 && bucket != "null" ? bucket : null,
       theforge: typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge,
-      latestVersion: game.version.startsWith("10."),
+      latestVersion: game.version.startsWith("11."),
       hasModules: game.moulinette.forge.length > 0,
       modulesCount: game.moulinette.forge.length
     }
