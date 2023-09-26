@@ -689,7 +689,16 @@ export class MoulinetteFileUtil {
               }
               // sounds from Moulinette Cloud
               else if(asset.type == "snd") {
-                const aData = { pack: idx, filename: asset.path, type: asset.type, duration: asset.duration, loop: asset.loop, title: asset.title }
+                const aData = { 
+                  pack: idx, 
+                  filename: asset.path, 
+                  type: asset.type, 
+                  duration: asset.duration, 
+                  loop: asset.loop, 
+                  title: asset.title, 
+                  cat: asset.cat, 
+                  order: asset.order 
+                }
                 if(sas) { aData['sas'] = sas[0]; aData['sasTh'] = sas[1] }
                 assets.push(aData)
                 // WebM could be tiles, too (video)
@@ -749,8 +758,9 @@ export class MoulinetteFileUtil {
   
   /**
    * Generates a folder structure based on the index
+   * lastFolderOnly : /Music/SFX/Games => Games
    */
-  static foldersFromIndex(files, packs) {
+  static foldersFromIndex(files, packs, lastFolderOnly = false) {
     // sanity check
     if(files.length == 0) return {}
     
@@ -761,7 +771,12 @@ export class MoulinetteFileUtil {
     for(const f of files) {
       id++;
       const idx = f.filename.lastIndexOf('/')
-      const parent = idx < 0 ? "" : f.filename.substring(0, idx + 1)
+      let parent = idx < 0 ? "" : f.filename.substring(0, idx)
+      if(lastFolderOnly) {
+        parent = parent.split("/").pop()
+      }
+      parent += "/"
+
       f.idx = id
       if(parent in folders) {
         folders[parent].push(f)
