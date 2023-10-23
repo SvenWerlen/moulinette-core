@@ -11,6 +11,7 @@ import { MoulinetteHelp } from "./modules/moulinette-help.js"
 import { MoulinetteSources } from "./modules/moulinette-sources.js"
 import { MoulinetteAvailableAssets } from "./modules/moulinette-available.js"
 import { MoulinetteAvailableResult } from "./modules/moulinette-availableresult.js"
+import { MoulinetteProgress } from "./modules/moulinette-progress.js"
 import { MoulinetteAPI } from "./modules/moulinette-api.js"
 
 /**
@@ -178,6 +179,7 @@ Hooks.once("init", async function () {
     modules: [],
     applications: {
       Moulinette,
+      MoulinetteProgress,
       MoulinetteClient,
       MoulinetteForgeModule,
       MoulinetteFileUtil,

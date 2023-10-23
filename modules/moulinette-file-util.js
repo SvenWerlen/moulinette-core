@@ -891,7 +891,16 @@ export class MoulinetteFileUtil {
     let results = []
     // download direct dependencies
     // downloadFile(url, folder, filename, force=false, infoList) {
+    
+    const progressbar = (new game.moulinette.applications.MoulinetteProgress(game.i18n.format("mtte.downloadDependencies", { count: depList.length})))
+    progressbar.render(true)
+    
+    let idx = 0
+    let failed = 0
+    let lastDescription = ""
+
     for(const dep of depList) {
+      idx++
       const filepath = destPath + dep
       const folder = decodeURIComponent(filepath.substring(0, filepath.lastIndexOf('/')))
       const filename = decodeURIComponent(dep.split('/').pop())
@@ -899,9 +908,23 @@ export class MoulinetteFileUtil {
       
       const success = await MoulinetteFileUtil.downloadFile(srcURL, folder, filename, force, results)
       if(!success) {
+        failed++
         ui.notifications.error(game.i18n.localize("mtte.errorDownload"));
       }
+      
+      lastDescription = game.i18n.format("mtte.downloadDependenciesMessage", { 
+        succ: idx - failed,
+        failed: failed,
+        succRate: Math.round(100 * (idx-failed) / depList.length),
+        failRate: Math.round(100 * failed / depList.length)
+      })
+
+      progressbar.setProgress(100 * idx / depList.length, lastDescription)
     }
+
+    progressbar.setProgress(100)
+    console.log(`Moulinette FileUtil | ${lastDescription}`)
+
     return results;
   }
   

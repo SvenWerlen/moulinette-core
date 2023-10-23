@@ -560,6 +560,25 @@
   bottom: 0;
 }
 
+#moulinette-progress .window-content {
+  overflow: hidden;
+}
+
+#moulinette-progress .progressbar {
+  background-color: lightgray;
+}
+
+#moulinette-progress .progress {
+  background-color: #f79007;
+  padding: 2px 5px;
+  text-align: center;
+}
+
+#moulinette-progress .description {
+  text-align: center;
+  padding: 5px;
+}
+
 /** Inspired by: https://css-tricks.com/examples/LongDropdowns/# **/
 
 .filterCombo {
