@@ -26,6 +26,7 @@ export class MoulinetteProgress extends Application {
    */
   setProgress(progress, description) {
     progress = Math.round(progress)
+    if(!this.html) return
     if(progress >= 0 && progress <= 100) {
       const progressDiv = this.html.find(".progress")
       progressDiv.css("width", `${progress}%`)
