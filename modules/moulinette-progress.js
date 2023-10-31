@@ -37,7 +37,7 @@ export class MoulinetteProgress extends Application {
     }
     // close window if progress is 100%
     if(progress == 100) {
-      setTimeout(() => this.close(), 2000);
+      setTimeout(() => this.close(), 1000);
     }
   }
 

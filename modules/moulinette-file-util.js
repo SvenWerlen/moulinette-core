@@ -892,6 +892,10 @@ export class MoulinetteFileUtil {
     // download direct dependencies
     // downloadFile(url, folder, filename, force=false, infoList) {
     
+    if(!depList || depList.length == 0) {
+      return results
+    }
+
     const progressbar = (new game.moulinette.applications.MoulinetteProgress(game.i18n.format("mtte.downloadDependencies", { count: depList.length})))
     progressbar.render(true)
     
