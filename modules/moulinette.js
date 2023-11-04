@@ -72,7 +72,7 @@ export class Moulinette {
   /**
    * Retrieves linked user if any
    */
-  static async getUser(force = false) {
+  static async getUser(force = false, forceRefresh = false) {
     // current userId
     const userId = game.settings.get("moulinette", "userId")
     
@@ -90,7 +90,8 @@ export class Moulinette {
       console.log("Moulinette | Retrieving user details")
       const client = new game.moulinette.applications.MoulinetteClient()
       const noCache = "?ms=" + new Date().getTime()
-      const user = await client.get(`/user/${userId}${noCache}`)
+      const refresh = forceRefresh ? "force=1" : ""
+      const user = await client.get(`/user/${userId}${noCache}&${refresh}`)
       if(user && user.status == 200) {
         game.moulinette.user = user.data
         game.moulinette.user.hasEarlyAccess = MoulinettePatreon.hasEarlyAccess

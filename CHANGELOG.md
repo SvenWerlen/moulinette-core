@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support player mode (required for moulinette-compendiums)
 
+## [11.3.1] - 2023-07-15
+### Fixed
+- 11.3.1: Fix invalid configuration (dev mode)
+### Added
+- Support for Discord authentication (non-Patreon creators)
+
 ## [11.2.3] - 2023-07-08
 ### Fixed
 - 11.2.2: Improve download/upload management (specially for ScenePacker) with retries and additional logging
