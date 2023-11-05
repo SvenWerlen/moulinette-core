@@ -34,7 +34,6 @@
   width: 100%;
   /* fix to avoid systems styling issues */
   background: none !important;
-  color: black !important;
 }
 
 #moulinette.forge .list {
