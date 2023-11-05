@@ -660,11 +660,15 @@ export class MoulinetteFileUtil {
               sas: pack.sas
             }
             for(let i = 0; i<pack.assets.length; i++) {
-              const asset = pack.assets[i]
+              let asset = pack.assets[i]
               // SAS for individual asset
               const sas = Array.isArray(pack.sas) ? [pack.sas[2*i],pack.sas[2*i+1]] : null
               // default (basic asset is only filepath)
               if (typeof asset === 'string' || asset instanceof String) {
+                // encode URI (for special characters like %)
+                if(pack.isLocal) {
+                  asset = encodeURI(asset)
+                }
                 let type = pack.meta && pack.meta.type ? pack.meta.type : "img"
                 let aData = { pack: idx, filename: asset, type: type}
                 if(sas) { aData['sas'] = sas[0]; aData['sasTh'] = sas[1] }
