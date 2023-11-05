@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [11.6.1] - 2023-11-04
 ### Fixed
 - 11.6.1: Style compatibility with GURPS #71
+- 11.6.2: Moulinette Core fails indexing scenes on certain filenames #68
 ### Added
 - Download manager (progressbar)
 - Discord integration (into main)
