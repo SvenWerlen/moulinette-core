@@ -74,7 +74,7 @@ export class MoulinettePatreon extends FormApplication {
       this.html.find(".login button").hide()
       this.render()
     } else if(source.classList.contains("loginPatreon")) {
-      const newGUID = game.moulinette.user.id.length == 26 ? game.moulinette.user.id : randomID(26);
+      const newGUID = randomID(26)
       const callback = `${game.moulinette.applications.MoulinetteClient.SERVER_URL}/patreon/callback`
       const patreonURL = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${MoulinettePatreon.CLIENT_ID}&redirect_uri=${callback}&scope=identity identity.memberships&state=${newGUID}`
       game.moulinette.cache.clear()
