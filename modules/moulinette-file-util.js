@@ -667,7 +667,7 @@ export class MoulinetteFileUtil {
               if (typeof asset === 'string' || asset instanceof String) {
                 // encode URI (for special characters like %)
                 if(pack.isLocal) {
-                  asset = encodeURI(asset)
+                  //asset = encodeURI(asset)
                 }
                 let type = pack.meta && pack.meta.type ? pack.meta.type : "img"
                 let aData = { pack: idx, filename: asset, type: type}
