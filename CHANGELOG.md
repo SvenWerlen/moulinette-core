@@ -4,12 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [11.6.3] - 2023-11-04
+## [11.6.4] - 2023-11-04
 ### Fixed
 - 11.6.1: Style compatibility with GURPS #71
 - 11.6.1: Moulinette Core fails indexing scenes on certain filenames #68
 - 11.6.2: Authentication with Patreon always fails
 - 11.6.3: Rollback of 11.6.1 (causing issues with sounds)
+- 11.6.4: Moulinette download/upload files that already exist
 ### Added
 - Download manager (progressbar)
 - Discord integration (into main)

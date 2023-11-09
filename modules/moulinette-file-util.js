@@ -124,6 +124,7 @@ export class MoulinetteFileUtil {
     const folders = path.split("/")
     let curFolder = ""
     for( const f of folders ) {
+      if(f.length == 0) continue
       const parentFolder = await FilePicker.browse(source, curFolder, MoulinetteFileUtil.getOptions());
       curFolder += (curFolder.length > 0 ? "/" : "" ) + f
       const dirs = parentFolder.dirs.map(d => decodeURIComponent(d))
@@ -1071,7 +1072,8 @@ export class MoulinetteFileUtil {
     await MoulinetteFileUtil.createFolderRecursive(folder)
     const browse = await FilePicker.browse(MoulinetteFileUtil.getSource(), folder);
     const files = browse.files.map(f => decodeURIComponent(f))
-    if(!force && files.includes(`${folder}/${filename}`)) return true;
+    const path = folder + (folder.endsWith("/") ? "" : "/") + filename
+    if(!force && files.includes(path)) return true;
 
     let triesCount = 0
     const infoURL = ("" + url).split("?")[0]
