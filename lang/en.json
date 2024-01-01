@@ -104,6 +104,8 @@
   "mtte.learnMore": "to learn more about Moulinette and/or support it.",
   "mtte.linkDiscord": "Link Moulinette with Discord",
   "mtte.linkPatreon": "Link Moulinette with Patreon",
+  "mtte.manageExclusions": "Content visibility",
+  "mtte.manageExclusionsHelp": "Manage content exclusions (you filtered out in the past)",
   "mtte.moulinette": "Moulinette",
   "mtte.moulinetteCloudDisabled": "Moulinette Cloud is disabled in the settings. Patreon integration is part of Moulinette Cloud. <a class=\"mouCloudEnable\" href=\"javascript:void()\">Re-enable this configuration</a> to get access to Patreon capabilities.",
   "mtte.moulinetteFilePicker": "Moulinette FilePicker",

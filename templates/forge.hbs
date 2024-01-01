@@ -167,6 +167,7 @@
     <footer>
       <div class="actions">
         <button class="hidefooter" title="{{localize "mtte.hideFooter"}}"><i class="fas fa-chevrons-down"></i></button>
+        <button class="exclusions" title="{{localize "mtte.manageExclusionsHelp"}}"><a><i class="fa-solid fa-eye-slash"></i> {{localize "mtte.manageExclusions"}}</a></button>
         {{#each activeModule.actions as |a|}}<button class="{{a.id}}" title="{{a.help}}"><i class="{{a.icon}}"></i>{{#unless ../compactUI}} {{a.name}}{{/unless}}</button>{{/each}}
       </div>
       <div class="actions">

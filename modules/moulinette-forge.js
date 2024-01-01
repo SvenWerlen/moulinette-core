@@ -1,6 +1,7 @@
 import { MoulinettePatreon } from "./moulinette-patreon.js"
 import { MoulinetteShortcuts } from "./moulinette-shortcuts.js"
 import { MoulinetteForgeFilters } from "./moulinette-forge-filters.js"
+import { MoulinetteExclusions } from "./moulinette-exclusions.js"
 
 /*************************
  * Moulinette Forge
@@ -525,9 +526,13 @@ export class MoulinetteForge extends FormApplication {
       if(source.classList.contains("search")) {
         await this._searchAssets()
       } 
-      // search
+      // toggle footer
       else if(source.classList.contains("hidefooter")) {
         this.html.find(".footer").hide()
+      }
+      // manage content exclusions
+      else if(source.classList.contains("exclusions")) {
+        (new MoulinetteExclusions()).render(true)
       }
       // any other action
       else {
@@ -781,7 +786,6 @@ export class MoulinetteForge extends FormApplication {
 
     const parent = this
     const curExclusions = game.settings.get("moulinette", "dataExclusions")
-    console.log(this)
 
     const buttons = {}
     buttons.creator = { 

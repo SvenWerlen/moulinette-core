@@ -1,0 +1,31 @@
+<div class="exclusions">
+  <div class="main">
+    <div class="sources">
+      <table>
+      <tr>
+        <th class="creator">{{localize "mtte.publisher"}}</td>
+        <th class="pack">{{localize "mtte.pack"}}</td>
+        <th class="actions">{{localize "mtte.actions"}}</td>
+      </tr>
+      {{#each exclusions as |e|}}
+        {{#if e.packs }}
+          {{#each e.packs as |p|}}
+          <tr>
+            <td class="creator">{{e.name}}</td>
+            <td class="packs">{{p.name}}</td>
+            <td class="actions"><a data-creator="{{e.name}}" data-pack="{{p.id}}"><i class="fa-solid fa-trash"></i></a></td>
+          </tr>
+          {{/each}}
+        {{/if}}
+        {{#unless e.packs }}
+          <tr>
+            <td class="creator">{{e.name}}</td>
+            <td class="packs">{{localize "mtte.allPacks"}}</td>
+            <td class="actions"><a data-creator="{{e.name}}" data-pack="*"><i class="fa-solid fa-trash"></i></a></td>
+          </tr>
+        {{/unless}}
+      {{/each}}
+      </table>
+    </div>
+  </div>
+</div>
