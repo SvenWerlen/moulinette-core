@@ -29,6 +29,7 @@ Hooks.once("init", async function () {
   game.settings.register("moulinette", "sources", { scope: "world", config: false, type: Object, default: [] })
   game.settings.register("moulinette", "wholeWordSearch", { scope: "client", config: false, type: Boolean, default: false })
   game.settings.register("moulinette", "moduleFilters", { scope: "client", config: false, type: Object, default: {} })
+  game.settings.register("moulinette", "dataExclusions", { scope: "world", config: false, type: Object, default: {} })
   
   game.settings.register("moulinette-core", "enableMoulinetteCloud", {
     name: game.i18n.localize("mtte.configEnableMoulinetteCloud"),
