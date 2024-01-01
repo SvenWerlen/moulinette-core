@@ -215,6 +215,9 @@ export class MoulinetteForge extends FormApplication {
     // footer toggle
     html.find(".footerToggle a").click(ev => html.find(".footer").show())
 
+    // hide data from creator/pack
+    html.find(".dataHiding a").click(this._onHideData.bind(this))
+
     // patreon authentication
     html.find(".mouAuthenticate").click(ev => { 
       ev.preventDefault(); 
@@ -765,5 +768,74 @@ export class MoulinetteForge extends FormApplication {
    */
   _canDragStart(selector) {
     return true;
+  }
+
+  /**
+   * Hide data from currently selected creator
+   */
+  _onHideData(event) {
+    event.preventDefault()
+    if(!this.selCreator) {
+      return ui.notifications.warn(game.i18n.localize("mtte.errorNoSelectionToHide"));
+    }
+
+    const parent = this
+    const curExclusions = game.settings.get("moulinette", "dataExclusions")
+    console.log(this)
+
+    const buttons = {}
+    buttons.creator = { 
+      label: game.i18n.format("mtte.clickToHideCreator", { creator: this.selCreator }),
+      callback: () => {
+        if(!(this.selCreator in curExclusions)) {
+          curExclusions[this.selCreator] = {}
+        }
+        curExclusions[this.selCreator]["*"] = true
+        game.settings.set("moulinette", "dataExclusions", curExclusions).then(() => {
+          for(const f of game.moulinette.forge) {
+            f.instance.clearCache()
+          }
+          parent.render()
+        })
+      }
+    }
+    if(this.selPack >= 0) {
+      const selectedPack = this.packs.find(p => p.id == this.selPack)
+      if(selectedPack) {
+        buttons.pack = { 
+          label: game.i18n.format("mtte.clickToHidePack", { pack: selectedPack.name }),
+          callback: async () => {
+            if(!(this.selCreator in curExclusions)) {
+              curExclusions[this.selCreator] = {}
+            }
+            let packs = await this.activeModule.instance.getPackList()
+            const selPack = packs.find(p => p.idx == selectedPack.id)
+            if(selPack) {
+              // remote pack => filter by packId (more efficient!)
+              if(selPack.isRemote) {
+                curExclusions[this.selCreator][selPack.packId] = selectedPack.name
+              } 
+              // local pack => filter by pack name
+              else {
+                curExclusions[this.selCreator][selectedPack.name] = true
+              }
+            }
+            await game.settings.set("moulinette", "dataExclusions", curExclusions)
+            for(const f of game.moulinette.forge) {
+              f.instance.clearCache()
+            }
+            parent.render()
+          }
+        }
+      }
+    }
+    
+    new Dialog({
+      title: game.i18n.localize("mtte.clickToHideTitle"),
+      content: game.i18n.localize("mtte.clickToHideContent"),
+      buttons: buttons,
+    }, {
+      width: 600
+    }).render(true);
   }
 }

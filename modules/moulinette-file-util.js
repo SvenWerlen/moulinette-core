@@ -572,6 +572,25 @@ export class MoulinetteFileUtil {
     const cloudEnabled = game.settings.get("moulinette-core", "enableMoulinetteCloud")
     const showShowCase = game.settings.get("moulinette-core", "showCaseContent")
     
+    // build exclusions
+    const curExclusions = game.settings.get("moulinette", "dataExclusions")
+    const remoteExclusions = { creators: [], packs: [] }
+    const localExclusions = { creators: [], packs: [] }
+    for(const key of Object.keys(curExclusions)) {
+      if("*" in curExclusions[key]) {
+        remoteExclusions.creators.push(key)
+        localExclusions.creators.push(key)
+      } else {
+        for(const pack of Object.keys(curExclusions[key])) {
+          if(isNaN(pack)) {
+            localExclusions.packs.push(pack)
+          } else {
+            remoteExclusions.packs.push(pack)
+          }
+        }
+      }
+    }
+
     // build tiles' index 
     let idx = 0;
     for(let URL of urlList) {
@@ -589,10 +608,29 @@ export class MoulinetteFileUtil {
         }
         // download index file from URL
         const noCache = "?ms=" + new Date().getTime();
-        const response = await fetch(URL + noCache, {cache: "no-store"}).catch(function(e) {
-          console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
-          return;
-        });
+        let response
+        
+        // Moulinette Cloud => POST request to specify filters/exclusions
+        if(URL.startsWith(game.moulinette.applications.MoulinetteClient.SERVER_URL + "/assets/")) {
+          response = await fetch(URL + noCache, {
+              method: "post",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              cache: "no-store",
+              body: JSON.stringify({ exclusions: remoteExclusions })
+            }).catch(function(e) {
+            console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
+            return;
+          })
+        } else {
+          response = await fetch(URL + noCache, {cache: "no-store"}).catch(function(e) {
+            console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
+            return;
+          })
+        }
+        
         if(!response || response.status != 200) {
           // Stop notifying users about it. Brings confusion.
           // Only do it for server unavailability
@@ -640,6 +678,10 @@ export class MoulinetteFileUtil {
           for(const pack of pub.packs) {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
+            // hide content based on filters/exclusions
+            const isRemote = pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3)
+            if(pack.isLocal && (localExclusions.creators.includes(pub.publisher) || localExclusions.packs.includes(pack.name))) continue;
+            if(isRemote && (remoteExclusions.creators.includes(pub.publisher) || remoteExclusions.packs.includes(pack.name))) continue;
             // add pack
             const packData = {
               idx: idx,
@@ -655,7 +697,7 @@ export class MoulinetteFileUtil {
               isLocal: pack.isLocal,
               isFree: pack.free,
               source: pack.source,
-              isRemote: pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3),
+              isRemote: isRemote,
               isShowCase: pack.showCase,
               deps: pack.deps,
               sas: pack.sas
