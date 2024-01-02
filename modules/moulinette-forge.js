@@ -821,7 +821,6 @@ export class MoulinetteForge extends FormApplication {
               } 
               // local pack => filter by pack name
               else {
-                console.log(selectedPack)
                 curExclusions[this.selCreator][selPack.name] = selectedPack.name
               }
             }
