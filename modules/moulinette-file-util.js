@@ -585,7 +585,7 @@ export class MoulinetteFileUtil {
           if(isNaN(pack)) {
             localExclusions.packs.push(pack)
           } else {
-            remoteExclusions.packs.push(pack)
+            remoteExclusions.packs.push(Number(pack))
           }
         }
       }
@@ -681,7 +681,7 @@ export class MoulinetteFileUtil {
             // hide content based on filters/exclusions
             const isRemote = pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3)
             if(pack.isLocal && (localExclusions.creators.includes(pub.publisher) || localExclusions.packs.includes(pack.name))) continue;
-            if(isRemote && (remoteExclusions.creators.includes(pub.publisher) || remoteExclusions.packs.includes(pack.name))) continue;
+            if(isRemote && (remoteExclusions.creators.includes(pub.publisher) || remoteExclusions.packs.includes(pack.id))) continue;
             // add pack
             const packData = {
               idx: idx,

@@ -821,7 +821,8 @@ export class MoulinetteForge extends FormApplication {
               } 
               // local pack => filter by pack name
               else {
-                curExclusions[this.selCreator][selectedPack.name] = true
+                console.log(selectedPack)
+                curExclusions[this.selCreator][selPack.name] = selectedPack.name
               }
             }
             await game.settings.set("moulinette", "dataExclusions", curExclusions)
