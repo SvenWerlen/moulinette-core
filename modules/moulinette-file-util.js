@@ -1106,6 +1106,24 @@ export class MoulinetteFileUtil {
    * 2023-07-08: retries and better error management
    */
   static async downloadFile(url, folder, filename, force=false, uploadList=[]) {
+
+    // special case : wildcard URLs (ex: "somepath/{alt1,alt2,alt3}.jpg")
+    const idxB = url.indexOf("{")
+    if(idxB >= 0) {
+      const idxE = url.lastIndexOf("}")
+      if(idxE > idxB) {
+        const alternatives = url.substring(idxB+1,idxE).split(",")
+        let success = true
+        for(const path of alternatives) {
+          const altURL = url.substring(0, idxB) + path + url.substring(idxE+1)
+          const altFilename = altURL.split("/").pop()
+          success = success && (await MoulinetteFileUtil.downloadFile(altURL, folder, altFilename, force, uploadList))
+        }
+        return success
+      }
+      return false
+    }
+
     // fix for ScenePacker
     folder = decodeURIComponent(folder)
     filename = decodeURIComponent(filename)
