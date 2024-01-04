@@ -856,7 +856,7 @@ export class MoulinetteFileUtil {
       //const baseFolder = packs[f.pack].path.substring(base.length)
       const creator = uniqCreators.size > 1? packs[f.pack].publisher : ""
       const pack = uniqPacks.size > 1? packs[f.pack].name : ""
-      const filePath = f.filename.replace(/json\/[^/]+\//g, '')
+      const filePath = f.filename ? f.filename.replace(/json\/[^/]+\//g, '') : ""
       const idx = filePath.lastIndexOf('/')
       const path = idx < 0 ? "" : "/" + filePath.substring(0, idx)
 
