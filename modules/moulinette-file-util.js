@@ -715,11 +715,11 @@ export class MoulinetteFileUtil {
                 let type = pack.meta && pack.meta.type ? pack.meta.type : "img"
                 let aData = { pack: idx, filename: asset, type: type}
                 if(sas) { aData['sas'] = sas[0]; aData['sasTh'] = sas[1] }
-                const ext = asset.substr(asset.lastIndexOf('.') + 1)
+                const ext = asset.substring(asset.lastIndexOf('.') + 1)
                 if(URL.indexOf("moulinette/scenes/custom") >= 0) {
                   aData.type = "scene"
                 }
-                else if(["ogg", "mp3", "wav", "m4a", "flac", "webm", "opus"].includes(ext)) {
+                else if(["ogg", "mp3", "wav", "m4a", "flac", "webm", "opus"].includes(ext.toLocaleLowerCase())) {
                   // WebM could be tiles, too (video) - unless they are from "sounds"
                   if(ext == "webm" && !pack.path.startsWith("moulinette/sounds/custom")) {
                     assets.push(duplicate(aData)); packData.count++;
