@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [11.7.0] - 2024-01-04
+## [11.7.1] - 2024-01-04
 ### Added
 - Content management (hide content from certain creators/packs)
 ### Fixed
+- 11.7.1: rolling back wildcard fix (interferring with ScenePacker)
 - Moulinette doesn't index files with non-lowercase extensions (like MP3)
 - Moulinette doesn't handle wildcard paths (like "/some-path/{token1,token2}.jpg")
 

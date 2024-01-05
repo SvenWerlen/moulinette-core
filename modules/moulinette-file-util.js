@@ -1108,6 +1108,7 @@ export class MoulinetteFileUtil {
   static async downloadFile(url, folder, filename, force=false, uploadList=[]) {
 
     // special case : wildcard URLs (ex: "somepath/{alt1,alt2,alt3}.jpg")
+    /*
     const idxB = url.indexOf("{")
     if(idxB >= 0) {
       const idxE = url.lastIndexOf("}")
@@ -1122,7 +1123,7 @@ export class MoulinetteFileUtil {
         return success
       }
       return false
-    }
+    }*/
 
     // fix for ScenePacker
     folder = decodeURIComponent(folder)
