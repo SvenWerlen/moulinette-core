@@ -22,7 +22,9 @@ export class Moulinette {
    */
   static prettyText(text) {
     // decode URI
-    text = decodeURIComponent(text)
+    try {
+      text = decodeURIComponent(text)
+    } catch(e) {}
     
     // replace file separators
     text = text.replace(/[_-]/g, " ")
