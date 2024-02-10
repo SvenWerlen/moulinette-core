@@ -716,6 +716,11 @@ export class MoulinetteFileUtil {
                 let aData = { pack: idx, filename: asset, type: type}
                 if(sas) { aData['sas'] = sas[0]; aData['sasTh'] = sas[1] }
                 const ext = asset.substring(asset.lastIndexOf('.') + 1)
+                // ignore markdown types
+                if(ext.toLocaleLowerCase() == "md") {
+                  packData.count--;
+                  continue
+                }
                 if(URL.indexOf("moulinette/scenes/custom") >= 0) {
                   aData.type = "scene"
                 }
