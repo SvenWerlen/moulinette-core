@@ -13,6 +13,7 @@ import { MoulinetteAvailableAssets } from "./modules/moulinette-available.js"
 import { MoulinetteAvailableResult } from "./modules/moulinette-availableresult.js"
 import { MoulinetteProgress } from "./modules/moulinette-progress.js"
 import { MoulinetteAPI } from "./modules/moulinette-api.js"
+import { MoulinetteObsidian } from "./modules/moulinette-obsidian.js"
 
 /**
  * Init: define global game settings & helpers
@@ -191,6 +192,7 @@ Hooks.once("init", async function () {
       MoulinetteAvailableResult,
       MoulinettePatreon,
       MoulinetteAPI,
+      MoulinetteObsidian,
     },
     cache: new MoulinetteCache(),
     forge: [],
