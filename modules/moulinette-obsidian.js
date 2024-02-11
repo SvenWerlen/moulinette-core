@@ -6,8 +6,6 @@
 
 export class MoulinetteObsidian {
 
-
-
   /**
    * Returns the folder path from the asset
    */
@@ -41,12 +39,12 @@ export class MoulinetteObsidian {
   /**
    * Uploads the content (string) as markdown file
    */
-  static async uploadBinary(fvttPath, filename, folder) {
+  static async uploadBinary(fvttPath, filename, folder, overwrite = true) {
     try {
       const response = await fetch(fvttPath, { method: 'GET', headers: { 'Content-Type': 'application/octet-stream' }})
       const blob = await response.blob()
       const binFile = new File([blob], filename, { type: blob.type, lastModified: new Date() });
-      await game.moulinette.applications.MoulinetteFileUtil.uploadFile(binFile, filename, folder, true)
+      await game.moulinette.applications.MoulinetteFileUtil.uploadFile(binFile, filename, folder, overwrite)
     } catch(error) {
       console.error("Moulinette Obsidian | Couldn't retrieve file from path : ", fvttPath)
       console.error(error)
@@ -56,8 +54,8 @@ export class MoulinetteObsidian {
   /**
    * Generates a Markdown text listing all elements
    * 
-   * @param {*} elementList dict object with key = folder, value = Markdown row
-   * @param {*} tableTemplate markdown template for that table
+   * @param {object} elementList dict object with key = folder, value = Markdown row
+   * @param {string} tableTemplate markdown template for that table
    * @returns 
    */
   static generateList(elementList, tableTemplate) {
@@ -81,82 +79,197 @@ export class MoulinetteObsidian {
   }
 
   /**
+   * Retrieves the object's value based on the path
+   * 
+   * @param {object} object FVTT instance
+   * @param {string} path path to value
+   */
+  static getValue(object, path) {
+    // count
+    if(path.startsWith("#")) {
+      const value = foundry.utils.getProperty(object, path.substring(1))
+      return "" + (value ? value.size : 0)
+    } else {
+      const value = foundry.utils.getProperty(object, path)
+      return value ? "" + value : ""
+    }
+    
+  }
+
+  /**
+   * Download all dependencies found in HTML content
+   * Support <img> tags
+   * 
+   * @param {string} htmlContent HTML content to scan (and replace)
+   * @param {string} folder folder where to store dependencies
+   * @param {string} vaultLocalPath vault local path
+   * @returns 
+   */
+  static async downloadDependencies(htmlContent, folder) {
+    const imgRefs = [...htmlContent.matchAll(/<img [^>]*src=[\\]?"([^"]+)[\\]?"/g)]
+    for(const ref of imgRefs) {
+      if(ref[1].toLowerCase().startsWith("http")) continue
+      const filename = ref[1].split("/").pop()
+      const relFolder = ref[1].slice(0, -(filename.length+1))
+      await MoulinetteObsidian.uploadBinary(ref[1], filename, folder + "/_Deps/" + relFolder, false)
+      htmlContent = htmlContent.replace('"' + ref[1], `"_Deps/${relFolder}/${filename}`)
+    }
+    return htmlContent
+  }
+
+  static replaceReferences(htmlContent) {
+    // looking for references like @UUID[Scene.VqzwFaG1Zvm5YsWc]{Dragon's Keep Basement Floor}
+    const refs = [...htmlContent.matchAll(/@UUID\[([^\]]+)\]\{([^\}]+)\}/g)]
+    for(const ref of refs) {
+      htmlContent = htmlContent.replace(ref[0], `<code title="${ref[1]}">${ref[2]}</code>`)
+    }
+    // looking for references like [[/r 3d6[psychic]]]{3d6 Psychic Damage}
+    const macros = [...htmlContent.matchAll(/\[\[(\/r[^­\}]+)\{([^}]+)\}/g)]
+    for(const ref of macros) {
+      htmlContent = htmlContent.replace(ref[0], `⚅ <code title="${ref[1].slice(0,-2)}">${ref[2]}</code>`)
+    }
+    return htmlContent
+  }
+
+  /**
+   * For each mapping, look for its value and replace KEY by the found VALUE
+   * @param {string} text Text to be processed
+   * @param {object} obj FVTT object instance
+   * @param {object} mappings Dict with mapping [KEY] = [PATH]
+   * @returns 
+   */
+  static applyMappings(text, obj, mappings) {
+    text = text.replace(new RegExp("ASSETUUID", 'g'), MoulinetteObsidian.getValue(obj, "uuid"));
+    if(mappings) {
+      for (const [key, path] of Object.entries(mappings)) {
+        text = text.replace(new RegExp(key, 'g'), MoulinetteObsidian.getValue(obj, path));
+      }
+    }
+    return text
+  }
+
+  /**
+   * Processes the list of all assets of given type, retrieving templates, replacing values, etc.
+   * 
+   * @param {string} assetType Type of assets (ex: Scenes or Actors)
+   * @param {array} assets List of assets
+   * @param {string|async function} img Image path location within asset OR function generate the image (ex: for scene)
+   * @param {object} mapping List of mappings (key|path) of values to be replaced in tables
+   * @param {async function} content Function generating Markdown content for a specific asset (must return string)
+   */
+  static async processAssets(assetType, assets, image, mappings, content) {
+    const FILEUTIL = game.moulinette.applications.MoulinetteFileUtil
+    const rootFolder = `moulinette-obsidian/${game.world.id}`
+
+    let assetList = {}
+    const assetFolder = `${rootFolder}/${assetType}`
+    await FILEUTIL.createFolderRecursive(assetFolder)
+    const assetTemplate = await MoulinetteObsidian.getTemplate(assetType.toLowerCase() + "-page")
+    const assetListTemplate = await MoulinetteObsidian.getTemplate(assetType.toLowerCase() + "-list")
+    let assetTableTemplate = await MoulinetteObsidian.getTemplate(assetType.toLowerCase() + "-table")
+    let assetTableRowTemplate = assetTableTemplate.match(/##([^#]+)##/)
+    if(assetTableRowTemplate) {
+      assetTableTemplate = assetTableTemplate.substring(0, assetTableRowTemplate.index)
+      assetTableRowTemplate = assetTableRowTemplate[1]
+    }
+
+    for(const a of assets) {
+      const relFolder = MoulinetteObsidian.getFolderPath(a.folder)
+      const folder = relFolder.length > 0 ? `${assetFolder}/${relFolder}` : assetFolder + "/"
+      
+      let assetData = assetTemplate.replace("ASSETNAME", a.name)
+      assetData = MoulinetteObsidian.applyMappings(assetData, a, mappings)
+      if(content) {
+        assetData = assetData.replace("ASSETCONTENT", await content(a, rootFolder))
+      }
+
+      let assetTableRow = assetTableRowTemplate.replace("ASSETNAME", `[[${assetType}/${relFolder}${a.name}\\|${a.name}]]`)
+      assetTableRow = MoulinetteObsidian.applyMappings(assetTableRow, a, mappings)
+      
+      if(image) {
+        // image is the path within the asset object which contains the image location
+        if (typeof image === 'string' || image instanceof String) {
+          const ext = a[image].split('.').pop();
+          const assetImg = `${assetType}/${relFolder}${a.name}.${ext}`
+          if(a[image]) {
+            await MoulinetteObsidian.uploadBinary(a[image], `${a.name}.${ext}`, folder)    
+            assetData = assetData.replace("ASSETIMG", `![[${assetImg}|200]]`)
+            assetTableRow = assetTableRow.replace("ASSETIMG", `![[${assetImg}\\|100]]`)
+          } else {
+            assetData = assetData.replace("ASSETIMG", "")
+          }
+        } 
+        // image is the function to generate an image for that asset
+        else {
+          const assetImg = `${assetType}/${relFolder}${a.name}.webp`
+          await image(a, folder, `${a.name}.webp`)
+          assetData = assetData.replace("ASSETIMG", `![[${assetImg}|200]]`)
+          assetTableRow = assetTableRow.replace("ASSETIMG", `![[${assetImg}\\|100]]`)
+        }
+      }
+
+      await MoulinetteObsidian.uploadMarkdown(assetData, `${a.name}.md`, folder)    
+      assetList[`${relFolder}/${a.name}`] = assetTableRow + "\n"
+    }
+
+    const assetsMD = MoulinetteObsidian.generateList(assetList, assetTableTemplate)
+    await MoulinetteObsidian.uploadMarkdown(assetListTemplate.replace("ASSETLIST", assetsMD), `All ${assetType}.md`, rootFolder)
+  }
+
+  /**
    * Generates all the required files for Obsidian
    */
-  static async exportWorld({ exportScenes=true, exportActors=true } = {}) {
+  static async exportWorld({ exportScenes=true, exportActors=true, exportItems=true, exportArticles=true } = {}) {
     const FILEUTIL = game.moulinette.applications.MoulinetteFileUtil
     const rootFolder = `moulinette-obsidian/${game.world.id}`
     
     // export scenes
     // -------------
     if(exportScenes) {
-      let sceneList = {}
-      const sceneFolder = `${rootFolder}/Scenes`
-      await FILEUTIL.createFolderRecursive(sceneFolder)
-      const sceneTemplate = await MoulinetteObsidian.getTemplate("scene")
-      const sceneListTemplate = await MoulinetteObsidian.getTemplate("scenes")
-      const sceneTableTemplate = await MoulinetteObsidian.getTemplate("actors-table")
-      
-      for(const sc of game.scenes) {
-        console.log(sc)
-        const relFolder = MoulinetteObsidian.getFolderPath(sc.folder)
-        const folder = relFolder.length > 0 ? `${sceneFolder}/${relFolder}` : sceneFolder
-        
-        FILEUTIL.createFolderRecursive(folder)
-        const filenameThumb = `${sc.name}.webp`
+      await MoulinetteObsidian.processAssets("Scenes", game.scenes, async function(sc, folder, filename) {
         const width = 600
         const height = (sc.height / sc.width) * 600;
-        //const height = (sc.dimensions.height / sc.dimensions.width) * 600;
         const thumb = await sc.createThumbnail({width:width, height:height, format: "image/webp", quality: 0.8 })
         const blob = FILEUTIL.b64toBlob(thumb.thumb)
-        const mdFileThumb = new File([blob], filenameThumb, { type: blob.type, lastModified: new Date() })
-        await FILEUTIL.uploadFile(mdFileThumb, filenameThumb, folder, true)
-        
-        let sceneData = sceneTemplate.replace("SCENENAME", sc.name)
-        sceneData = sceneData.replace("SCENEPATH", `${filenameThumb}`)
-        await MoulinetteObsidian.uploadMarkdown(sceneData, `${sc.name}.md`, folder)    
-
-        sceneList[`${relFolder}/${sc.name}`] = `| ![[Scenes/${relFolder}${filenameThumb}\\|100]] | [[Scenes/${relFolder}${sc.name}\\|${sc.name}]] |\n`
-      }
-
-      const scenesMD = MoulinetteObsidian.generateList(sceneList, sceneTableTemplate)
-      await MoulinetteObsidian.uploadMarkdown(sceneListTemplate.replace("SCENELIST", scenesMD), `All Scenes.md`, rootFolder)
+        const mdFileThumb = new File([blob], filename, { type: blob.type, lastModified: new Date() })
+        await FILEUTIL.uploadFile(mdFileThumb, filename, folder, true)
+      });
     }
 
     // export actors
     // -------------
     if(exportActors) {
-      let actorList = {}
-      const actorFolder = `${rootFolder}/Actors`
-      await FILEUTIL.createFolderRecursive(actorFolder)
-      const actorTemplate = await MoulinetteObsidian.getTemplate("actor")
-      const actorListTemplate = await MoulinetteObsidian.getTemplate("actors")
-      const actorTableTemplate = await MoulinetteObsidian.getTemplate("actors-table")
-      
-      for(const a of game.actors) {
-        const relFolder = MoulinetteObsidian.getFolderPath(a.folder)
-        const folder = relFolder.length > 0 ? `${actorFolder}/${relFolder}` : actorFolder
-        
-        let actorData = actorTemplate.replace("ACTORNAME", a.name)
-        let actorImg = null
-        if(a.img) {
-          const ext = a.img.split('.').pop();
-          await MoulinetteObsidian.uploadBinary(a.img, `${a.name}.${ext}`, folder)    
-          actorImg = `Actors/${relFolder}${a.name}.${ext}`
-          actorData = actorTemplate.replace("ACTORIMG", `![[${actorImg}|200]]`)
-        } else {
-          actorData = actorTemplate.replace("ACTORIMG", "")
-        }
-        
-        //actorData = sceneData.replace("SCENEPATH", `${filenameThumb}`)
-        await MoulinetteObsidian.uploadMarkdown(actorData, `${a.name}.md`, folder)    
+      await MoulinetteObsidian.processAssets("Actors", game.actors, "img");
+    }
 
-        actorImg = actorImg ? `![[${actorImg}\\|100]]` : ""
-        actorList[`${relFolder}/${a.name}`] = `| ${actorImg} | [[Actors/${relFolder}${a.name}\\|${a.name}]] |\n`
+    // export items
+    // -------------
+    if(exportItems) {
+      await MoulinetteObsidian.processAssets("Items", game.items, "img");
+    }
+
+    // export articles
+    // -------------
+    if(exportArticles) {
+      const mappings = {
+        "PAGES": "#pages"
       }
-
-      const actorsMD = MoulinetteObsidian.generateList(actorList, actorTableTemplate)
-      await MoulinetteObsidian.uploadMarkdown(actorListTemplate.replace("ACTORLIST", actorsMD), `All Actors.md`, rootFolder)
+      await MoulinetteObsidian.processAssets("Articles", game.journal, null, mappings, async function(a, folder) {
+        let content = ""
+        for(const p of a.pages) {
+          content += `---\n\n## ${p.name}\n\n`
+          if(p.text && p.text.content) {
+            //content += jQuery('<div>').html(p.text.content).text();
+            let pageHTML = await MoulinetteObsidian.downloadDependencies(p.text.content, folder)
+            pageHTML = await MoulinetteObsidian.replaceReferences(pageHTML)
+            content += pageHTML
+          } else {
+            content += "*No content*"
+          }
+          content += "\n\n"
+        }
+        return content
+      });
     }
   }
 }

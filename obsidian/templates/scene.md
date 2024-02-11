@@ -1,7 +1,0 @@
----
-type: scene
----
-
-## SCENENAME
-
-![[SCENEPATH]]
