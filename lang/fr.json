@@ -82,7 +82,7 @@
   "mtte.editSource": "Renommer le créateur/packs de cette source",
   "mtte.errorBrowseUpdateModule": "Ce mode requiert une mise à jour du module.",
   "mtte.errorBuildingAssetIndex": "Une des sources de données (indexes) n'a pas pu être chargée. Voir dans la console pour plus de détails !",
-  "mtte.errorConflictingModules": "Module en conflit détecté! Veuillez désactiver le(s) module(s) <pre>{conflicting}</pre> lorsque vous utilisez Moulinette.",
+  "mtte.errorConflictingModules": "Module en conflit détecté! Veuillez désactiver le(s) module(s) <pre>{conflicting}</pre> si vous rencontrez des problèmes avec Moulinette.",
   "mtte.errorDownload": "L'image n'a pas pu être téléchargée. Veuillez réessayer plus tard !",
   "mtte.errorGMOnly": "Cette interface est destinée pour les MJs.",
   "mtte.errorInvalidGift": "Your cadeau est invalide !",

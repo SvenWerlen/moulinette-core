@@ -82,7 +82,7 @@
   "mtte.editSource": "Rename creator/pack for this source",
   "mtte.errorBrowseUpdateModule": "This view mode requires you to update the module.",
   "mtte.errorBuildingAssetIndex": "A data source (indexes) couldn't be loaded. See console for additional details!",
-  "mtte.errorConflictingModules": "Conflicting module detected. Please disable module(s) <pre>{conflicting}</pre> when using Moulinette.",
+  "mtte.errorConflictingModules": "Conflicting module detected. Please disable module(s) <pre>{conflicting}</pre> if Moulinette doesn't work as expected.",
   "mtte.errorDownload": "Image couldn't be downloaded from website. Try again later!",
   "mtte.errorGMOnly": "This interface is only for GMs.",
   "mtte.errorInvalidGift": "Your gift is invalid!",
