@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.8.0] - 2024-03-02
+### Changed
+- Improve thumbnail generation (for scenes) to mitigate/avoid memory leaks
+- Notification when conflicting modules installed and enabled at the same time as Moulinette
+- Remove tooltip for "bring your own assets" for tabs which don't support it (like icons)
+
 ## [11.7.3] - 2024-01-04
 ### Added
 - Content management (hide content from certain creators/packs)
