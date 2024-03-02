@@ -60,6 +60,12 @@ export class MoulinetteForge extends FormApplication {
     if(game.moulinette.forge.length == 0) {
       return { error: game.i18n.localize("mtte.errorNoModule") }
     }
+
+    // check for conflicting modules
+    const conflicting = game.modules.filter(m => m.active && game.moulinette.conflictingModules.includes(m.id))
+    if(conflicting.length > 0) {
+      return { error: game.i18n.format("mtte.errorConflictingModules", { conflicting: conflicting.map(m => m.id).join(", ") } ) }
+    }
     
     // highlight selected tab
     for(const f of game.moulinette.forge) {
