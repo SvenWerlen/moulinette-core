@@ -1,9 +1,10 @@
 export class MoulinetteLayer extends PlaceablesLayer {
 
+  static documentName = "Scene"
+
   constructor(...args) {
     super(...args);
 
-    this.documentName = "Scene"
     this.isSetup = false;
   }
 
