@@ -1362,6 +1362,14 @@ export class MoulinetteFileUtil {
                     const buf = await res.arrayBuffer();
                     const thumbFile = new File([buf], thumbFilename, { type: "image/webp" })
                     await MoulinetteFileUtil.uploadFile(thumbFile, thumbFilename, thumbFolder, true)
+
+                    // clear cache to avoid (or mitigate) memory leaks
+                    await thumb.src.destroy()
+                    await thumb.texture.destroy()
+                    for(const key of PIXI.Assets.cache._cacheMap.keys()) {
+                      await PIXI.Assets.unload(key)
+                    }
+
                     console.log(`Moulinette FileUtil | Thumbnail ${thumbFilename} `)
                   } catch (error) {
                     console.warn(`Moulinette FileUtil | Failed to create thumbnail for ${imgPath}.`, error);
