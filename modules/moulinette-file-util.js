@@ -1364,8 +1364,6 @@ export class MoulinetteFileUtil {
                     await MoulinetteFileUtil.uploadFile(thumbFile, thumbFilename, thumbFolder, true)
 
                     // clear cache to avoid (or mitigate) memory leaks
-                    await thumb.src.destroy()
-                    await thumb.texture.destroy()
                     for(const key of PIXI.Assets.cache._cacheMap.keys()) {
                       await PIXI.Assets.unload(key)
                     }
