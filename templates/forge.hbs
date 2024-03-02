@@ -150,9 +150,11 @@
     {{/unless}}
     </div>
 
+    {{#if tooltipIndexing}}
     <div class="tooltip-indexing">
       {{{localize "mtte.tooltipConfigure"}}}
     </div>
+    {{/if}}
 
     {{#each assets as |a|}}{{{a}}}{{/each}}
   </div>

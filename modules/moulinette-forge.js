@@ -144,6 +144,7 @@ export class MoulinetteForge extends FormApplication {
       supportsThumbSizes: this.activeModule.instance.supportsThumbSizes(),
       supportsWholeWordSearch: this.activeModule.instance.supportsWholeWordSearch(),
       supportsShortcuts: ["tiles", "sounds", "scenes", "prefabs"].includes(this.activeModule.id),
+      tooltipIndexing: ["tiles", "sounds", "scenes", "compendiums"].includes(this.activeModule.id),
       supportsFilters: filters.length > 0,
       filters: filters,
       filtersEnabled: moduleFilters.length > 0,
