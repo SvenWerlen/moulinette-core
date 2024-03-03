@@ -607,7 +607,7 @@ export class MoulinetteFileUtil {
           continue
         }
         // download index file from URL
-        const noCache = "?ms=" + new Date().getTime();
+        const noCache = "?client=fvtt&ms=" + new Date().getTime();
         let response
         
         // Moulinette Cloud => POST request to specify filters/exclusions
