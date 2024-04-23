@@ -1157,7 +1157,7 @@ export class MoulinetteFileUtil {
             return true
           }
           else {
-            console.warn(`Moulinette FileUtil | MTTERR003 Download succeeded but upload failed for ${infoURL}`, res)
+            console.warn(`Moulinette FileUtil | MTTERR003 Download succeeded but upload failed for ${infoURL}`, success)
           }
         }
         else {
