@@ -1,0 +1,49 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  <p>  
+    <i>{{localize "mtte.soundboardDescription"}}</i>
+  </p>
+  
+  <h2>{{localize "mtte.lookandfeel"}}</h2>
+  <div class="form-group">
+    <label>{{localize "mtte.shortText"}}</label>
+    <div class="form-fields">              
+      <input class="shortText" type="text" name="shortText" placeholder="ex: door" value="{{data.name}}">
+    </div>
+  </div>
+  <p>  
+    <i>{{localize "mtte.favoriteIconDescr"}}</i>
+  </p>
+  <div class="form-group">
+    <label>{{localize "mtte.faIcon"}} <a href="https://fontawesome.com/icons?d=gallery&m=free" target="_blank">Font Awesome</a></label>
+    <div class="form-fields">
+      <input type="hidden" id="IconSourceIdEdit" name="icon" />
+      <input class="icon" type="text" id="IconInputEdit" placeHolder="{{localize "mtte.iconPlaceHolder"}}" value="{{#if data.faIcon}}{{data.icon}}{{/if}}"/>
+      <button type="button" id="GetIconPickerEdit" data-iconpicker-input="input#IconInputEdit" data-iconpicker-preview="i#PreviewIconEdit" class="search"><i class="fas fa-search" id="PreviewIconEdit"></i></button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "mtte.faIcon"}} <a href="https://game-icons.net/" target="_blank">Game-icons.net</a></label>
+    <div class="form-fields">
+      <button type="button" class="browseGameIcon"><i class="fas fa-search"></i></button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "mtte.localIcon"}}</label>
+    <div class="form-fields">
+      <input class="icon2" type="text" name="icon2" placeholder="ex: moulinette/images/gameicons/swordman.svg" value="{{#unless data.faIcon}}{{data.icon}}{{/unless}}">
+      <button type="submit" class="browse"><i class="fas fa-folder-open" title="{{localize "mtte.browse"}}"></i> </button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="actions">
+      <button class="cancel"> {{localize "Cancel"}}</button>
+      {{#if exists}}
+        <button class="delete"><i class="fas fa-trash"></i> {{localize "Delete"}}</button>
+      {{/if}}
+      <button class="save" title="{{localize "mtte.saveFavoriteToolTip"}}"><i class="fas fa-save"></i> {{localize "Save"}}</button>
+    </div>
+  </footer>
+</form>

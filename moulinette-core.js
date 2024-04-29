@@ -13,6 +13,7 @@ import { MoulinetteAvailableAssets } from "./modules/moulinette-available.js"
 import { MoulinetteAvailableResult } from "./modules/moulinette-availableresult.js"
 import { MoulinetteProgress } from "./modules/moulinette-progress.js"
 import { MoulinetteAPI } from "./modules/moulinette-api.js"
+import { MoulinetteBoard } from "./modules/moulinette-board.js"
 
 /**
  * Init: define global game settings & helpers
@@ -259,6 +260,7 @@ Hooks.once("ready", async function () {
 Hooks.once("ready", async function () {
   if (game.user.isGM) {
     await MoulinetteFileUtil.createFolderRecursive("moulinette");
+    MoulinetteBoard.render(true)
   }
 });
 

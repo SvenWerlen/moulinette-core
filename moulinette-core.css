@@ -1,3 +1,7 @@
+:root {
+  --nav-spacing: 18px;
+}
+
 /* Fix for module Ernie's modern UI */
 .mtte .window-content {
   display: flex !important;
@@ -640,3 +644,90 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 
 .mtte .cloud          { color: #f79007; }
 .mtte .cloud.contrast { color: brown; }
+
+
+/** Moulinette board **/
+#mtteboard-top {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 10px var(--color-shadow-dark);
+  color: var(--color-text-light-heading);
+  border-bottom: 1px solid var(--color-border-dark);
+  border-right: 1px solid var(--color-border-dark);
+  font-size: 36px;
+  padding: 8px 8px 8px 92px;
+  column-gap: var(--nav-spacing);
+}
+
+#mtteboard-top .logo {
+  border: 0px;
+  height: 120px;
+  width: 120px;
+  position: absolute;
+  top: -40px;
+  left: -40px;
+}
+
+#mtteboard-top img.lvl1 {
+  width: 36px;
+  height: 36px;
+}
+
+#mtteboard-top .lvl1.selected {
+  color: var(--color-text-hyperlink);
+}
+
+#mtteboard-top .lvl1:hover {
+  color: var(--color-text-hyperlink);
+  cursor: pointer;
+}
+
+#mtteboard-top img.lvl1:hover {
+  border: 1px solid var(--color-text-hyperlink);
+}
+
+#mtteboard-nav {
+  display: flex;
+  position: absolute;
+  top: 62px;
+  left: 0;
+  z-index: 99;
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 10px var(--color-shadow-dark);
+  color: var(--color-text-light-heading);
+  border-right: 1px solid var(--color-border-dark);
+  border-bottom: 1px solid var(--color-border-dark);
+  font-size: 36px;
+  padding: 32px 8px 8px 8px;
+  column-gap: var(--nav-spacing);
+  align-items: center;
+}
+
+#mtteboard-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#mtteboard-nav li:not(:last-child) {
+  margin-bottom: var(--nav-spacing);
+}
+
+#mtteboard-nav .lvl1:hover, #mtteboard-nav .lvl2:hover {
+  color: var(--color-text-hyperlink);
+  cursor: pointer;
+}
+
+#mtteboard-nav .lvl3 {
+  font-size: 14px;
+  margin-bottom: 5px !important;
+}
+
+#mtteboard-nav .lvl3:hover {
+  color: var(--color-text-hyperlink);
+  cursor: pointer;
+}
