@@ -33,17 +33,17 @@
     <label>{{localize "mtte.localIcon"}}</label>
     <div class="form-fields">
       <input class="icon2" type="text" name="icon2" placeholder="ex: moulinette/images/gameicons/swordman.svg" value="{{#unless data.faIcon}}{{data.icon}}{{/unless}}">
-      <button type="submit" class="browse"><i class="fas fa-folder-open" title="{{localize "mtte.browse"}}"></i> </button>
+      <button type="button" class="browse"><i class="fas fa-folder-open" title="{{localize "mtte.browse"}}"></i> </button>
     </div>
   </div>
 
   <footer>
     <div class="actions">
-      <button class="cancel"> {{localize "Cancel"}}</button>
-      {{#if exists}}
+      <button type="button" class="cancel"> {{localize "Cancel"}}</button>
+      {{#unless isNew}}
         <button class="delete"><i class="fas fa-trash"></i> {{localize "Delete"}}</button>
-      {{/if}}
-      <button class="save" title="{{localize "mtte.saveFavoriteToolTip"}}"><i class="fas fa-save"></i> {{localize "Save"}}</button>
+      {{/unless}}
+      <button type="submit" class="save" title="{{localize "mtte.saveFavoriteToolTip"}}"><i class="fas fa-save"></i> {{localize "Save"}}</button>
     </div>
   </footer>
 </form>

@@ -3,16 +3,26 @@
  *************************/
 export class MoulinetteBoardGroup extends FormApplication {
   
-  constructor(board, group) {
+  constructor(boardUI, level, idx) {
     super()
-    this.board = board
-    this.data = {}
 
-    if(group) {
-      this.group = group
-    } else {
-      const data = this.board.getBoardData()
-      data.push(this.data)
+    // Moulinette Board (parent)
+    this.boardUI = boardUI
+    // Board data (from settings)
+    this.board = this.boardUI.getBoardData()
+    // Navigation level
+    this.boardGroupData = this.boardUI.getGroupData(this.board, level)
+    // Existing navigation item
+    if(idx && idx > 0 && idx <= this.boardGroupData.nav.length) {
+      this.navItem = this.boardGroupData.nav[idx-1]
+      this.isNew = false
+      this.idx = idx
+    } 
+    // New navigation item
+    else {
+      this.navItem = {}
+      this.boardGroupData.nav.push(this.navItem)
+      this.isNew = true
     }
   }
   
@@ -20,7 +30,7 @@ export class MoulinetteBoardGroup extends FormApplication {
     return mergeObject(super.defaultOptions, {
       id: "moulinette-board-group",
       classes: ["mtte", "board"],
-      title: game.i18n.localize("mtte.favorite"),
+      title: game.i18n.localize("mtte.boardGroup"),
       template: "modules/moulinette-core/templates/board-editgroup.hbs",
       width: 500,
       height: "auto",
@@ -31,11 +41,19 @@ export class MoulinetteBoardGroup extends FormApplication {
   
   getData() {
     return {
-      data: {}, 
-      canBrowse: true,
-      canUpload: true,
-      exists: false
+      data: this.navItem, 
+      isNew: this.isNew
     }
+  }
+
+  /**
+   * Refresh navigation from settings before closing
+   */
+  async close(options={}) {
+    if(this.boardUI) {
+      this.boardUI.refresh()
+    }
+    super.close(options)
   }
   
   async _onClick(event) {
@@ -67,41 +85,26 @@ export class MoulinetteBoardGroup extends FormApplication {
     }
     else if(button.classList.contains("delete")) {
       // prompt confirmation
-      let settings = game.settings.get("moulinette", "soundboard-advanced")
-      const slot = `#${this.data.idx}`
       const dialogDecision = await Dialog.confirm({
-        title: game.i18n.localize("mtte.deleteFavorite"),
-        content: game.i18n.format("mtte.deleteFavoriteContent", { from: slot }),
+        title: game.i18n.localize("mtte.deleteBoardGroup"),
+        content: game.i18n.format("mtte.deleteBoardGroupContent", { name: this.navItem.name, count: 0 }),
       })
       if(!dialogDecision) return;
-
-      delete settings["audio-" + this.slot]
-      await game.settings.set("moulinette", "soundboard-advanced", settings)
-      this.close()
-      if(this.board) {
-        this.board.render(true)
-      }
+      
+      if(this.idx > 0 && this.idx <= this.board.nav.length) {
+        this.boardGroupData.nav.splice(this.idx-1, 1); // remove item
+        await this.boardUI.storeBoardData(this.board)
+        this.close()
+      }      
     }
     else if(button.classList.contains("save")) {
-      const settings = game.settings.get("moulinette", "soundboard-advanced")
-      if(this.data.path.length == 0) {
-        return ui.notifications.error(game.i18n.localize("mtte.errorSoundboardNoAudio"));
+      if(!this.navItem.name) {
+        return ui.notifications.error(game.i18n.localize("mtte.errorBoardNoName"));
       }
-
-      // remove icon size for icon button
-      if(this.data.icon && this.data.size) {
-        delete this.data.size
+      if(this.boardUI) {
+        await this.boardUI.storeBoardData(this.board)
       }
-
-      let audio = duplicate(this.data)
-      delete audio["id"]
-      delete audio["idx"]
-      settings["audio-" + this.slot] = audio
-      await game.settings.set("moulinette", "soundboard-advanced", settings)
       this.close()
-      if(this.board) {
-        this.board.render(true)
-      }
     }
   }
   
@@ -111,17 +114,17 @@ export class MoulinetteBoardGroup extends FormApplication {
   _onPathChosen(path) {
     this.html.find("input.icon2").val(path)
     this.html.find(".icon").val("")
-    this.data.icon = path
-    this.data.faIcon = false
-    this._updateAudioButtonLayout()
+    this.navItem.icon = path
+    this.navItem.faIcon = false
+    this._updatePreview()
   }
 
   /**
    * Update Button Layout according to the current settings
    */
-  _updateAudioButtonLayout() {
-    if(this.board) {
-      this.board.render(true)
+  _updatePreview() {
+    if(this.boardUI) {
+      this.boardUI.refresh(this.board)
     }
   }
 
@@ -141,34 +144,36 @@ export class MoulinetteBoardGroup extends FormApplication {
     });
     IconPicker.Run('#GetIconPickerEdit', function() {
       html.find(".icon2").val("")
-      parent.data.icon = parent.html.find("input.icon").val()
-      parent.data.faIcon = parent.data.icon.length > 0
-      parent._updateAudioButtonLayout()
+      parent.navItem.icon = parent.html.find("input.icon").val()
+      parent.navItem.faIcon = parent.navItem.icon.length > 0
+      parent._updatePreview()
     });
 
     html.find("button").click(this._onClick.bind(this))
     
     html.find("input.shortText").on('input',function(e){
       const txt = $(e.currentTarget).val()
-      parent.data.name = txt
-      parent._updateAudioButtonLayout()
+      parent.navItem.name = txt
+      parent._updatePreview()
     });
 
     html.find("#IconInputEdit").change((e) => {
       html.find(".icon2").val("")
       const txt = $(e.currentTarget).val()
-      parent.data.icon = txt
-      parent.data.faIcon = txt.length > 0
-      parent._updateAudioButtonLayout()
+      parent.navItem.icon = txt
+      parent.navItem.faIcon = txt.length > 0
+      parent._updatePreview()
     })
 
     html.find(".icon2").change((e) => {
       html.find(".icon").val("")
       const txt = $(e.currentTarget).val()
-      parent.data.icon = txt
-      parent.data.faIcon = false
-      parent._updateAudioButtonLayout()
+      parent.navItem.icon = txt
+      parent.navItem.faIcon = false
+      parent._updatePreview()
     })
+
+    html.find("input.shortText").focus().val($("input.shortText").val());
   }
   
 }
