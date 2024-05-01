@@ -66,12 +66,13 @@ export class MoulinetteBoard {
     if($("#mtteboard").length == 0) {
       $("body").append(`<div id="mtteboard"><img class="logo" src="/modules/moulinette-core/img/moulinette.png"/><div class="top" data-lvl="1"></div><div class="nav"></div></div>`);
     }
-    
+
+    const emptyEl = `<div class="empty" data-idx="0"></div>`
     const board = tempBoard ? tempBoard : MoulinetteBoard.getBoardData()
 
     // navigation tabs (top)
     let groupData = MoulinetteBoard.getGroupData(board, 1)
-    let content = MoulinetteBoard.generateNavigation(groupData.nav, !tempBoard)
+    let content = emptyEl + MoulinetteBoard.generateNavigation(groupData.nav, !tempBoard)
     if(!tempBoard) {
       content += `<i class="lvl action fa-solid fa-circle-plus"></i>`
     }
@@ -81,7 +82,7 @@ export class MoulinetteBoard {
     groupData = MoulinetteBoard.getGroupData(board, 2)
     if(groupData) {
       let hasSelected = groupData.nav.find(el => el.selected)
-      contentNav += `<div class="list ${hasSelected ? "hasSel" : ""}" data-lvl="2">` +
+      contentNav += `<div class="list ${hasSelected ? "hasSel" : ""}" data-lvl="2">` + emptyEl +
         `${MoulinetteBoard.generateNavigation(groupData.nav, !tempBoard)}` +
         (tempBoard ? "</div>" : `<i class="lvl action fa-solid fa-circle-plus"></i></div>`)
       
@@ -89,7 +90,7 @@ export class MoulinetteBoard {
       if(groupData) {
         hasSelected = groupData.nav.find(el => el.selected)
         if(groupData) {
-          contentNav += `<div class="list ${hasSelected ? "hasSel" : ""}" data-lvl="3">` +
+          contentNav += `<div class="list ${hasSelected ? "hasSel" : ""}" data-lvl="3">` + emptyEl +
             `${MoulinetteBoard.generateNavigation(groupData.nav, !tempBoard)}` +
             (tempBoard ? "</div>" : `<i class="lvl action fa-solid fa-circle-plus"></i></div>`)
         }
@@ -109,8 +110,16 @@ export class MoulinetteBoard {
           lvl: $(ev.currentTarget).closest('[data-lvl]').data('lvl'),
           idx: $(ev.currentTarget).data('idx')
         }
-        ev.originalEvent.dataTransfer.setData("src", JSON.stringify(data)); 
+        ev.originalEvent.dataTransfer.setData("mtteboard", JSON.stringify(data));
+        setTimeout(function() {
+          $("#mtteboard .empty").addClass("expand")
+        }, 100);
+      }).on('dragend', function(ev) {
+        ev.preventDefault(); 
+        $("#mtteboard .empty").removeClass("expand")
       }).on('dragenter', function(ev) {
+        // ignore drag & drop not initiated by moulinette board
+        if(!ev.originalEvent.dataTransfer.getData("mtteboard")) return
         ev.preventDefault(); 
         $(ev.currentTarget).addClass("dropzone")
       }).on('dragleave', function(ev) {
@@ -123,12 +132,12 @@ export class MoulinetteBoard {
         $(ev.currentTarget).removeClass("dropzone")
         const target = {
           lvl: $(ev.currentTarget).closest('[data-lvl]').data('lvl'),
-          idx:$(ev.currentTarget).data('idx')
+          idx: $(ev.currentTarget).data('idx')
         }
-        const data = ev.originalEvent.dataTransfer.getData("src")
+        const data = ev.originalEvent.dataTransfer.getData("mtteboard")
         if(data) {
           const source = JSON.parse(data)
-          console.log(source, target)
+          if(source.lvl != target.lvl) return ui.notifications.error("Moving navigation items to different levels not yet supported!")
           if(source.lvl == target.lvl && source.idx == target.idx) return
           const board = MoulinetteBoard.getBoardData()
           const groupDataSrc = MoulinetteBoard.getGroupData(board, source.lvl)

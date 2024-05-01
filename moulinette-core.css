@@ -686,6 +686,20 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   font-size: 32px;
 }
 
+#mtteboard .empty {
+  display: none;
+}
+
+#mtteboard .top .empty.expand {
+  width: 20px;
+  display: block;
+}
+
+#mtteboard .list .empty.expand {
+  height: 20px;
+  display: block;
+}
+
 #mtteboard .list {
   position: relative;
   display: flex;
