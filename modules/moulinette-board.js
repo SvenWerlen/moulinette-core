@@ -19,10 +19,6 @@ export class MoulinetteBoard {
    */
   static async storeBoardData(data) {
     if(!data || !data.nav) return
-    // consistency check
-    if(data.selected && (data.selected <= 0 || data.selected > data.nav.length)) {
-      delete data.selected
-    }
     await game.settings.set("moulinette", "board", data)
   }
 
@@ -33,9 +29,9 @@ export class MoulinetteBoard {
     if(!data || !level || level < 1) return null
     if(!data.nav) data.nav = []
     if(level == 1) return data
-    // check selected
-    if(data.selected && data.selected > 0 && data.selected <= data.nav.length) {
-      return MoulinetteBoard.getGroupData(data.nav[data.selected-1], level-1)
+    const selected = data.nav.find(el => el.selected)
+    if(selected) {
+      return MoulinetteBoard.getGroupData(selected, level-1)
     }
     return null
   }
@@ -47,15 +43,16 @@ export class MoulinetteBoard {
    * @param {Number} selected 
    * @returns 
    */
-  static generateNavigation(navigation, selected) {
+  static generateNavigation(navigation, draggable = false) {
+    const dragHTML = draggable ? `draggable="true"` : ""
     return navigation.map((el, idx) => {
-      const selectedHTML = selected == idx+1 ? " selected" : ""
+      const selectedHTML = el.selected ? " selected" : ""
       if(el.icon && el.faIcon) {
-        return `<i class="lvl${selectedHTML} ${el.icon}" data-idx="${idx+1}"></i>`
+        return `<i class="lvl${selectedHTML} ${el.icon}" data-idx="${idx+1}" ${dragHTML}></i>`
       } else if(el.icon) {
-        return `<img class="lvl${selectedHTML}" src="${el.icon}" data-idx="${idx+1}"/>`
+        return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><img src="${el.icon}"/></div>`
       } else {
-        return `<span class="lvl${selectedHTML}" data-idx="${idx+1}">${el.name}</span>`
+        return `<span class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}>${el.name}</span>`
       }
     }).join("")
   }
@@ -74,21 +71,79 @@ export class MoulinetteBoard {
 
     // navigation tabs (top)
     let groupData = MoulinetteBoard.getGroupData(board, 1)
-    let content = MoulinetteBoard.generateNavigation(groupData.nav, groupData.selected)
-    content += `<i class="lvl1 action fa-solid fa-circle-plus"></i>`
-
-    groupData = MoulinetteBoard.getGroupData(board, 2)
-    let contentNav = `<div class="list" data-lvl="2">${MoulinetteBoard.generateNavigation(groupData.nav, groupData.selected)}<i class="lvl action fa-solid fa-circle-plus"></i></div>`
-    
-    groupData = MoulinetteBoard.getGroupData(board, 3)
-    if(groupData) {
-      contentNav += `<div class="list" data-lvl="3">${MoulinetteBoard.generateNavigation(groupData.nav, groupData.selected)}<i class="lvl action fa-solid fa-circle-plus"></i></div>`
+    let content = MoulinetteBoard.generateNavigation(groupData.nav, !tempBoard)
+    if(!tempBoard) {
+      content += `<i class="lvl action fa-solid fa-circle-plus"></i>`
     }
 
+    // navigation levels #2 and #3 (left)
+    let contentNav = ""
+    groupData = MoulinetteBoard.getGroupData(board, 2)
+    if(groupData) {
+      let hasSelected = groupData.nav.find(el => el.selected)
+      contentNav += `<div class="list ${hasSelected ? "hasSel" : ""}" data-lvl="2">` +
+        `${MoulinetteBoard.generateNavigation(groupData.nav, !tempBoard)}` +
+        (tempBoard ? "</div>" : `<i class="lvl action fa-solid fa-circle-plus"></i></div>`)
+      
+      groupData = MoulinetteBoard.getGroupData(board, 3)
+      if(groupData) {
+        hasSelected = groupData.nav.find(el => el.selected)
+        if(groupData) {
+          contentNav += `<div class="list ${hasSelected ? "hasSel" : ""}" data-lvl="3">` +
+            `${MoulinetteBoard.generateNavigation(groupData.nav, !tempBoard)}` +
+            (tempBoard ? "</div>" : `<i class="lvl action fa-solid fa-circle-plus"></i></div>`)
+        }
+      }
+    }
+    
     $("#mtteboard .top").html(content)
     $("#mtteboard .nav").html(contentNav)
-    $("#mtteboard .action").click(MoulinetteBoard._onAddBoardGroup)
-    $("#mtteboard .lvl").mousedown(MoulinetteBoard._onClickBoardGroup)    
+
+    if(!tempBoard) {
+      $("#mtteboard .action").click(MoulinetteBoard._onAddBoardGroup)
+      $("#mtteboard .lvl").mouseup(MoulinetteBoard._onClickBoardGroup)    
+
+      $("#mtteboard .top *:not(.action), #mtteboard .list *:not(.action)").on('dragstart', function(ev) {
+        ev.stopPropagation()
+        const data = {
+          lvl: $(ev.currentTarget).closest('[data-lvl]').data('lvl'),
+          idx: $(ev.currentTarget).data('idx')
+        }
+        ev.originalEvent.dataTransfer.setData("src", JSON.stringify(data)); 
+      }).on('dragenter', function(ev) {
+        ev.preventDefault(); 
+        $(ev.currentTarget).addClass("dropzone")
+      }).on('dragleave', function(ev) {
+        ev.preventDefault(); 
+        $(ev.currentTarget).removeClass("dropzone")
+      }).on('dragover', function(ev) {
+        ev.preventDefault(); 
+      }).on('drop', function(ev) {
+        ev.preventDefault(); 
+        $(ev.currentTarget).removeClass("dropzone")
+        const target = {
+          lvl: $(ev.currentTarget).closest('[data-lvl]').data('lvl'),
+          idx:$(ev.currentTarget).data('idx')
+        }
+        const data = ev.originalEvent.dataTransfer.getData("src")
+        if(data) {
+          const source = JSON.parse(data)
+          console.log(source, target)
+          if(source.lvl == target.lvl && source.idx == target.idx) return
+          const board = MoulinetteBoard.getBoardData()
+          const groupDataSrc = MoulinetteBoard.getGroupData(board, source.lvl)
+          const groupDataTrg = MoulinetteBoard.getGroupData(board, target.lvl)
+          if(groupDataSrc && groupDataTrg) {
+            // remove src from list
+            const movedEl = groupDataSrc.nav.splice(source.idx-1,1)[0]
+            // insert src to list
+            const targetIdx = source.lvl == target.lvl && source.idx < target.idx ? target.idx-1 : target.idx
+            groupDataTrg.nav.splice(targetIdx, 0, movedEl);
+            MoulinetteBoard.storeBoardData(board).then(() => MoulinetteBoard.refresh())
+          }
+        }
+      })
+    }
   }
 
   /**
@@ -114,8 +169,9 @@ export class MoulinetteBoard {
     if(event.which == 1) {
       const board = MoulinetteBoard.getBoardData()
       const groupData = MoulinetteBoard.getGroupData(board, lvl)
-      if(groupData.selected != idx) {
-        groupData.selected = idx
+      if(idx > 0 && idx <= groupData.nav.length) {
+        groupData.nav.forEach(el => delete el.selected)
+        groupData.nav[idx-1].selected = true
         MoulinetteBoard.storeBoardData(board).then(() => MoulinetteBoard.refresh())
       }
     }
