@@ -679,7 +679,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   border-bottom: 1px solid var(--color-border-dark);
   font-size: 36px;
   padding: 32px 8px 8px 0px;
-  align-items: center;
+  align-items: flex-start;
 }
 
 #mtteboard .list {
@@ -724,12 +724,20 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   background-size: 32px;
 }
 
+#mtteboard .list.items .dropzone {
+  padding-bottom: 34px;
+}
+
 #mtteboard .list.hasSel {
   border-right: 1px solid var(--color-text-light-heading);
 }
 
 #mtteboard .list > * {
   padding: var(--nav-spacing);
+}
+
+#mtteboard .list.items > * {
+  padding: 0px var(--nav-spacing);
 }
 
 /** brace top **/
@@ -773,6 +781,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 #mtteboard .lvl img {
   width: 36px;
   height: 36px;
+  pointer-events: none;
 }
 
 #mtteboard .lvl:hover img {

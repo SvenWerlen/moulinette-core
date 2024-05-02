@@ -91,11 +91,13 @@ export class MoulinetteBoardGroup extends FormApplication {
       })
       if(!dialogDecision) return;
       
-      if(this.idx > 0 && this.idx <= this.board.nav.length) {
+      if(this.idx > 0 && this.idx <= this.boardGroupData.nav.length) {
         this.boardGroupData.nav.splice(this.idx-1, 1); // remove item
         await this.boardUI.storeBoardData(this.board)
         this.close()
-      }      
+      } else {
+        console.error("Moulinette Board | Something went wrong with deletion", this.idx, this.board)
+      }
     }
     else if(button.classList.contains("save")) {
       if(!this.navItem.name) {
