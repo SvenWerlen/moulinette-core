@@ -176,6 +176,19 @@ Hooks.once("init", async function () {
     reservedModifiers: [],
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   })
+
+  game.keybindings.register("moulinette-core", "board", {
+    name: game.i18n.localize("mtte.configBoard"),
+    hint: game.i18n.localize("mtte.configBoardHint"),
+    editable: [],
+    onDown: () => {
+      MoulinetteBoard.toggle()
+    },
+    onUp: () => {},
+    restricted: true,  // Restrict this Keybinding to gamemaster only?
+    reservedModifiers: [],
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+  })
   
   game.moulinette = {
     user: { hasEarlyAccess: function() { return false } },

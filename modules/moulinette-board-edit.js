@@ -1,7 +1,9 @@
+import { MoulinetteBoardShortcuts } from "./moulinette-board-shortcuts.js"
+
 /*************************
- * Moulinette Board (Edit group)
+ * Moulinette Board (Edit)
  *************************/
-export class MoulinetteBoardGroup extends FormApplication {
+export class MoulinetteBoardEdit extends FormApplication {
   
   constructor(boardUI, level, idx) {
     super()
@@ -28,10 +30,10 @@ export class MoulinetteBoardGroup extends FormApplication {
   
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      id: "moulinette-board-group",
-      classes: ["mtte", "board"],
+      id: "moulinette-board-edit",
+      classes: ["mtte", "boardedit"],
       title: game.i18n.localize("mtte.boardGroup"),
-      template: "modules/moulinette-core/templates/board-editgroup.hbs",
+      template: "modules/moulinette-core/templates/board-edit.hbs",
       width: 500,
       height: "auto",
       closeOnSubmit: true,
@@ -39,10 +41,11 @@ export class MoulinetteBoardGroup extends FormApplication {
     });
   }
   
-  getData() {
+  async getData() {
     return {
       data: this.navItem, 
-      isNew: this.isNew
+      isNew: this.isNew,
+      assets: await MoulinetteBoardShortcuts.getAssets(this.navItem)
     }
   }
 
@@ -83,7 +86,7 @@ export class MoulinetteBoardGroup extends FormApplication {
         this._onPathChosen(path)
       })
     }
-    else if(button.classList.contains("delete")) {
+    else if(button.classList.contains("deleteShortcut")) {
       // prompt confirmation
       const dialogDecision = await Dialog.confirm({
         title: game.i18n.localize("mtte.deleteBoardGroup"),
@@ -176,6 +179,41 @@ export class MoulinetteBoardGroup extends FormApplication {
     })
 
     html.find("input.shortText").focus().val($("input.shortText").val());
+
+    html.find(".delete").click(ev => {
+      if(parent.navItem.assets.length <= 1) return ui.notifications.error(game.i18n.localize("mtte.errorBoardDeleteLastAsset"));
+      const idx = $(ev.currentTarget).data("idx")
+      parent.navItem.assets.splice(idx,1)
+      parent.render(true)
+      parent._updatePreview()
+    })
+
+    html.find(".boarddrop").on('dragenter', function(ev) {
+      ev.preventDefault(); 
+      $(ev.currentTarget).addClass("target")
+    }).on('dragleave', function(ev) {
+      ev.preventDefault(); 
+      $(ev.currentTarget).removeClass("target")
+    }).on('drop', function(ev) {
+      ev.preventDefault(); 
+      let data = null
+        try {
+          data = JSON.parse(ev.originalEvent.dataTransfer.getData("text/plain"));
+        } catch(err) {
+          return {};
+        }
+    
+        if(data) {
+          MoulinetteBoardShortcuts.createShortcut(data).then(item => {
+            if(item) {
+              if(item.type != parent.navItem.type) return ui.notifications.error(game.i18n.localize("mtte.errorNotSameType"))
+              parent.navItem.assets.push(item.assets[0])
+              parent.render(true)
+              parent._updatePreview()
+            }
+          })
+        }
+    })
   }
   
 }

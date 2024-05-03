@@ -1,4 +1,5 @@
-import { MoulinetteBoardGroup } from "./moulinette-board-editgroup.js"
+import { MoulinetteBoardEdit } from "./moulinette-board-edit.js"
+import { MoulinetteBoardShortcuts } from "./moulinette-board-shortcuts.js"
 
 /**
  * Moulinette Board
@@ -48,38 +49,6 @@ export class MoulinetteBoard {
   }
 
   /**
-   * Generates a new item
-   */
-  static async createNavItem(data) {
-    console.log(data)
-    if(data.type == "Macro") {
-      const macro = await fromUuid(data.uuid)
-      if(macro) {
-        return {
-          uuid: data.uuid,
-          type: "Macro",
-          name: macro.name,
-          icon: macro.img,
-        }
-      }
-    }
-    return null
-  }
-
-  /**
-   * Execute the navigation item
-   */
-  static async executeNavItem(data) {
-    if(data.type == "Macro") {
-      const macro = await fromUuid(data.uuid)
-      if(macro) {
-        macro.execute()
-      }
-    }
-  }
-
-
-  /**
    * Generates the navigation items for a specific level
    * 
    * @param {Array} navigation 
@@ -98,6 +67,17 @@ export class MoulinetteBoard {
         return `<span class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}>${el.name}</span>`
       }
     }).join("")
+  }
+
+
+  /**
+   * Toggle visibilty (on/off)
+   */
+  static toggle() {
+    $("#mtteboard").toggle()
+    if($("#mtteboard").is(":visible")) {
+      MoulinetteBoard.refresh()
+    }
   }
 
   /**
@@ -141,7 +121,7 @@ export class MoulinetteBoard {
         groupData = MoulinetteBoard.getGroupData(board, 4)
         if(groupData) {
           const noItem = !groupData.nav || groupData.nav.length == 0
-          contentNav += `<div class="list items" data-lvl="4">` + emptyEl +
+          contentNav += `<div class="list" data-lvl="4">` + emptyEl +
             `${MoulinetteBoard.generateNavigation(groupData.nav, !tempBoard)}` +
             (tempBoard ? "</div>" : `<i class="lvl action fa-solid fa-circle-plus"></i></div>`)
         } 
@@ -158,7 +138,7 @@ export class MoulinetteBoard {
       $("#mtteboard .top > *:not(.action), #mtteboard .list > *:not(.action)").on('dragstart', function(ev) {
         ev.stopPropagation()
         const data = {
-          type: "mtte/boardgroup",
+          type: "mtte/board",
           lvl: $(ev.currentTarget).closest('[data-lvl]').data('lvl'),
           idx: $(ev.currentTarget).data('idx')
         }
@@ -191,14 +171,16 @@ export class MoulinetteBoard {
         }
     
         if(data) {
-          if(data.type == "mtte/boardgroup") {
+          if(data.type == "mtte/board") {
             const source = data
-            if(source.lvl != target.lvl) return ui.notifications.error("Moving navigation items to different levels not yet supported!")
             if(source.lvl == target.lvl && source.idx == target.idx) return
             const board = MoulinetteBoard.getBoardData()
             const groupDataSrc = MoulinetteBoard.getGroupData(board, source.lvl)
             const groupDataTrg = MoulinetteBoard.getGroupData(board, target.lvl)
             if(groupDataSrc && groupDataTrg) {
+              // groups cannot moved into other levels
+              const el = groupDataSrc.nav[source.idx-1]
+              if(source.lvl != target.lvl && !el.assets) return ui.notifications.error(game.i18n.localize("mtte.errorBoardMove"))
               // remove src from list
               const movedEl = groupDataSrc.nav.splice(source.idx-1,1)[0]
               // insert src to list
@@ -208,7 +190,7 @@ export class MoulinetteBoard {
             }
           }
           else {
-            MoulinetteBoard.createNavItem(data).then(item => {
+            MoulinetteBoardShortcuts.createShortcut(data).then(item => {
               if(item) {
                 const groupDataTrg = MoulinetteBoard.getGroupData(board, target.lvl)
                 if(groupDataTrg) {
@@ -216,6 +198,9 @@ export class MoulinetteBoard {
                   groupDataTrg.nav.splice(target.idx, 0, item);
                   MoulinetteBoard.storeBoardData(board).then(() => MoulinetteBoard.refresh())
                 }
+              } else {
+                console.warn("Moulinette Board | No support for : ", data)
+                return ui.notifications.error(game.i18n.localize("mtte.errorUnsupportedType"))
               }
             })
           }
@@ -232,9 +217,9 @@ export class MoulinetteBoard {
     const lvl = $(event.currentTarget).closest('[data-lvl]').data('lvl');
     if(lvl) {
       if(lvl == 4) {
-        ui.notifications.info("YO")
+        ui.notifications.info(game.i18n.localize("mtte.boardMaxLevelReached"),)
       } else {
-        (new MoulinetteBoardGroup(MoulinetteBoard, lvl)).render(true)
+        (new MoulinetteBoardEdit(MoulinetteBoard, lvl)).render(true)
       }
     }
   }
@@ -253,7 +238,7 @@ export class MoulinetteBoard {
       const groupData = MoulinetteBoard.getGroupData(board, lvl)
       if(idx > 0 && idx <= groupData.nav.length) {
         if(groupData.nav[idx-1].type) {
-          MoulinetteBoard.executeNavItem(groupData.nav[idx-1])
+          MoulinetteBoardShortcuts.executeShortcut(groupData.nav[idx-1])
         } else {
           groupData.nav.forEach(el => delete el.selected)
           groupData.nav[idx-1].selected = true
@@ -264,7 +249,7 @@ export class MoulinetteBoard {
     // right click => edit
     else if(event.which == 3) {
       if(lvl) {
-        (new MoulinetteBoardGroup(MoulinetteBoard, lvl, idx)).render(true)
+        (new MoulinetteBoardEdit(MoulinetteBoard, lvl, idx)).render(true)
       }
     }
   }

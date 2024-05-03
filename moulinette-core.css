@@ -716,16 +716,17 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   background-size: 36px;
 }
 
+#mtteboard .action {
+  font-size: 18px;
+  align-self: center;
+}
+
 #mtteboard .list .dropzone {
   padding-bottom: 42px;
   background: url('/modules/moulinette-core/img/dropzone.svg');
-  background-position: bottom;
+  background-position: bottom left 10px;
   background-repeat: no-repeat;
   background-size: 32px;
-}
-
-#mtteboard .list.items .dropzone {
-  padding-bottom: 34px;
 }
 
 #mtteboard .list.hasSel {
@@ -734,10 +735,6 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 
 #mtteboard .list > * {
   padding: var(--nav-spacing);
-}
-
-#mtteboard .list.items > * {
-  padding: 0px var(--nav-spacing);
 }
 
 /** brace top **/
@@ -801,15 +798,28 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   cursor: pointer;
 }
 
-#mtteboard .lvl3 {
-  font-size: 14px;
-  margin-bottom: 5px !important;
+.boardassets {
+  display: flex;
 }
 
-#mtteboard .lvl3:hover {
-  color: var(--color-text-hyperlink);
-  cursor: pointer;
+.boardassets ul {
+  flex-grow: 1;
 }
 
+.boarddrop {
+  margin: 10px;
+  width: 60px;
+  height: 60px;
+  border: 1px dashed #000;
+  background: url(/modules/moulinette-core/img/dropzone.svg);
+  background-size: 40px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.boarddrop.target {
+  border-color: var(--color-text-hyperlink);
+  border-width: 2px;
+}
 
 

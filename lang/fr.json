@@ -171,7 +171,6 @@
   "mtte.shortText": "Texte court",
   "mtte.showAll": "Afficher tout",
   "mtte.soundFrom": "Son/musique de",
-  "mtte.soundboardDescription": "Selectionner des fichiers audio à jouer lorsque vous cliquez sur cet emplacement. Si vous sélectionnez plus d'un audio, Moulinette en jouera un aléatoirement.",
   "mtte.source": "Source",
   "mtte.sourceForceRefresh": "Toujours ré-indexer. Cliquer pour réutiliser l'index existant.",
   "mtte.sourceNoRefresh": "Utilise l'index si existant. Cliquer pour forcer la ré-indexation.",
