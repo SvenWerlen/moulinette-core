@@ -185,34 +185,30 @@ export class MoulinetteFileUtil {
     }
   }
   
-  
   /**
-   * Uploads a file into the right folder
+   * Disable/Enables MediaOptimizer slugifyFileNames which conflicts with Moulinette
    */
-  static async upload(file, name, folderSrc, folderPath, overwrite = false) {
-    const source = MoulinetteFileUtil.getSource()
-    MoulinetteFileUtil.createFolderIfMissing(folderSrc, folderPath)
-    
-    // check if file already exist
-    const baseURL = await MoulinetteFileUtil.getBaseURL();
-    let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
-    const path = `${folderPath}/${name}`
-    let exist = base.files.filter(f =>  decodeURIComponent(f) == path)
-    if(exist.length > 0 && !overwrite) return {path: `${baseURL}${folderPath}/${name}`};
-    
-    try {
-      if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
-        console.log("MoulinetteFileUtil | Uploading with The Forge")
-        return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
-      } else {
-        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
+  static async toggleMediaOptimizer(state) {
+    if(game.settings.settings.has("media-optimizer.slugifyFileNames")) {
+      try {
+        if(game.settings.get("media-optimizer", "slugifyFileNames") != state) {
+          await game.settings.set("media-optimizer", "slugifyFileNames", state)
+          return true
+        }
+      } catch(exc) {
+        console.error("Something went wrong while trying to enable/disable media-optimizer.slugifyFileNames")
       }
-    } catch (e) {
-      console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
-      console.log(e)
     }
+    return false
   }
   
+  /**
+   * @deprecated use MoulinetteFileUtils.uploadFile
+   */
+  static async upload(file, name, folderSrc, folderPath, overwrite = false) {
+    return await MoulinetteFileUtil.uploadFile(file, name, folderPath, overwrite)
+  }
+
   /**
    * Uploads a file into the right folder (improved version)
    */
@@ -221,18 +217,25 @@ export class MoulinetteFileUtil {
     await MoulinetteFileUtil.createFolderRecursive(folderPath)
     
     // check if file already exist
+    console.log("checked", name)
     const baseURL = await MoulinetteFileUtil.getBaseURL();
     let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
     let exist = base.files.filter(f => decodeURIComponent(f) == `${folderPath}/${name}`)
     if(exist.length > 0 && !overwrite) return { path: `${baseURL}${folderPath}/${name}` };
     
+    const changed = await MoulinetteFileUtil.toggleMediaOptimizer(false)
     try {
+      let uploadResult = null
       if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
         console.log("MoulinetteFileUtil | Uploading with The Forge")
-        return await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
+        uploadResult = await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
       } else {
-        return await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
+        uploadResult = await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
       }
+      if(changed) {
+        await MoulinetteFileUtil.toggleMediaOptimizer(true)
+      }
+      return uploadResult
     } catch (e) {
       console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
       console.log(e)
