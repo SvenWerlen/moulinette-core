@@ -137,11 +137,19 @@ export class MoulinetteBoard {
 
       $("#mtteboard .top > *:not(.action), #mtteboard .list > *:not(.action)").on('dragstart', function(ev) {
         ev.stopPropagation()
-        const data = {
-          type: "mtte/board",
-          lvl: $(ev.currentTarget).closest('[data-lvl]').data('lvl'),
-          idx: $(ev.currentTarget).data('idx')
+        let data = {
+          // for Moulinette only
+          board: {
+            lvl: $(ev.currentTarget).closest('[data-lvl]').data('lvl'),
+            idx: $(ev.currentTarget).data('idx'),
+          }
         }
+        // for Foundry VTT
+        const groupDataSrc = MoulinetteBoard.getGroupData(board, data.board.lvl)
+        if(groupDataSrc) {
+          data = foundry.utils.mergeObject(data, MoulinetteBoardShortcuts.getDataTransfer(groupDataSrc.nav[data.board.idx-1]))
+        }
+        console.log(data)
         ev.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(data));
       }).on('dragend', function(ev) {
         ev.preventDefault(); 
@@ -171,8 +179,8 @@ export class MoulinetteBoard {
         }
     
         if(data) {
-          if(data.type == "mtte/board") {
-            const source = data
+          if(data.board) {
+            const source = data.board
             if(source.lvl == target.lvl && source.idx == target.idx) return
             const board = MoulinetteBoard.getBoardData()
             const groupDataSrc = MoulinetteBoard.getGroupData(board, source.lvl)

@@ -245,4 +245,27 @@ export class MoulinetteForgeModule {
     console.debug("Moulinette Forge Module | Default getFilters() returns nothing")
     return []
   }
+
+  /**
+   * Overwrite this function to support board
+   */
+  getBoardDataShortcut(data) {
+    console.debug("Moulinette Forge Module | Default getBoardDataShortcut() not supported")
+    return null
+  }
+
+  async getBoardDataAssets(data) {
+    console.debug("Moulinette Forge Module | Default getBoardDataAssets() not supported")
+    return null
+  }
+
+  async getBoardDataAssetName(asset) {
+    console.debug("Moulinette Forge Module | Default getBoardDataAssetName() not supported")
+    return null
+  }
+
+  async executeBoardDataAsset(asset) {
+    console.debug("Moulinette Forge Module | Default executeBoardDataAsset() not supported")
+    return false
+  }
 }

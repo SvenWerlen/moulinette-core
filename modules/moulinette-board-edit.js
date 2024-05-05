@@ -207,7 +207,7 @@ export class MoulinetteBoardEdit extends FormApplication {
           MoulinetteBoardShortcuts.createShortcut(data).then(item => {
             if(item) {
               if(item.type != parent.navItem.type) return ui.notifications.error(game.i18n.localize("mtte.errorNotSameType"))
-              parent.navItem.assets.push(item.assets[0])
+              parent.navItem.assets.push(...item.assets)
               parent.render(true)
               parent._updatePreview()
             }
