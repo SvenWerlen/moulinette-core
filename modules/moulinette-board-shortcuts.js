@@ -18,36 +18,16 @@ export class MoulinetteBoardShortcuts {
   static async createShortcut(data) {
     if(data.source == "mtte") {
       // Source = Moulinette Cloud
-      if(data.pack.isRemote) {
-        if(MoulinetteBoardShortcuts.MODULES[data.type]) {
-          const module = game.moulinette.forge.find(f => f.id == MoulinetteBoardShortcuts.MODULES[data.type])
-          const shortcut = module.instance.getBoardDataShortcut(data)
-          if(shortcut) {
-            const assets = await module.instance.getBoardDataAssets(data)
-            if(assets) {
-              shortcut.assets = assets
-              return shortcut
-            }
+      if(MoulinetteBoardShortcuts.MODULES[data.type]) {
+        const module = game.moulinette.forge.find(f => f.id == MoulinetteBoardShortcuts.MODULES[data.type])
+        const shortcut = module.instance.getBoardDataShortcut(data)
+        if(shortcut) {
+          const assets = await module.instance.getBoardDataAssets(data)
+          if(assets) {
+            shortcut.assets = assets
+            return shortcut
           }
         }
-        /**
-          switch(data.type) {
-          
-          case "Sound":
-            const module = game.moulinette.forge.find(f => f.id == type)
-            let item = {
-              type: "Sound",
-              name: data.sound.filename,
-              icon: MoulinetteBoardShortcuts.ICONS.PlaylistSound,
-              faIcon: true,
-              assets: [{
-                  pack: data.pack.packId,
-                  path: data.sound.filename
-                }
-              ]
-            }
-            return item
-             */
       }
       // Source = Moulinette (local indexing)
       return null
@@ -173,10 +153,15 @@ export class MoulinetteBoardShortcuts {
    * Generates a DataTransfer data as used by FVTT and Moulinette
    */
   static getDataTransfer(data) {
-    console.log(data)
     if(!data.assets || !Array.isArray(data.assets)) return
     const asset = data.assets[Math.floor(Math.random() * data.assets.length)] 
-    if(["Macro", "RollTable", "Scene", "Actor", "Item", "JournalEntry", "PlaylistSound"].includes(data.type)) {
+    // Moulinette
+    if(asset.pack) {
+      const module = game.moulinette.forge.find(f => f.id == MoulinetteBoardShortcuts.MODULES[data.type])
+      return module.instance.getBoardDataDataTransfer(asset)
+    }
+    // FVTT core
+    else if(["Macro", "RollTable", "Scene", "Actor", "Item", "JournalEntry", "PlaylistSound"].includes(data.type)) {
       return {
         uuid: asset.uuid,
         type: data.type

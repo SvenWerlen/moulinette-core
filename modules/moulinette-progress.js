@@ -26,6 +26,11 @@ export class MoulinetteProgress extends Application {
    */
   setProgress(progress, description) {
     progress = Math.round(progress)
+    // close window if progress is 100%
+    if(progress == 100) {
+      return setTimeout(() => this.close(), 1000);
+
+    }
     if(!this.html) return
     if(progress >= 0 && progress <= 100) {
       const progressDiv = this.html.find(".progress")
@@ -34,10 +39,6 @@ export class MoulinetteProgress extends Application {
     }
     if(description) {
       this.html.find(".description").text(description)
-    }
-    // close window if progress is 100%
-    if(progress == 100) {
-      setTimeout(() => this.close(), 1000);
     }
   }
 

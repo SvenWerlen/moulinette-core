@@ -247,23 +247,35 @@ export class MoulinetteForgeModule {
   }
 
   /**
-   * Overwrite this function to support board
+   * Overwrite these functions to support board
+   * ============================================
    */
+
+  // create a shortcut for the selected item
   getBoardDataShortcut(data) {
     console.debug("Moulinette Forge Module | Default getBoardDataShortcut() not supported")
     return null
   }
 
+  // must returns the list of assets from the selected item
   async getBoardDataAssets(data) {
     console.debug("Moulinette Forge Module | Default getBoardDataAssets() not supported")
     return null
   }
 
+  // must returns the name of the selected asset
   async getBoardDataAssetName(asset) {
     console.debug("Moulinette Forge Module | Default getBoardDataAssetName() not supported")
     return null
   }
 
+  // must returns the DataTransfert object for the given asset
+  getBoardDataDataTransfer(asset) {
+    console.debug("Moulinette Forge Module | Default getBoardDataDataTransfer() not supported")
+    return {}
+  }
+
+  // must execute given asset and return true OR must return false if asset doesn't support execution
   async executeBoardDataAsset(asset) {
     console.debug("Moulinette Forge Module | Default executeBoardDataAsset() not supported")
     return false
