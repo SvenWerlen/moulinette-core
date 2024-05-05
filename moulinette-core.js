@@ -262,6 +262,7 @@ Hooks.once("ready", async function () {
 
   // backwards compatibility (0.7.x and 0.8.x)
   if(!SceneNavigation._onLoadProgress) {
+    console.warn("Moulinette Core | SceneNavigation should not be used anymore. Use game.moulinette.applications.MoulinetteProgress.")
     SceneNavigation._onLoadProgress = function(message, progress) {
       SceneNavigation.displayProgressBar({label: message, pct: progress});
     }
