@@ -591,10 +591,13 @@ export class MoulinetteFileUtil {
       }
     }
 
+    const progressbar = (new game.moulinette.applications.MoulinetteProgress(game.i18n.localize("mtte.indexingMoulinette")))
+    progressbar.render(true)
+
     // build tiles' index 
     let idx = 0;
     for(let URL of urlList) {
-      SceneNavigation.displayProgressBar({label: game.i18n.localize("mtte.indexingMoulinette"), pct: Math.round((idx / urlList.length)*100)});
+      progressbar.setProgress(Math.round((idx / urlList.length)*100))
       
       // try to load from cache when exists
       let data;
@@ -619,15 +622,13 @@ export class MoulinetteFileUtil {
                 'Content-Type': 'application/json'
               },
               cache: "no-store",
-              body: JSON.stringify({ exclusions: remoteExclusions })
+              body: JSON.stringify({ exclusions: remoteExclusions })
             }).catch(function(e) {
             console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
-            return;
           })
         } else {
           response = await fetch(URL + noCache, {cache: "no-store"}).catch(function(e) {
             console.log(`Moulinette FileUtil | Cannot download tiles/asset list`, e)
-            return;
           })
         }
         
@@ -786,7 +787,7 @@ export class MoulinetteFileUtil {
       }
     }
     
-    SceneNavigation.displayProgressBar({label: game.i18n.localize("mtte.indexingMoulinette"), pct: 100});
+    progressbar.setProgress(100)
     
     if(special) {
       for(const el of special) {
