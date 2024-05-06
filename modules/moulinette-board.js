@@ -64,7 +64,7 @@ export class MoulinetteBoard {
       } else if(el.icon) {
         return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><img src="${el.icon}" title="${el.name}"/></div>`
       } else {
-        return `<span class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}>${el.name}</span>`
+        return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><span>${el.name}</span></div>`
       }
     }).join("")
   }
@@ -87,7 +87,7 @@ export class MoulinetteBoard {
   static refresh(tempBoard) {
     // Inject HTML (if doesn't exist)
     if($("#mtteboard").length == 0) {
-      $("body").append(`<div id="mtteboard"><img class="logo" src="/modules/moulinette-core/img/moulinette.png"/><div class="top" data-lvl="1"></div><div class="nav"></div></div>`);
+      $("body").append(`<div id="mtteboard"><img class="logo" src="/modules/moulinette-core/img/moulinette.png"/><div class="top" data-lvl="1"></div><div class="nav"></div><div id="boardpreview"/></div>`);
     }
 
     const emptyEl = `<div class="empty" data-idx="0"></div>`
