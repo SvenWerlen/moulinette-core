@@ -1,5 +1,6 @@
 :root {
   --nav-spacing: 10px;
+  --color-moulinette-secondary: #383F8E;
 }
 
 /* Fix for module Ernie's modern UI */
@@ -653,17 +654,22 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   top: 0;
   left: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.8);
+  background: url(../../ui/parchment.jpg) repeat;
   box-shadow: 0 0 10px var(--color-shadow-dark);
-  color: var(--color-text-light-heading);
+  color: var(--color-text-dark-heading);
   border-bottom: 1px solid var(--color-border-dark);
   border-right: 1px solid var(--color-border-dark);
   font-size: 36px;
   padding: 8px 8px 8px 92px;
+  border-bottom-right-radius: 10px;
 }
 
 #mtteboard .top > * {
   padding: 0px var(--nav-spacing);
+}
+
+#mtteboard img {
+  border: 1px solid transparent;
 }
 
 #mtteboard .nav {
@@ -672,14 +678,15 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   top: 62px;
   left: 0;
   z-index: 99;
-  background: rgba(0, 0, 0, 0.8);
+  background: url(../../ui/parchment.jpg) repeat;
   box-shadow: 0 0 10px var(--color-shadow-dark);
-  color: var(--color-text-light-heading);
+  color: var(--color-text-dark-heading);
   border-right: 1px solid var(--color-border-dark);
   border-bottom: 1px solid var(--color-border-dark);
   font-size: 36px;
   padding: 32px 8px 8px 0px;
   align-items: flex-start;
+  border-bottom-right-radius: 10px;
 }
 
 #mtteboard .list {
@@ -730,7 +737,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 }
 
 #mtteboard .list.hasSel {
-  border-right: 1px solid var(--color-text-light-heading);
+  border-right: 1px solid var(--color-moulinette-secondary);
 }
 
 #mtteboard .list > * {
@@ -741,7 +748,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 #mtteboard .list.hasSel:before {
   position: absolute;
   content: "";
-  background-color: var(--color-text-light-heading);
+  background-color: var(--color-moulinette-secondary);
   height: 1px;
   width: 20%;
   top: 0px;
@@ -757,7 +764,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 #mtteboard .list.hasSel:after {
   position: absolute;
   content: "";
-  background-color: var(--color-text-light-heading);
+  background-color: var(--color-moulinette-secondary);
   height: 1px;
   width: 20%;
   bottom: 0px;

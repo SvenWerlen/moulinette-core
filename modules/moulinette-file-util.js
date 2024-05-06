@@ -1386,4 +1386,15 @@ export class MoulinetteFileUtil {
     // Upload index file
     await MoulinetteFileUtil.uploadFile(new File([JSON.stringify(indexData)], filename, { type: "application/json", lastModified: new Date() }), filename, moulinetteFolder, true)
   }
+
+  /**
+   * Retrieves the thumbnail for a given 
+   */
+  static getThumbnailURLMoulinetteCloud(pack, asset) {
+    if(pack && asset && pack.isRemote) {
+      const baseURL = `${pack.path}/${asset.filename}`.replace(MoulinetteFileUtil.REMOTE_BASE, MoulinetteFileUtil.REMOTE_BASE_S3 + "/mttethumbs")
+      return baseURL.substring(0, baseURL.lastIndexOf(".")) + "_thumb.webp"
+    }
+    return null
+  }
 }

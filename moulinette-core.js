@@ -14,6 +14,7 @@ import { MoulinetteAvailableResult } from "./modules/moulinette-availableresult.
 import { MoulinetteProgress } from "./modules/moulinette-progress.js"
 import { MoulinetteAPI } from "./modules/moulinette-api.js"
 import { MoulinetteBoard } from "./modules/moulinette-board.js"
+import { MoulinetteBoardShortcuts } from "./modules/moulinette-board-shortcuts.js"
 
 /**
  * Init: define global game settings & helpers
@@ -209,6 +210,7 @@ Hooks.once("init", async function () {
       MoulinetteAPI,
     },
     cache: new MoulinetteCache(),
+    board: { getRandomAsset: MoulinetteBoardShortcuts.getRandomAsset },
     forge: [],
     macros: [],
     sources: [

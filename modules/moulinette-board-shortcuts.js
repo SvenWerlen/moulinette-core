@@ -6,7 +6,7 @@
 export class MoulinetteBoardShortcuts {
 
   static ICONS = { 'Scene' : "fas fa-map", 'JournalEntry': "fas fa-book-open", 'PlaylistSound': "fas fa-music" }
-  static MODULES = { 'Sound': "sounds" }
+  static MODULES = { 'Sound': "sounds", 'Tile': "tiles" }
 
   /**
    * Retrieve asset from packs
@@ -129,6 +129,7 @@ export class MoulinetteBoardShortcuts {
       switch(data.type) {
         // MTTE
         case "Sound":
+        case "Tile":
           const module = game.moulinette.forge.find(f => f.id == MoulinetteBoardShortcuts.MODULES[data.type])
           const name = await module.instance.getBoardDataAssetName(a)
           assets.push({ name: name ? name : "-- invalid --" })
@@ -153,10 +154,13 @@ export class MoulinetteBoardShortcuts {
    * Generates a DataTransfer data as used by FVTT and Moulinette
    */
   static getDataTransfer(data) {
+    delete game.moulinette.board.selected
     if(!data.assets || !Array.isArray(data.assets)) return
+    // Enable multi-drop (Moulinette Layer)
     const asset = data.assets[Math.floor(Math.random() * data.assets.length)] 
     // Moulinette
     if(asset.pack) {
+      game.moulinette.board.selected = data
       const module = game.moulinette.forge.find(f => f.id == MoulinetteBoardShortcuts.MODULES[data.type])
       return module.instance.getBoardDataDataTransfer(asset)
     }
@@ -167,7 +171,15 @@ export class MoulinetteBoardShortcuts {
         type: data.type
       }
     }
+    delete game.moulinette.board.selected
     return {}
+  }
+
+  /**
+   * Returns a random asset from last used board item
+   */
+  static getRandomAsset() {
+    return game.moulinette.board.selected ? MoulinetteBoardShortcuts.getDataTransfer(game.moulinette.board.selected) : null
   }
 
 
