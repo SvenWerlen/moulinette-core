@@ -6,6 +6,7 @@
  */
 export class MoulinetteBoardShortcuts {
 
+  static SUPPORTED_MTYPES = ["Sound", "Tile"]
   static SUPPORTED_TYPES = ["Macro", "RollTable", "Scene", "Actor", "Item", "JournalEntry", "PlaylistSound"]
   static ICONS = { 
     'Scene' : "fas fa-map", 
@@ -164,7 +165,9 @@ export class MoulinetteBoardShortcuts {
     if(asset.pack) {
       game.moulinette.board.selected = data
       const module = game.moulinette.forge.find(f => f.id == MoulinetteBoardShortcuts.MODULES[data.type])
-      return module.instance.getBoardDataDataTransfer(asset)
+      if(module) {
+        return module.instance.getBoardDataDataTransfer(asset)
+      }
     }
     // FVTT core
     else if(MoulinetteBoardShortcuts.SUPPORTED_TYPES.includes(data.type)) {
@@ -190,15 +193,18 @@ export class MoulinetteBoardShortcuts {
   static async generatePreview(data) {
     if(!data) return ""
     let html = ""
+    console.log(data)
     // Folder
     if(!data.assets) {
       html = `<h3><i class="fas fa-folder-open fa-lg"></i> ${data.name}</h3>`
       html += '<hr>' + game.i18n.localize("mtte.boardInstructionsFolder") + game.i18n.localize("mtte.boardInstructionsCommon")
     }
     // Moulinette
-    else if(data.pack) {
+    else if(MoulinetteBoardShortcuts.SUPPORTED_MTYPES.includes(data.type)) {
       const module = game.moulinette.forge.find(f => f.id == MoulinetteBoardShortcuts.MODULES[data.type])
-      return module.instance.getBoardDataPreview(data)
+      if(module) {
+        html += await module.instance.getBoardDataPreview(data)
+      }
     }
     // FVTT core
     // Force translation of mtte.boardInstructionsMacro mtte.boardInstructionsRollTable mtte.boardInstructionsScene, mtte.boardInstructionsActor mtte.boardInstructionsItem mtte.boardInstructionsJournalEntry mtte.boardInstructionsPlaylistSound    

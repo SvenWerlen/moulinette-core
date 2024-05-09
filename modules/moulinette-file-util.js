@@ -568,6 +568,9 @@ export class MoulinetteFileUtil {
   static async buildAssetIndex(urlList, special = null) {
     let assets = []
     let assetsPacks = []
+
+    if(game.moulinette.indexingInProgress) return { assets: assets, packs: assetsPacks }
+    game.moulinette.indexingInProgress = true
     
     const cloudEnabled = game.settings.get("moulinette-core", "enableMoulinetteCloud")
     const showShowCase = game.settings.get("moulinette-core", "showCaseContent")
@@ -807,6 +810,7 @@ export class MoulinetteFileUtil {
       }
     }
     
+    game.moulinette.indexingInProgress = false
     return { assets: assets, packs: assetsPacks }
   }
   

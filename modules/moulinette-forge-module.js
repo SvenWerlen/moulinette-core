@@ -280,4 +280,10 @@ export class MoulinetteForgeModule {
     console.debug("Moulinette Forge Module | Default executeBoardDataAsset() not supported")
     return false
   }
+
+  // must return an HTML representing the selected item
+  async getBoardDataPreview(boardItem) {
+    console.debug("Moulinette Forge Module | Default getBoardDataPreview() not supported")
+    return ""
+  }
 }
