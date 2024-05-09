@@ -2,10 +2,21 @@
  * Moulinette Shortcuts
  * 
  * This class handles shortcut management for Moulinette Board
+ * 
  */
 export class MoulinetteBoardShortcuts {
 
-  static ICONS = { 'Scene' : "fas fa-map", 'JournalEntry': "fas fa-book-open", 'PlaylistSound': "fas fa-music" }
+  static SUPPORTED_TYPES = ["Macro", "RollTable", "Scene", "Actor", "Item", "JournalEntry", "PlaylistSound"]
+  static ICONS = { 
+    'Scene' : "fas fa-map", 
+    'JournalEntry': "fas fa-book-open", 
+    'Macro': "fas fa-code",
+    'PlaylistSound': "fas fa-music",
+    'RollTable': "fas fa-th-list",
+    'Actor': "fas fa-user",
+    'Item': "fas fa-suitcase",
+   }
+
   static MODULES = { 'Sound': "sounds", 'Tile': "tiles" }
 
   /**
@@ -34,30 +45,22 @@ export class MoulinetteBoardShortcuts {
     }
 
     // Source = FoundryVTT
-    switch(data.type) {
-      case "Macro":
-      case "RollTable":
-      case "Scene":
-      case "Actor":
-      case "Item":
-      case "JournalEntry":
-      case "PlaylistSound":
-        const asset = await fromUuid(data.uuid)
-        if(asset) {
-          let item = {
-            type: data.type,
-            name: asset.name,
-            icon: MoulinetteBoardShortcuts.ICONS[data.type] || asset.img,
-            assets: [{
-              uuid: data.uuid
-            }]
-          }
-          if(MoulinetteBoardShortcuts.ICONS[data.type]) {
-            item.faIcon = true
-          }
-          return item
+    if(MoulinetteBoardShortcuts.SUPPORTED_TYPES.includes(data.type)) {
+      const asset = await fromUuid(data.uuid)
+      if(asset) {
+        let item = {
+          type: data.type,
+          name: asset.name,
+          icon: MoulinetteBoardShortcuts.ICONS[data.type] || asset.img,
+          assets: [{
+            uuid: data.uuid
+          }]
         }
-        break
+        if(MoulinetteBoardShortcuts.ICONS[data.type]) {
+          item.faIcon = true
+        }
+        return item
+      }
     }
     console.log(data)
     return null
@@ -122,7 +125,6 @@ export class MoulinetteBoardShortcuts {
    * Return data about the shortcut assets
    */
   static async getAssets(data) {
-    console.log("HERE", data)
     if(!data.assets || !Array.isArray(data.assets)) return null
     const assets = []
     for(const a of data.assets) {
@@ -165,7 +167,7 @@ export class MoulinetteBoardShortcuts {
       return module.instance.getBoardDataDataTransfer(asset)
     }
     // FVTT core
-    else if(["Macro", "RollTable", "Scene", "Actor", "Item", "JournalEntry", "PlaylistSound"].includes(data.type)) {
+    else if(MoulinetteBoardShortcuts.SUPPORTED_TYPES.includes(data.type)) {
       return {
         uuid: asset.uuid,
         type: data.type
@@ -182,5 +184,51 @@ export class MoulinetteBoardShortcuts {
     return game.moulinette.board.selected ? MoulinetteBoardShortcuts.getDataTransfer(game.moulinette.board.selected) : null
   }
 
-
+  /**
+   * Returns an HTML preview of the provided data
+   */
+  static async generatePreview(data) {
+    if(!data) return ""
+    let html = ""
+    // Folder
+    if(!data.assets) {
+      html = `<h3><i class="fas fa-folder-open fa-lg"></i> ${data.name}</h3>`
+      html += '<hr>' + game.i18n.localize("mtte.boardInstructionsFolder") + game.i18n.localize("mtte.boardInstructionsCommon")
+    }
+    // Moulinette
+    else if(data.pack) {
+      const module = game.moulinette.forge.find(f => f.id == MoulinetteBoardShortcuts.MODULES[data.type])
+      return module.instance.getBoardDataPreview(data)
+    }
+    // FVTT core
+    // Force translation of mtte.boardInstructionsMacro mtte.boardInstructionsRollTable mtte.boardInstructionsScene, mtte.boardInstructionsActor mtte.boardInstructionsItem mtte.boardInstructionsJournalEntry mtte.boardInstructionsPlaylistSound    
+    else if(MoulinetteBoardShortcuts.SUPPORTED_TYPES.includes(data.type)) {
+      html = `<h3><i class="${MoulinetteBoardShortcuts.ICONS[data.type]} fa-lg"></i> ${data.name}</h3>`
+      if(data.assets.length > 1) {
+        html += game.i18n.format("mtte.boardAssetsCount", { count: data.assets.length, type: data.type})
+      } else if(data.assets.length == 1) {
+        const asset = await fromUuid(data.assets[0].uuid)
+        if(asset) {
+          switch(data.type) {
+            case "Macro":
+              html += game.i18n.format("mtte.boardMacro", { type: asset.type })
+              break
+            case "JournalEntry":
+              html += game.i18n.format("mtte.boardJournal", { count: asset.pages.size })
+              break
+            case "Scene":
+              if(asset.thumbnail) {
+                html += `<img src="${asset.thumbnail}"/>`
+              }
+              break;
+            default:
+              html += game.i18n.format("mtte.boardOther", { type: data.type })
+          }
+        }
+        
+      }
+      html += '<hr>' + game.i18n.localize("mtte.boardInstructions" + data.type) + game.i18n.localize("mtte.boardInstructionsCommon")
+    }
+    return html
+  }
 }

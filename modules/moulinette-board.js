@@ -60,11 +60,11 @@ export class MoulinetteBoard {
     return navigation.map((el, idx) => {
       const selectedHTML = el.selected ? " selected" : ""
       if(el.icon && el.faIcon) {
-        return `<i class="lvl${selectedHTML} ${el.icon}" data-idx="${idx+1}" ${dragHTML} title="${el.name}"></i>`
+        return `<i class="lvl${selectedHTML} ${el.icon}" data-idx="${idx+1}" ${dragHTML}></i>`
       } else if(el.icon) {
-        return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><img src="${el.icon}" title="${el.name}"/></div>`
+        return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><img src="${el.icon}" /></div>`
       } else {
-        return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><span>${el.name}</span></div>`
+        return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><span>${el.name.substring(0, 10)}</span></div>`
       }
     }).join("")
   }
@@ -133,10 +133,27 @@ export class MoulinetteBoard {
 
     if(!tempBoard) {
       $("#mtteboard .action").click(MoulinetteBoard._onAddBoardGroup)
-      $("#mtteboard .lvl").mouseup(MoulinetteBoard._onClickBoardGroup)    
+      $("#mtteboard .lvl").mouseup(MoulinetteBoard._onClickBoardGroup)
+      .on("mouseenter", ev => {
+        const div = $(ev.currentTarget)
+        const idx = div.data("idx")
+        const lvl = div.closest('[data-lvl]').data('lvl')
+        const groupData = MoulinetteBoard.getGroupData(board, lvl)
+        if(groupData && idx > 0 && idx <= groupData.nav.length) {
+          MoulinetteBoardShortcuts.generatePreview(groupData.nav[idx-1]).then((html) => {
+            $("#boardpreview").html(html)
+            .css({ top: div.offset().top, left: div.offset().left + div.width() + 20, 'visibility': 'visible', 'opacity': 1})
+          })
+        }
+        
+      })
+      .on("mouseleave", ev => {
+        $("#boardpreview").css({'visibility': 'hidden', 'opacity': 0})
+      })
 
       $("#mtteboard .top > *:not(.action), #mtteboard .list > *:not(.action)").on('dragstart', function(ev) {
         ev.stopPropagation()
+        $("#boardpreview").css({'visibility': 'hidden', 'opacity': 0})
         let data = {
           // for Moulinette only
           board: {
