@@ -177,7 +177,7 @@ Hooks.once("init", async function () {
   
   game.moulinette = {
     user: { hasEarlyAccess: function() { return false } },
-    conflictingModules: ["media-optimizer", "dragupload"],
+    conflictingModules: ["dragupload"],
     modules: [],
     applications: {
       Moulinette,

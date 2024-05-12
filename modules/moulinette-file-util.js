@@ -217,29 +217,28 @@ export class MoulinetteFileUtil {
     await MoulinetteFileUtil.createFolderRecursive(folderPath)
     
     // check if file already exist
-    console.log("checked", name)
     const baseURL = await MoulinetteFileUtil.getBaseURL();
     let base = await FilePicker.browse(source, folderPath, MoulinetteFileUtil.getOptions());
     let exist = base.files.filter(f => decodeURIComponent(f) == `${folderPath}/${name}`)
     if(exist.length > 0 && !overwrite) return { path: `${baseURL}${folderPath}/${name}` };
     
     const changed = await MoulinetteFileUtil.toggleMediaOptimizer(false)
+    let uploadResult = null
     try {
-      let uploadResult = null
       if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
         console.log("MoulinetteFileUtil | Uploading with The Forge")
         uploadResult = await ForgeVTT_FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
       } else {
         uploadResult = await FilePicker.upload(source, folderPath, file, MoulinetteFileUtil.getOptions(), {notify: false});
-      }
-      if(changed) {
-        await MoulinetteFileUtil.toggleMediaOptimizer(true)
-      }
-      return uploadResult
+      }      
     } catch (e) {
       console.log(`MoulinetteFileUtil | Not able to upload file ${name}`)
       console.log(e)
     }
+    if(changed) {
+      await MoulinetteFileUtil.toggleMediaOptimizer(true)
+    }
+    return uploadResult
   }
   
   
@@ -897,6 +896,7 @@ export class MoulinetteFileUtil {
    */
   static async downloadAssetDependencies(asset, pack, type, force=false) {
 
+    const changed = await MoulinetteFileUtil.toggleMediaOptimizer(false)
     const path = MoulinetteFileUtil.getMoulinetteBasePath(type, pack.publisher, pack.name)
     
     // simple type => generate 1 dependency
@@ -931,6 +931,10 @@ export class MoulinetteFileUtil {
     targetPaths.push(baseURL + path)
     for(const dep of pack.deps) {
       targetPaths.push(baseURL + MoulinetteFileUtil.getMoulinetteBasePath(type, pack.publisher, dep))
+    }
+
+    if(changed) {
+      await MoulinetteFileUtil.toggleMediaOptimizer(true)
     }
     
     return targetPaths;
