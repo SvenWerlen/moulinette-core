@@ -52,12 +52,12 @@ export class MoulinetteBoardShortcuts {
         let item = {
           type: data.type,
           name: asset.name,
-          icon: MoulinetteBoardShortcuts.ICONS[data.type] || asset.img,
+          icon: asset.img || MoulinetteBoardShortcuts.ICONS[data.type],
           assets: [{
             uuid: data.uuid
           }]
         }
-        if(MoulinetteBoardShortcuts.ICONS[data.type]) {
+        if(!asset.img) {
           item.faIcon = true
         }
         return item
@@ -83,6 +83,7 @@ export class MoulinetteBoardShortcuts {
     switch(data.type) {
       case "Macro":
         const macro = await fromUuid(asset.uuid)
+        console.log(macro)
         if(macro) {
           macro.execute()
         }
@@ -193,7 +194,6 @@ export class MoulinetteBoardShortcuts {
   static async generatePreview(data) {
     if(!data) return ""
     let html = ""
-    console.log(data)
     // Folder
     if(!data.assets) {
       html = `<h3><i class="fas fa-folder-open fa-lg"></i> ${data.name}</h3>`
@@ -236,5 +236,40 @@ export class MoulinetteBoardShortcuts {
       html += '<hr>' + game.i18n.localize("mtte.boardInstructions" + data.type) + game.i18n.localize("mtte.boardInstructionsCommon")
     }
     return html
+  }
+
+
+  /**
+   * Stops any ongoing preview
+   */
+  static stopPreview(data) {
+    if(!data) return
+    // Folder
+    if(!data.assets) return
+    // Moulinette
+    else if(MoulinetteBoardShortcuts.SUPPORTED_MTYPES.includes(data.type)) {
+      const module = game.moulinette.forge.find(f => f.id == MoulinetteBoardShortcuts.MODULES[data.type])
+      if(module) {
+        module.instance.stopBoardDataPreview(data)
+      }
+    }
+    // FVTT core
+    // Force translation of mtte.boardInstructionsMacro mtte.boardInstructionsRollTable mtte.boardInstructionsScene, mtte.boardInstructionsActor mtte.boardInstructionsItem mtte.boardInstructionsJournalEntry mtte.boardInstructionsPlaylistSound    
+    else if(MoulinetteBoardShortcuts.SUPPORTED_TYPES.includes(data.type)) {
+      return 
+    }
+  }
+
+  /**
+   * Returns the number of elements in the entire tree
+   */
+  static countChildren(data) {
+    let count = 1
+    if(data.nav) {
+      for(const child of data.nav) {
+        count += MoulinetteBoardShortcuts.countChildren(child)
+      }
+    }
+    return count
   }
 }

@@ -1,4 +1,5 @@
 import { MoulinetteBoardEdit } from "./moulinette-board-edit.js"
+import { MoulinetteBoardHelp } from "./moulinette-board-help.js"
 import { MoulinetteBoardShortcuts } from "./moulinette-board-shortcuts.js"
 
 /**
@@ -64,7 +65,13 @@ export class MoulinetteBoard {
       } else if(el.icon) {
         return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><img src="${el.icon}" /></div>`
       } else {
-        return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><span>${el.name.substring(0, 10)}</span></div>`
+        let textCSS = ""
+        if(el.name.length > 10) {
+          textCSS = "longtext"
+        } else if(el.name.length > 5) {
+          textCSS = "mediumtext"
+        }
+        return `<div class="lvl${selectedHTML}" data-idx="${idx+1}" ${dragHTML}><span class="${textCSS}">${el.name}</span></div>`
       }
     }).join("")
   }
@@ -88,6 +95,10 @@ export class MoulinetteBoard {
     // Inject HTML (if doesn't exist)
     if($("#mtteboard").length == 0) {
       $("body").append(`<div id="mtteboard"><img class="logo" src="/modules/moulinette-core/img/moulinette.png"/><div class="top" data-lvl="1"></div><div class="nav"></div><div id="boardpreview"/></div>`);
+      
+      $("#mtteboard .logo").click(ev => {
+        (new MoulinetteBoardHelp()).render(true)
+      })
     }
 
     const emptyEl = `<div class="empty" data-idx="0"></div>`
@@ -148,7 +159,14 @@ export class MoulinetteBoard {
         
       })
       .on("mouseleave", ev => {
+        const div = $(ev.currentTarget)
+        const idx = div.data("idx")
+        const lvl = div.closest('[data-lvl]').data('lvl')
+        const groupData = MoulinetteBoard.getGroupData(board, lvl)
         $("#boardpreview").css({'visibility': 'hidden', 'opacity': 0})
+        if(groupData && idx > 0 && idx <= groupData.nav.length) {
+          MoulinetteBoardShortcuts.stopPreview(groupData.nav[idx-1])
+        }
       })
 
       $("#mtteboard .top > *:not(.action), #mtteboard .list > *:not(.action)").on('dragstart', function(ev) {

@@ -90,7 +90,7 @@ export class MoulinetteBoardEdit extends FormApplication {
       // prompt confirmation
       const dialogDecision = await Dialog.confirm({
         title: game.i18n.localize("mtte.deleteBoardGroup"),
-        content: game.i18n.format("mtte.deleteBoardGroupContent", { name: this.navItem.name, count: 0 }),
+        content: game.i18n.format("mtte.deleteBoardGroupContent", { name: this.navItem.name, count: MoulinetteBoardShortcuts.countChildren(this.navItem) }),
       })
       if(!dialogDecision) return;
       

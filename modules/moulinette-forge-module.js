@@ -286,4 +286,9 @@ export class MoulinetteForgeModule {
     console.debug("Moulinette Forge Module | Default getBoardDataPreview() not supported")
     return ""
   }
+
+  // stops any ongoing preview (like audio)
+  async stopBoardDataPreview(boardItem) {
+    //console.debug("Moulinette Forge Module | Default stopBoardDataPreview() not supported")
+  }
 }

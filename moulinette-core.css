@@ -648,6 +648,10 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 
 
 /** Moulinette board **/
+#mtteboard {
+  display: none;
+}
+
 #mtteboard .top {
   display: flex;
   position: absolute;
@@ -676,6 +680,18 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   height: calc(50px + 2*var(--nav-spacing));
   display: flex;
   align-items: center;
+  max-width: 100px;
+  overflow: hidden;
+}
+
+#mtteboard span.longtext {
+  font-size: 14px;
+  text-align: center;
+}
+
+#mtteboard span.mediumtext {
+  font-size: 24px;
+  text-align: center;
 }
 
 #mtteboard img {
@@ -701,6 +717,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 
 #mtteboard .list {
   font-size: 32px;
+  align-items: center;
 }
 
 #mtteboard .empty {
