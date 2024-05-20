@@ -6,10 +6,10 @@
     "iconpicker/iconpicker-1.5.0.js"
   ],
   "esmodules": [
-    "moulinette-core.js"
+    "dist/core.min.js"
   ],
   "styles": [
-    "moulinette-core.css",
+    "dist/core.min.css",
     "iconpicker/iconpicker-1.5.0.css"
   ],
   "languages": [

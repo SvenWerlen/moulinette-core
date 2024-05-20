@@ -55,7 +55,7 @@
   "mtte.codeCopiedClipboardFail": "Code snippet couldn't be copied into your clipboard! Your browser doesn't support it or blocks it.",
   "mtte.codeCopiedClipboardSuccess": "Code snippet successfully copied into your clipboard!",
   "mtte.configBoard": "Keybind for Moulinette Board",
-  "mtte.configBoardHint": "Toggle visibility (on/off) of Moulinette Board",
+  "mtte.configBoardHint": "Toggle visibility (on/off) of Moulinette Board. EARLY ACCESS ONLY.",
   "mtte.configBrowseMode": "Browse mode",
   "mtte.configBrowseModeHint": "Depending on your preferences, you can choose to browse by creator or by pack (default)",
   "mtte.configCloudColor": "Moulinette Cloud Color",

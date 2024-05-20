@@ -1,0 +1,26 @@
+{
+  "name": "moulinette-core",
+  "version": "1.0.0",
+  "description": "Moulinette provides tools to bring together creators and dungeon masters.",
+  "main": "src/moulinette-main.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build:js": "webpack",
+    "build:css": "cleancss -o dist/core.min.css src/moulinette-core.css",
+    "build": "npm run build:js && npm run build:css",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon --watch src --exec 'npm run build'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "nodemon": "^3.1.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
