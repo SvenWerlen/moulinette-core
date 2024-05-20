@@ -63,7 +63,7 @@
   width: 100%;
   padding: 5px;
   padding-right: 15px;
-  background: url(../../ui/parchment.jpg) repeat;
+  background: url('../../../ui/parchment.jpg') repeat;
   display: none;
 }
 
@@ -497,7 +497,7 @@
 
 .mtte .showcase {
   display: none;
-  background: url(../../ui/parchment.jpg) repeat;
+  background: url('../../../ui/parchment.jpg') repeat;
   font-style: italic;
   font-size: small;
   padding: 5px;
@@ -658,7 +658,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   top: 0;
   left: 0;
   z-index: 100;
-  background: url(../../ui/parchment.jpg) repeat;
+  background: url('../../../ui/parchment.jpg') repeat;
   box-shadow: 0 0 10px var(--color-shadow-dark);
   color: var(--color-text-dark-heading);
   border-bottom: 1px solid var(--color-border-dark);
@@ -704,7 +704,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   top: 62px;
   left: 0;
   z-index: 99;
-  background: url(../../ui/parchment.jpg) repeat;
+  background: url('../../../ui/parchment.jpg') repeat;
   box-shadow: 0 0 10px var(--color-shadow-dark);
   color: var(--color-text-dark-heading);
   border-right: 1px solid var(--color-border-dark);
@@ -744,7 +744,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 
 #mtteboard .top .dropzone {
   padding-right: 46px;
-  background: url('/modules/moulinette-core/img/dropzone.svg');
+  background: url('../img/dropzone.svg');
   background-position: right;
   background-repeat: no-repeat;
   background-size: 36px;
@@ -759,7 +759,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
 
 #mtteboard .list .dropzone {
   padding-bottom: 60px;
-  background: url('/modules/moulinette-core/img/dropzone.svg');
+  background: url('../img/dropzone.svg');
   background-position: bottom center;
   background-repeat: no-repeat;
   background-size: 32px;
@@ -846,7 +846,7 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   width: 60px;
   height: 60px;
   border: 1px dashed #000;
-  background: url(/modules/moulinette-core/img/dropzone.svg);
+  background: url('../img/dropzone.svg');
   background-size: 40px;
   background-position: center;
   background-repeat: no-repeat;

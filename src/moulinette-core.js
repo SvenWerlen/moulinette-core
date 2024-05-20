@@ -1,20 +1,21 @@
 
-import { Moulinette } from "./modules/moulinette.js"
-import { MoulinetteLayer } from "./modules/moulinette-layer.js"
-import { MoulinetteCache } from "./modules/moulinette-cache.js"
-import { MoulinetteFileUtil } from "./modules/moulinette-file-util.js"
-import { MoulinetteFilePicker } from "./modules/moulinette-filepicker.js"
-import { MoulinetteClient } from "./modules/moulinette-client.js"
-import { MoulinetteForgeModule } from "./modules/moulinette-forge-module.js"
-import { MoulinettePatreon } from "./modules/moulinette-patreon.js"
-import { MoulinetteHelp } from "./modules/moulinette-help.js"
-import { MoulinetteSources } from "./modules/moulinette-sources.js"
-import { MoulinetteAvailableAssets } from "./modules/moulinette-available.js"
-import { MoulinetteAvailableResult } from "./modules/moulinette-availableresult.js"
-import { MoulinetteProgress } from "./modules/moulinette-progress.js"
-import { MoulinetteAPI } from "./modules/moulinette-api.js"
-import { MoulinetteBoard } from "./modules/moulinette-board.js"
-import { MoulinetteBoardShortcuts } from "./modules/moulinette-board-shortcuts.js"
+import { Moulinette } from "./moulinette.js"
+import { MoulinetteLayer } from "./moulinette-layer.js"
+import { MoulinetteCache } from "./moulinette-cache.js"
+import { MoulinetteFileUtil } from "./moulinette-file-util.js"
+import { MoulinetteFilePicker } from "./moulinette-filepicker.js"
+import { MoulinetteClient } from "./moulinette-client.js"
+import { MoulinetteForge } from "./moulinette-forge.js"
+import { MoulinetteForgeModule } from "./moulinette-forge-module.js"
+import { MoulinettePatreon } from "./moulinette-patreon.js"
+import { MoulinetteHelp } from "./moulinette-help.js"
+import { MoulinetteSources } from "./moulinette-sources.js"
+import { MoulinetteAvailableAssets } from "./moulinette-available.js"
+import { MoulinetteAvailableResult } from "./moulinette-availableresult.js"
+import { MoulinetteProgress } from "./moulinette-progress.js"
+import { MoulinetteAPI } from "./moulinette-api.js"
+import { MoulinetteBoard } from "./moulinette-board.js"
+import { MoulinetteBoardShortcuts } from "./moulinette-board-shortcuts.js"
 
 /**
  * Init: define global game settings & helpers
@@ -173,20 +174,25 @@ Hooks.once("init", async function () {
       canvas.moulinette.activate()
     },
     onUp: () => {},
-    restricted: true,  // Restrict this Keybinding to gamemaster only?
+    restricted: true,  // Restrict this Keybinding to gamemaster only
     reservedModifiers: [],
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   })
 
+  // Feature Toggle
   game.keybindings.register("moulinette-core", "board", {
     name: game.i18n.localize("mtte.configBoard"),
     hint: game.i18n.localize("mtte.configBoardHint"),
     editable: [],
     onDown: () => {
-      MoulinetteBoard.toggle()
+      game.moulinette.applications.Moulinette.getUser().then(() => {
+        if(MoulinettePatreon.hasEarlyAccess()) {
+          MoulinetteBoard.toggle()
+        }
+      })
     },
     onUp: () => {},
-    restricted: true,  // Restrict this Keybinding to gamemaster only?
+    restricted: true,  // Restrict this Keybinding to gamemaster only
     reservedModifiers: [],
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   })
@@ -241,7 +247,7 @@ Hooks.once("ready", async function () {
     name: game.i18n.localize("mtte.moulinetteForge"),
     descr: game.i18n.localize("mtte.moulinetteForgeHelp"), 
     icon: "modules/moulinette-core/img/moulinette.png",
-    class: (await import("./modules/moulinette-forge.js")).MoulinetteForge
+    class: MoulinetteForge
   })
   // Add asset packs from the Forge's Bazaar if running on the Forge
   if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
