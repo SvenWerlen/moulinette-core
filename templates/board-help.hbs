@@ -1,7 +1,10 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
   <h2>About Moulinette Board</h2>
-  <p>This module offers great flexibility for managing shortcuts for all sorts of needs. Check out the module page (URL to come) for more details.</p>
+  <p>This module offers great flexibility for managing shortcuts for all sorts of needs.</p>
+  <p>This feature is currently in development. Documentation will be available soon.</p>
   <hr>
-  <h3>Export / Import</h3>
-  <p><em>Not yet implemented...</em></p>
+  <div class="exports">
+    <button class="export"><i class="fas fa-file-export"></i> {{localize "mtte.boardExport"}}</button>
+    <button class="import"><i class="fas fa-file-import"></i> {{localize "mtte.boardImport"}}</button>
+  </div>
 </form>

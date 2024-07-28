@@ -673,6 +673,8 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   height: 50px;
   display: flex;
   align-items: center;
+  max-width: 125px;
+  overflow: hidden;
 }
 
 #mtteboard .list > * {

@@ -179,16 +179,13 @@ Hooks.once("init", async function () {
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   })
 
-  // Feature Toggle
   game.keybindings.register("moulinette-core", "board", {
     name: game.i18n.localize("mtte.configBoard"),
     hint: game.i18n.localize("mtte.configBoardHint"),
     editable: [],
     onDown: () => {
       game.moulinette.applications.Moulinette.getUser().then(() => {
-        if(MoulinettePatreon.hasEarlyAccess()) {
-          MoulinetteBoard.toggle()
-        }
+        MoulinetteBoard.toggle()
       })
     },
     onUp: () => {},
