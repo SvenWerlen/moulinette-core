@@ -99,9 +99,10 @@ export class MoulinetteHelp extends FormApplication {
     else if(source.classList.contains("favorites")) {
       game.moulinette.forge.find( f => f.id == "tiles" ).instance.onShortcut("favorites")
     }
+    /*
     else if(source.classList.contains("faceted-search")) {
       game.moulinette.forge.find( f => f.id == "tiles" ).instance.onShortcut("search")
-    }
+    }*/
     else if(source.classList.contains("browseMtte")) {
       const bucket = game.settings.get("moulinette-core", "s3Bucket")
       const path = $(source).data("path") ? $(source).data("path") : "moulinette/"

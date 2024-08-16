@@ -906,3 +906,48 @@ ul.filterList ul li.filler  { height: 300px; background: #D6D4C8 !important; }
   overflow: hidden;
   white-space: nowrap;
 }
+
+/** Specific to Wfrp4e **/
+
+.system-wfrp4e #moulinette.forge .footer {
+  background: url('../../../systems/wfrp4e/ui/frames/window-app-background-bookshelf.webp');
+}
+
+
+.system-wfrp4e .mtte select, .system-wfrp4e .mtte input {
+  padding: 1px 3px;
+  margin: 0;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: #d6d6d6;
+  border: 1px solid #736953a6;
+  border-left: none;
+  box-shadow: 0px 0px 10px inset black;
+  background: #352516;
+  /* height: auto; */
+}
+
+.system-wfrp4e .mtte button {
+  margin: 4px 12px;
+  padding: 3px 0px;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  width: fill-available;
+  border: 1px solid black;
+  border-image: url(../../../systems/wfrp4e/ui/footer-button.webp) 10 repeat;
+  border-image-width: 4px;
+  border-image-outset: 0px;
+  box-shadow: 4px 4px 1px #00000085;
+  background: url(../../../systems/wfrp4e/ui/sidebar_button-background_red.webp) repeat;
+  background-origin: padding-box;
+  font-family: var(--major-button-font-family);
+  font-weight: var(--major-button-font-weight);
+  color: var(--major-button-color);
+  line-height: normal;
+  text-shadow: 0px 0px 1px #00000063;
+}
+
+.system-wfrp4e #moulinette .search {
+  color: #d6d6d6;
+}
