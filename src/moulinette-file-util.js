@@ -6,7 +6,8 @@
 
 export class MoulinetteFileUtil {
 
-  static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
+  static REMOTE_BASE = "https://mttestorage.blob.core.windows.net"
+  //static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
   static REMOTE_BASE_S3 = "https://nyc3.digitaloceanspaces.com"
   static LOCAL_SOURCES = ["data", "public"]
   static RETRIES = 3

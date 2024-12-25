@@ -3,6 +3,7 @@
  */
 export class MoulinetteClient {
   
+  //static SERVER_URL = "https://assets-dev.moulinette.cloud"
   static SERVER_URL = "https://assets.moulinette.cloud"
   //static SERVER_URL = "http://127.0.0.1:5000"
   static GITHUB_SRC = "https://raw.githubusercontent.com/SvenWerlen/moulinette-data"
