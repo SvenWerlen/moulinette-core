@@ -7,7 +7,7 @@
 export class MoulinetteFileUtil {
 
   static REMOTE_BASE = "https://mttestorage.blob.core.windows.net"
-  //static REMOTE_BASE = "https://mttecloudstorage.blob.core.windows.net"
+  static REMOTE_BASE_PRIVATE = "https://mttecloudstorage.blob.core.windows.net"
   static REMOTE_BASE_S3 = "https://nyc3.digitaloceanspaces.com"
   static LOCAL_SOURCES = ["data", "public"]
   static RETRIES = 3
@@ -684,7 +684,7 @@ export class MoulinetteFileUtil {
             // hide showcase content
             if(pack.showCase && !showShowCase) continue;
             // hide content based on filters/exclusions
-            const isRemote = pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3)
+            const isRemote = pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_PRIVATE) || pack.path.startsWith(MoulinetteFileUtil.REMOTE_BASE_S3)
             if(pack.isLocal && (localExclusions.creators.includes(pub.publisher) || localExclusions.packs.includes(pack.name))) continue;
             if(isRemote && (remoteExclusions.creators.includes(pub.publisher) || remoteExclusions.packs.includes(pack.id))) continue;
             // add pack
